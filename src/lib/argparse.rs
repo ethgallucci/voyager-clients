@@ -19,7 +19,7 @@ pub fn argparse() -> Result<Arg, ()> {
         "neo" => Ok(Arg::NEO),
         "magnetic" => Ok(Arg::MAG),
         "flare" => Ok(Arg::SFLARE),
-        "exoplanet" => Ok(Arg::EXO),
+        "exo" => Ok(Arg::EXO),
         _ => Ok(Arg::BADCOMMAND)
     }
 }
