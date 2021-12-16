@@ -41,15 +41,15 @@ Retrieves solar flare data from the entire year.
 Grabs all data from NASA's exoplanet archive database.
 
 
-[contributors-shield]: https://img.shields.io/github/contributors/ethgallucci/zero.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/ethgallucci/voyager.svg?style=for-the-badge
 
-[contributors-url]: https://github.com/ethgallucci/zero/graphs/contributors
+[contributors-url]: https://github.com/ethgallucci/voyager/graphs/contributors
 
-[issues-shield]: https://img.shields.io/github/issues/ethgallucci/zero.svg?style=for-the-badge
-[issues-url]: https://github.com/ethgallucci/zero/issues
+[issues-shield]: https://img.shields.io/github/issues/ethgallucci/voyager.svg?style=for-the-badge
+[issues-url]: https://github.com/ethgallucci/voyager/issues
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/ethan-gallucci-196892221
 
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/ethgallucci/zero/blob/main/LICENSE.txt
+[license-url]: https://github.com/ethgallucci/voyager/blob/main/LICENSE.txt
