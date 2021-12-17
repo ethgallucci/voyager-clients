@@ -3,6 +3,11 @@
 [![MIT License][license-shield]][license-url]
 
 
+## Overview
+Voyager is a swiss army knife CLI for the NASA Open APIs. It is designed to bundle all the NASA APIs into a single CLI tool. Voyager can be used to gather data from a variety of NASA's endpoints, including: Picture of The Day, Solar Flares, Magnetic Storms, and the Exoplanet Archive. 
+
+Future versions of voyager will strive to incorporate more endpoints, until all of them are integrated.
+
 ## Installation
 
 ### Build binaries
@@ -30,7 +35,7 @@ Then run the command above to link your key with voyager. It's recommended to sa
 ```
 Run this command to ensure voyager has saved your key properly.
 
-### Usage
+## Usage
 ```sh
     voyager apod
 ```
