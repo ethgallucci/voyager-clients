@@ -17,6 +17,19 @@
 This copies the binaries into your local path.
 If the script isn't working make sure you built the source specifying the --release flag.
 
+### Setup
+Once you have the binaries installed, you must first configure your API key to use with voyager.
+If you have one already setup through NASA, you can simply run the following command:
+```sh
+    voyager set key [YOUR_API_KEY]
+```
+If you don't have an API key yet, you can visit [NASA's Open API Documentation](https://api.nasa.gov/index.html) to set one up.
+Then run the command above to link your key with voyager. It's recommended to save the key in a file somewhere, just in case you need it later.
+```sh
+    voyager get key
+```
+Run this command to ensure voyager has saved your key properly.
+
 ### Usage
 ```sh
     voyager apod

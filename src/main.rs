@@ -22,7 +22,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     else if command == Arg::GETKEY {
-        let args: Vec<String> = env::args().collect();
         let key = keys::getKey();
         println!("key: {}", key);
     }
