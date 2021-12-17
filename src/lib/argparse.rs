@@ -1,4 +1,5 @@
 use std::env;
+use super::keys::setKey;
 
 #[derive(Debug, PartialEq)]
 pub enum Arg {
@@ -7,7 +8,9 @@ pub enum Arg {
     MAG,
     SFLARE,
     EXO,
-    BADCOMMAND
+    BADCOMMAND,
+    SETKEY,
+    GETKEY,
 }
 
 pub fn argparse() -> Result<Arg, ()> {
@@ -20,6 +23,14 @@ pub fn argparse() -> Result<Arg, ()> {
         "magnetic" => Ok(Arg::MAG),
         "flare" => Ok(Arg::SFLARE),
         "exo" => Ok(Arg::EXO),
+        "set" => match &args[2] as &str {
+            "key" => Ok(Arg::SETKEY),
+            _ => Ok(Arg::BADCOMMAND)
+        },
+        "get" => match &args[2] as &str {
+            "key" => Ok(Arg::GETKEY),
+            _ => Ok(Arg::BADCOMMAND)
+        },
         _ => Ok(Arg::BADCOMMAND)
     }
 }

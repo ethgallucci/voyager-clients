@@ -1,5 +1,5 @@
 use std::error::Error;
-use serde_json::{Value as JsonValue};
+use std::env;
 
 mod lib;
 
@@ -7,30 +7,47 @@ use lib::argparse::*;
 use lib::apod::*;
 use lib::neo::*;
 use lib::exoplanet::*;
-use lib::weather::*;
+use lib::weather;
+use lib::keys;
 
 fn main() -> Result<(), Box<dyn Error>> {
 
     let command = argparse().unwrap();
-
-    // let res: String;
-    let res: String; 
-    match command {
-        Arg::SFLARE => res = sflare().unwrap(),
-        Arg::MAG => res = magnetic().unwrap(),
-        Arg::APOD => res = apod().unwrap(),
-        Arg::NEO => res = neo().unwrap(),
-        Arg::EXO => res = exoplanet().unwrap(),
-        // Default to apod if command can't be parsed
-        Arg::BADCOMMAND => res = apod().unwrap(),
-        _ => panic!()
+    // Before jumping into the match arm, first check if the command is a config command
+    if command == Arg::SETKEY {
+        // Recollect the enviroment arguments
+        let args: Vec<String> = env::args().collect();
+        // Set the API key
+        keys::setKey(&args[3]).unwrap();
     }
 
-    if command == Arg::BADCOMMAND {
-        println!("Defaulting to APOD upon Bad Command\n\n")
+    else if command == Arg::GETKEY {
+        let args: Vec<String> = env::args().collect();
+        let key = keys::getKey();
+        println!("key: {}", key);
     }
 
-    println!("response: {}", res);
+    // Command is not a config command - match on command and output the response
+    else {
+        let mut res: String = " ".to_string(); 
+        match command {
+            Arg::SFLARE => res = weather::sflare().unwrap(),
+            Arg::MAG => res = weather::magnetic().unwrap(),
+            Arg::APOD => res = apod().unwrap(),
+            Arg::NEO => res = neo().unwrap(),
+            Arg::EXO => res = exoplanet().unwrap(),
+            // Default to apod if command can't be parsed
+            Arg::BADCOMMAND => res = apod().unwrap(),
+            _ => panic!()
+        }
+
+        if command == Arg::BADCOMMAND {
+            println!("Defaulting to APOD upon Bad Command\n\n")
+        }
+
+        println!("{}", res);
+    }
 
     Ok(())
+
 }

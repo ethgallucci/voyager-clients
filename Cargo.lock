@@ -43,6 +43,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "fstrings"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7845a0f15da505ac36baad0486612dab57f8b8d34e19c5470a265bbcdd572ae6"
+dependencies = [
+ "fstrings-proc-macro",
+ "proc-macro-hack",
+]
+
+[[package]]
+name = "fstrings-proc-macro"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "63b58c0e7581dc33478a32299182cbe5ae3b8c028be26728a47fb0a113c92d9d"
+dependencies = [
+ "proc-macro-hack",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "idna"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -106,6 +128,12 @@ name = "percent-encoding"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
+
+[[package]]
+name = "proc-macro-hack"
+version = "0.5.19"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dbf0c48bc1d91375ae5c3cd81e3722dff1abcf81a30960240640d223f59fe0e5"
 
 [[package]]
 name = "proc-macro2"
@@ -287,6 +315,7 @@ dependencies = [
 name = "voyager"
 version = "0.1.0"
 dependencies = [
+ "fstrings",
  "serde",
  "serde_derive",
  "serde_json",
