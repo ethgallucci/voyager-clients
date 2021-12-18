@@ -2,25 +2,17 @@ use std::error::Error;
 use std::env;
 
 mod lib;
-
-use lib::argparse::*;
-use lib::apod::*;
-use lib::neo::*;
-use lib::exoplanet::*;
-use lib::weather;
-use lib::keys;
+use lib::*;
 
 fn main() -> Result<(), Box<dyn Error>> {
-
+    // Recollect the enviroment arguments
+    let args: Vec<String> = env::args().collect();
     let command = argparse().unwrap();
     // Before jumping into the match arm, first check if the command is a config command
     if command == Arg::SETKEY {
-        // Recollect the enviroment arguments
-        let args: Vec<String> = env::args().collect();
         // Set the API key
         keys::set_key(&args[3]).unwrap();
     }
-
     else if command == Arg::GETKEY {
         let key = keys::get_key()?;
         println!("key: {}", key);
