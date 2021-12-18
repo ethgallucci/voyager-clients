@@ -10,7 +10,23 @@ Future versions of voyager will strive to incorporate more endpoints, until all 
 
 ## Installation
 
+### Rustup?
+This tool requires the Rust tool chain to build the binaries. This section assumes it is your first time interacting with Rust, and therefore need to install the Rust toolchain before building voyager. To install Rust, follow the directions from [Rust's official documenation](https://doc.rust-lang.org/book/ch01-01-installation.html). If you don't want to click away and want to get started with voyager right away, you can run the following command pulled straight from Rust's documentations:
+```sh
+    curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+```
+This will install a script that starts the installation of the rustup tool, which installs the latest stable version of Rust, as well as Rust's native package manager, cargo. If at any point you are getting errors from rustup or cargo, make sure to check out the above link for Rust's official documentation on installing the toolchain. To verify the installation of the Rust compiler succeeded, you can run:
+```sh
+    rustc --version
+```
+To ensure the native package manager is installed, run:
+```sh
+    cargo --version
+```
+We'll use cargo to build the binaries for voyager.
+
 ### Build binaries
+To build the voyager binaries, run:
 ```sh
     cargo build --release
 ```
@@ -19,8 +35,6 @@ Future versions of voyager will strive to incorporate more endpoints, until all 
 ```sh
     bash install.sh
 ```
-This copies the binaries into your local path.
-If the script isn't working make sure you built the source specifying the --release flag.
 
 ### Setup
 Once you have the binaries installed, you must first configure your API key to use with voyager.
