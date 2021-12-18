@@ -1,5 +1,4 @@
 use std::env;
-use super::keys::setKey;
 
 #[derive(Debug, PartialEq)]
 pub enum Arg {

@@ -4,7 +4,7 @@ use super::keys;
 use super::to_pretty::to_string_pretty;
 
 pub fn sflare() -> Result<String, Box<dyn Error>> {
-    let key: String = keys::getKey();
+    let key: String = keys::get_key().unwrap();
     let url: String = format!("https://api.nasa.gov/DONKI/FLR?startDate=2021-01-01&endDate=2021-12-15&api_key={}", key);
     
     let res: String = ureq::get(&url).call()?.into_string()?;
@@ -14,7 +14,7 @@ pub fn sflare() -> Result<String, Box<dyn Error>> {
 }
 
 pub fn magnetic() -> Result<String, Box<dyn Error>> {
-    let key: String = keys::getKey();
+    let key: String = keys::get_key().unwrap();
     let url: String = format!("https://api.nasa.gov/DONKI/GST?startDate=2021-01-01&endDate=2021-12-10&api_key={}", key);
     
     let res: String = ureq::get(&url).call()?.into_string()?;

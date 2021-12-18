@@ -18,17 +18,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         // Recollect the enviroment arguments
         let args: Vec<String> = env::args().collect();
         // Set the API key
-        keys::setKey(&args[3]).unwrap();
+        keys::set_key(&args[3]).unwrap();
     }
 
     else if command == Arg::GETKEY {
-        let key = keys::getKey();
+        let key = keys::get_key()?;
         println!("key: {}", key);
     }
 
     // Command is not a config command - match on command and output the response
     else {
-        let mut res: String = " ".to_string(); 
+        let res: String;
         match command {
             Arg::SFLARE => res = weather::sflare().unwrap(),
             Arg::MAG => res = weather::magnetic().unwrap(),

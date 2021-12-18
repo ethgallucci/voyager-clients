@@ -1,9 +1,10 @@
 use std::fs;
+use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
 use users::{ get_user_by_uid, get_current_uid };
 
-pub fn setKey(key: &str) -> std::io::Result<()> {
+pub fn set_key(key: &str) -> std::io::Result<()> {
     let user = get_user_by_uid(get_current_uid()).unwrap();
     let username = user.name().to_string_lossy();
     println!("Setting key for {}", username);
@@ -18,9 +19,11 @@ pub fn setKey(key: &str) -> std::io::Result<()> {
 }
 
 
-pub fn getKey() -> String {
-    let key = fs::read_to_string("/Users/ethangallucci/voyager/.api_key.txt")
+pub fn get_key() -> Result<String, Box<dyn Error>> {
+    let user = get_user_by_uid(get_current_uid()).unwrap();
+    let path_to_key = format!("/Users/{}/voyager/.api_key.txt", user.name().to_string_lossy());
+    let key = fs::read_to_string(&path_to_key)
         .expect("Couldn't read api key");
 
-    key
+    Ok(key)
 }
