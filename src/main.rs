@@ -1,7 +1,6 @@
 use std::error::Error;
 use std::env;
 
-
 mod lib;
 use lib::*;
 
@@ -13,10 +12,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     if command == Arg::SETKEY {
         // Set the API key
         keys::set_key(&args[3]).unwrap();
+        Ok(())
     }
     else if command == Arg::GETKEY {
         let key = keys::get_key()?;
         println!("key: {}", key);
+        Ok(())
     }
 
     // Command is not a config command - match on command and output the response
@@ -27,18 +28,16 @@ fn main() -> Result<(), Box<dyn Error>> {
             Arg::MAG => res = weather::magnetic().unwrap(),
             Arg::APOD => res = apod().unwrap(),
             Arg::NEO => res = neo().unwrap(),
-            Arg::EXO => res = exoplanet().unwrap(),
             // Default to apod if command can't be parsed
             Arg::BADCOMMAND => res = apod().unwrap(),
             _ => panic!()
         }
 
         if command == Arg::BADCOMMAND {
-            println!("Defaulting to APOD upon Bad Command\n\n")
+            println!("\nDefaulted to APOD upon Bad Command\n\n")
         }
-        
+        Ok(())
     }
 
-    Ok(())
 
 }

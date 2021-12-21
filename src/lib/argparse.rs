@@ -6,7 +6,6 @@ pub enum Arg {
     NEO,
     MAG,
     SFLARE,
-    EXO,
     BADCOMMAND,
     SETKEY,
     GETKEY,
@@ -21,7 +20,6 @@ pub fn argparse() -> Result<Arg, ()> {
         "neo" => Ok(Arg::NEO),
         "magnetic" => Ok(Arg::MAG),
         "flare" => Ok(Arg::SFLARE),
-        "exo" => Ok(Arg::EXO),
         "set" => match &args[2] as &str {
             "key" => Ok(Arg::SETKEY),
             _ => Ok(Arg::BADCOMMAND)
