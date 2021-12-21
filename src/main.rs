@@ -27,7 +27,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             Arg::MAG => res = weather::magnetic().unwrap(),
             Arg::APOD => res = apod().unwrap(),
             Arg::NEO => res = neo().unwrap(),
-            Arg::EXO => res = exoplanet().unwrap(),
             // Default to apod if command can't be parsed
             Arg::BADCOMMAND => res = apod().unwrap(),
             _ => panic!()
@@ -36,7 +35,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         if command == Arg::BADCOMMAND {
             println!("Defaulting to APOD upon Bad Command\n\n")
         }
-        
     }
 
     Ok(())
