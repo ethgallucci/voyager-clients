@@ -1,5 +1,5 @@
 [package]
-name = "voyager_client"
+name = "voyager-client"
 version = "0.1.2"
 edition = "2021"
 description = "Client for interacting with NASA's Open APIs"
