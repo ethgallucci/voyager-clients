@@ -376,7 +376,7 @@ dependencies = [
 
 [[package]]
 name = "voyager-client"
-version = "0.1.2"
+version = "0.1.0"
 dependencies = [
  "chrono",
  "pbr",

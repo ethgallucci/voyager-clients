@@ -1,6 +1,6 @@
 [package]
 name = "voyager-client"
-version = "0.1.2"
+version = "0.1.0"
 edition = "2021"
 description = "Client for interacting with NASA's Open APIs"
 license = "MIT"
