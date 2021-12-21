@@ -1,6 +1,9 @@
 use std::error::Error;
 use std::env;
 
+mod argparse;
+use argparse::*;
+
 mod lib;
 use lib::*;
 
@@ -11,7 +14,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Before jumping into the match arm, first check if the command is a config command
     if command == Arg::SETKEY {
         // Set the API key
-        keys::set_key(&args[3]).unwrap();
+        keys::set_key(&args[3])?;
         Ok(())
     }
     else if command == Arg::GETKEY {
@@ -26,10 +29,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         match command {
             Arg::SFLARE => res = weather::sflare().unwrap(),
             Arg::MAG => res = weather::magnetic().unwrap(),
-            Arg::APOD => res = apod().unwrap(),
+            Arg::APOD => res = get_apod().unwrap(),
             Arg::NEO => res = neo().unwrap(),
             // Default to apod if command can't be parsed
-            Arg::BADCOMMAND => res = apod().unwrap(),
+            Arg::BADCOMMAND => res = get_apod().unwrap(),
             _ => panic!()
         }
 
