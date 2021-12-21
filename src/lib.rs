@@ -6,7 +6,7 @@ pub use apod::*;
 pub use weather::*;
 pub use neo::*;
 
-/// Module for handling API keys for NASA's open APIs.
+/// Handling API keys for NASA's open APIs.
 /// Includes methods for storing, and retrieving keys for any user
 /// 
 /// # Configuring a key
@@ -26,6 +26,7 @@ pub mod keys {
 
     use users::{ get_user_by_uid, get_current_uid };
 
+    /// Stores a key.
     pub fn set_key(key: &str) -> std::io::Result<()> {
         let username = get_user();
 
@@ -39,7 +40,7 @@ pub mod keys {
         Ok(())
     }
 
-
+    /// Retrieves a key
     pub fn get_key() -> Result<String, Box<dyn Error>> {
         let user = get_user_by_uid(get_current_uid()).unwrap();
         let path_to_key = format!("/Users/{}/voyager/.api_key.txt", user.name().to_string_lossy());
@@ -49,6 +50,7 @@ pub mod keys {
         Ok(key)
     }
 
+    /// Retrieves current username - Useful for setting the path to store the keys.
     pub fn get_user() -> String {
         let user = get_user_by_uid(get_current_uid()).unwrap();
         let username = user.name().to_string_lossy();
@@ -57,7 +59,7 @@ pub mod keys {
 }
 
 
-/// Module for handling different request timings. Methods for formatting one day requests, one week, 
+/// For handling different request timings. Methods for formatting one day requests, one week, 
 /// two week, and one month requests into a String format.
 ///
 /// # Query in a one month range
@@ -116,10 +118,18 @@ pub mod timing {
     }
 }
 
+/// Displaying progress bar in the terminal as part of the CLI 
+/// 
+/// # Setup a progress bar
+/// ```
+/// let byte_length = response.as_bytes().len();
+/// bar::bar(byte_length);
+/// ```
 pub mod bar {
     extern crate pbr;
     use pbr::ProgressBar;
 
+    /// Takes a response length (in bytes) as its only argument
     pub fn bar(res: &String) -> () {
         let count = res.len();
         let mut pb = ProgressBar::new(count as u64);
@@ -134,10 +144,21 @@ pub mod bar {
     }
 }
 
+/// Contains methods for prettyfying JSON responses.
+/// 
+/// # Example
+/// 
+/// ```
+/// let res: String = ureq::get(&url).call()?.into_string()?;
+/// let neo = to_string_pretty(res).unwrap(); 
+/// ```
+/// This will output a prettyfied String (JSON format) response instead of a large unformatted JSON blob
+/// 
 pub mod to_pretty {
     use serde_json::{Value as JsonValue};
     use std::error::Error;
 
+    /// Converts a JSON blob into a pretty string, easily readible.
     pub fn to_string_pretty(res: String) -> Result<String, Box<dyn Error>> {
         let json: JsonValue = serde_json::from_str(&res).unwrap();
         let pretty: String = serde_json::to_string_pretty(&json).unwrap();
@@ -146,6 +167,18 @@ pub mod to_pretty {
     }
 }
 
+/// For interacting with NASA's Picture of the Day endpoint.
+/// 
+/// # Querying APOD endpoint
+/// 
+/// ```
+/// let apod = apod().unwrap();
+/// println!("{}", apod)
+/// ```
+/// This will return a response containing data on the Picture of the Day, as well as the url to the jpg file.
+/// the println! is not necessary, because each query method includes it's own print statement as part of the 
+/// progress bar function call. 
+/// 
 pub mod apod {
     use std::error::Error;
 
@@ -164,6 +197,22 @@ pub mod apod {
     }
 }
 
+/// Contains methods for interacting with Solar Flare and Magnetic Storm endpoints.
+/// 
+/// # Querying solar flare API
+/// 
+/// ```
+/// let sflare = sflare().unwrap();
+/// ```
+/// all API query functions will pipe out their response into the progress bar method
+/// which will in turn print the response after it's finished processing.
+/// 
+/// # Querying magnetic storm endpoints
+/// 
+/// ```
+/// let mag = magnetic().unwrap();
+/// ```
+/// 
 pub mod weather {
     use std::error::Error;
 
@@ -198,6 +247,15 @@ pub mod weather {
     }
 }
 
+/// For interacting with the Near Earth Objects API.
+/// 
+/// # Example
+/// ```
+/// let neo = neo().unwrap()
+/// ```
+/// Neo currently uses a one day query, as it's database is constantly being updated
+/// due to the nature of the data. Any query greater than a week is likely to take a long time to
+/// process.
 pub mod neo {
     use std::error::Error;
 
