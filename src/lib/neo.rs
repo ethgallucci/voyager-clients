@@ -1,7 +1,6 @@
 use std::error::Error;
 
-use super::timing;
-use super::keys;
+use super::{timing, keys, bar};
 use super::to_pretty::to_string_pretty;
 
 pub fn neo() -> Result<String, Box<dyn Error>> {
@@ -14,6 +13,7 @@ pub fn neo() -> Result<String, Box<dyn Error>> {
     
     let res: String = ureq::get(&url).call()?.into_string()?;
     let neo = to_string_pretty(res).unwrap();
+    bar::bar(&neo);
 
     Ok(neo)
 }

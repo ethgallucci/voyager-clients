@@ -14,3 +14,4 @@ pub mod exoplanet;
 pub mod to_pretty;
 pub mod keys;
 pub mod timing;
+pub mod bar;

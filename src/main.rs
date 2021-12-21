@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::env;
 
+
 mod lib;
 use lib::*;
 
@@ -35,8 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if command == Arg::BADCOMMAND {
             println!("Defaulting to APOD upon Bad Command\n\n")
         }
-
-        println!("{}", res);
+        
     }
 
     Ok(())

@@ -5,9 +5,7 @@ use std::io::prelude::*;
 use users::{ get_user_by_uid, get_current_uid };
 
 pub fn set_key(key: &str) -> std::io::Result<()> {
-    let user = get_user_by_uid(get_current_uid()).unwrap();
-    let username = user.name().to_string_lossy();
-    println!("Setting key for {}", username);
+    let username = get_user();
 
     let path_to_voyager = format!("/Users/{}/voyager", username);
     std::fs::create_dir(&path_to_voyager).unwrap();
@@ -15,6 +13,7 @@ pub fn set_key(key: &str) -> std::io::Result<()> {
     let path_to_key = format!("{}/.api_key.txt", &path_to_voyager);
     let mut file = File::create(path_to_key)?;
     file.write_all(&key.as_bytes())?;
+    println!("Set key for {}", username);
     Ok(())
 }
 
@@ -26,4 +25,10 @@ pub fn get_key() -> Result<String, Box<dyn Error>> {
         .expect("Couldn't read api key");
 
     Ok(key)
+}
+
+pub fn get_user() -> String {
+    let user = get_user_by_uid(get_current_uid()).unwrap();
+    let username = user.name().to_string_lossy();
+    username.to_string()
 }
