@@ -1,3 +1,13 @@
+//! # Sample Program with voyager
+//! 
+//! ```
+//! use voyager_client::*;
+//! 
+//! let magnetic_storms = weather::magnetic().unwrap();
+//! ```
+//! This will fetch a response from the magnetic storms endpoint, and convert it
+//! into a prettyfied String in JSON format
+
 pub use keys::*;
 pub use timing::*;
 pub use bar::*;
