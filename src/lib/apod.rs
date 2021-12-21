@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use super::keys;
+use super::{keys, bar};
 use super::to_pretty::to_string_pretty;
 
 pub fn apod() -> Result<String, Box<dyn Error>> {
@@ -8,7 +8,8 @@ pub fn apod() -> Result<String, Box<dyn Error>> {
     let url: String = format!("https://api.nasa.gov/planetary/apod?api_key={}", key);
 
     let res: String = ureq::get(&url).call()?.into_string()?;
-    let apod = to_string_pretty(res).unwrap();
+    let apod = to_string_pretty(res).unwrap(); 
+    bar::bar(&apod);
 
     Ok(apod)
 }
