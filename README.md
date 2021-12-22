@@ -8,7 +8,21 @@ Voyager is a swiss army knife CLI for the NASA Open APIs. It is designed to bund
 
 Future versions of voyager will strive to incorporate more endpoints, until all of them are integrated.
 
-## Installation
+## Crate Usage
+### Sample progam with voyager_client
+Let's see how we can use the voyager_client in our Rust projects.
+```rust
+    use voyager_client::*;
+
+    fn main() {
+        keys::set_key("[YOUR_API_KEY]");
+        let near_earth_objects = neo().unwrap();
+        let magnetic_storms = weather::magnetic().unwrap();
+    }
+```
+Notice we did not use the println! macro to output the responses to our console. Each API query function includes a println! statement as well as a progress bar in the terminal. This can be changed in the future very easily.
+
+## CLI Installation
 
 ### Build binaries
 To build the voyager binaries, run:
@@ -34,12 +48,7 @@ Then run the command above to link your key with voyager. It's recommended to sa
 ```
 Run this command to ensure voyager has saved your key properly.
 
-## Usage
-```sh
-    voyager apod
-```
-This command will access NASA's 'A Picture a Day' API endpoint and retrieve data about today's picture from NASA!
-The output contains the url to the picture, future versions of voyager will support flags that will allow the image to be downloaded to the current directory.
+## CLI Usage
 
 ### Available commands
 ```sh
@@ -50,12 +59,13 @@ This command will retrive data from NASA's magnetic storms API.
 ```sh
     voyager flare
 ```
-Retrieves solar flare data from the entire year.
-
+Retrieves solar flare data.
 ```sh
-    voyager exoplanet
+    voyager apod
 ```
-Grabs all data from NASA's exoplanet archive database.
+This command will access NASA's 'A Picture a Day' API endpoint and retrieve data about today's picture from NASA!
+The output contains the url to the picture, future versions of voyager will support flags that will allow the image to be downloaded to the current directory.
+
 
 
 [contributors-shield]: https://img.shields.io/github/contributors/ethgallucci/voyager.svg?style=for-the-badge
