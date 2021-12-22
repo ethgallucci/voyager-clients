@@ -1,23 +1,10 @@
-//! ## Key Setup 
 //! 
-//! First, build the binaries by running 
-//! ```
-//! cargo build --release
-//! ```
-//! Then run 
-//! ```
-//! bash install.sh 
-//! ```
-//! to copy the binaries to your path.
-//! If you don't have an API key yet, visit https://api.nasa.gov/index.html
-//! Finally, run 
-//! ```
-//! voyager set key [YOUR_API_KEY]
-//! ``` 
-//! Now you're key is set up and ready to go!
 //! # Sample Program with voyager
 //! ```
 //! use voyager_client::*;
+//! 
+//! // Run this function only once
+//! keys::set_key("[YOUR_API_KEY]");
 //! 
 //! let magnetic_storms = weather::magnetic().unwrap();
 //! ```
