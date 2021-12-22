@@ -4,7 +4,7 @@
 
 
 ## Overview
-Voyager is a swiss army knife CLI for the NASA Open APIs. It is designed to bundle all the NASA APIs into a single CLI tool. Voyager can be used to gather data from a variety of NASA's endpoints, including: Picture of The Day, Solar Flares, Magnetic Storms, and the Exoplanet Archive. 
+Voyager is a swiss army knife library for the NASA Open APIs. It is designed to bundle all the NASA APIs into a single package. Voyager can be used to gather data from a variety of NASA's endpoints, including: Picture of The Day, Solar Flares, Magnetic Storms etc.
 
 Future versions of voyager will strive to incorporate more endpoints, until all of them are integrated.
 
