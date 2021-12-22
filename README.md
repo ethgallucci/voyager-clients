@@ -20,6 +20,8 @@ Let's see how we can use the voyager_client in our Rust projects.
         let magnetic_storms = weather::magnetic().unwrap();
     }
 ```
+After running the set_key function once, voyager will create a text file at /Users/you/voyager/.api_key.txt that will store your api key. As such, you will only need to run the function once and it will generate errors if you try to run it again. To avoid this, you can read the section below about installing the CLI and configuring the api key through the command line.
+
 Notice we did not use the println! macro to output the responses to our console. Each API query function includes a println! statement as well as a progress bar in the terminal. This can be changed in the future very easily.
 
 ## CLI Installation
@@ -41,8 +43,7 @@ If you have one already setup through NASA, you can simply run the following com
 ```sh
     voyager set key [YOUR_API_KEY]
 ```
-If you don't have an API key yet, you can visit [NASA's Open API Documentation](https://api.nasa.gov/index.html) to set one up.
-Then run the command above to link your key with voyager. It's recommended to save the key in a file somewhere, just in case you need it later.
+If you don't have an API key yet, you can visit [NASA's Open API Documentation](https://api.nasa.gov/index.html) to set one up. Then run the command above to link your key with voyager. The key will be written to /Users/you/voyager/.api_key.txt.
 ```sh
     voyager get key
 ```
