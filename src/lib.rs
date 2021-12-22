@@ -3,6 +3,7 @@
 //! ```
 //! use voyager_client::*;
 //! 
+//! keys::set_key("[YOUR_API_KEY]");
 //! let magnetic_storms = weather::magnetic().unwrap();
 //! ```
 //! This will fetch a response from the magnetic storms endpoint, and convert it
