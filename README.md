@@ -1,6 +1,4 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![version-shield]][crate-link] [![downloads-shield]][crate-link] [![docs-build-shield]][docs-url] ![commit-shield] [![contributors-shield]][contributors-url] [![license-shield]][license-url] [![issues-shield]][issues-url]
 
 
 ## Overview
@@ -67,15 +65,23 @@ Retrieves solar flare data.
 This command will access NASA's 'A Picture a Day' API endpoint and retrieve data about today's picture from NASA!
 The output contains the url to the picture, future versions of voyager will support flags that will allow the image to be downloaded to the current directory.
 
+[version-shield]: https://img.shields.io/crates/v/voyager_client?style=plastic
 
-
-[contributors-shield]: https://img.shields.io/github/contributors/ethgallucci/voyager.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/ethgallucci/voyager?style=plastic
 
 [contributors-url]: https://github.com/ethgallucci/voyager/graphs/contributors
 
-[issues-shield]: https://img.shields.io/github/issues/ethgallucci/voyager.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/ethgallucci/voyager?style=plastic
 [issues-url]: https://github.com/ethgallucci/voyager/issues
 
 
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/crates/l/voyager_client?style=plastic
 [license-url]: https://github.com/ethgallucci/voyager/blob/main/LICENSE.txt
+
+[commit-shield]: https://img.shields.io/github/commit-activity/w/ethgallucci/voyager?style=plastic
+
+[downloads-shield]: https://img.shields.io/crates/d/voyager_client?style=plastic
+[crate-link]: https://crates.io/crates/voyager_client
+
+[docs-build-shield]: https://img.shields.io/docsrs/voyager_client/latest?style=plastic
+[docs-url]: https://docs.rs/voyager_client
