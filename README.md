@@ -1,4 +1,4 @@
-[![version-shield]][crate-link] [![downloads-shield]][crate-link] [![docs-build-shield]][docs-url] ![commit-shield] [![contributors-shield]][contributors-url] [![license-shield]][license-url] [![issues-shield]][issues-url]
+[![version-shield]][crate-link] [![downloads-shield]][crate-link] [![docs-build-shield]][docs-url] [![commit-shield]][commit-url] [![contributors-shield]][contributors-url] [![license-shield]][license-url] [![issues-shield]][issues-url]
 
 
 ## Overview
@@ -79,6 +79,7 @@ The output contains the url to the picture, future versions of voyager will supp
 [license-url]: https://github.com/ethgallucci/voyager/blob/main/LICENSE.txt
 
 [commit-shield]: https://img.shields.io/github/commit-activity/w/ethgallucci/voyager?style=plastic
+[commit-url]: https://github.com/ethgallucci/voyager/commits/main
 
 [downloads-shield]: https://img.shields.io/crates/d/voyager_client?style=plastic
 [crate-link]: https://crates.io/crates/voyager_client
