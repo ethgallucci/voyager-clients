@@ -11,6 +11,8 @@
 //! This will fetch a response from the magnetic storms endpoint, and convert it
 //! into a prettyfied String in JSON format
 
+#![allow(dead_code)]
+
 pub use keys::*;
 pub use timing::*;
 pub use bar::*;

@@ -23,19 +23,18 @@ fn main() -> Result<(), Box<dyn Error>> {
         Ok(())
     }
 
-    // Command is not a config command - match on command and output the response
+    // Command is not a config command - match on command and output the _response
     else {
-        let res: String;
+        let _res: String;
         match command {
-            Arg::SFLARE => res = weather::sflare().unwrap(),
-            Arg::MAG => res = weather::magnetic().unwrap(),
-            Arg::APOD => res = get_apod().unwrap(),
-            Arg::NEO => res = neo().unwrap(),
+            Arg::SFLARE => _res = weather::sflare().unwrap(),
+            Arg::MAG => _res = weather::magnetic().unwrap(),
+            Arg::APOD => _res = get_apod().unwrap(),
+            Arg::NEO => _res = neo().unwrap(),
             // Default to apod if command can't be parsed
-            Arg::BADCOMMAND => res = get_apod().unwrap(),
+            Arg::BADCOMMAND => _res = get_apod().unwrap(),
             _ => panic!()
-        }
-
+        };
         if command == Arg::BADCOMMAND {
             println!("\nDefaulted to APOD upon Bad Command\n\n")
         }
