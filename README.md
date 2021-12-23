@@ -76,7 +76,7 @@ The output contains the url to the picture, future versions of voyager will supp
 
 
 [license-shield]: https://img.shields.io/crates/l/voyager_client?style=plastic
-[license-url]: https://github.com/ethgallucci/voyager/blob/main/LICENSE.txt
+[license-url]: https://github.com/ethgallucci/voyager/blob/main/LICENSE
 
 [commit-shield]: https://img.shields.io/github/commit-activity/w/ethgallucci/voyager?style=plastic
 [commit-url]: https://github.com/ethgallucci/voyager/commits/main
