@@ -83,5 +83,5 @@ The output contains the url to the picture, future versions of voyager will supp
 [downloads-shield]: https://img.shields.io/crates/d/voyager_client?style=plastic
 [crate-link]: https://crates.io/crates/voyager_client
 
-[docs-build-shield]: https://img.shields.io/docsrs/voyager_client/latest?label=build
+[docs-build-shield]: https://img.shields.io/docsrs/voyager_client/latest?label=build&style=plastic
 [docs-url]: https://docs.rs/voyager_client
