@@ -206,7 +206,6 @@ pub mod apod {
 
         let res: String = ureq::get(&url).call()?.into_string()?;
         let apod = to_string_pretty(res).unwrap(); 
-        bar::bar(&apod);
 
         Ok(apod)
     }
@@ -244,7 +243,6 @@ pub mod weather {
         
         let res: String = ureq::get(&url).call()?.into_string()?;
         let sflare = to_string_pretty(res).unwrap();
-        bar::bar(&sflare);
         
         Ok(sflare)
     }
@@ -256,7 +254,6 @@ pub mod weather {
         
         let res: String = ureq::get(&url).call()?.into_string()?;
         let magnetic = to_string_pretty(res).unwrap();
-        bar::bar(&magnetic);
 
         Ok(magnetic)
     }
@@ -287,7 +284,6 @@ pub mod neo {
         
         let res: String = ureq::get(&url).call()?.into_string()?;
         let neo = to_string_pretty(res).unwrap();
-        bar::bar(&neo);
 
         Ok(neo)
     }
