@@ -240,17 +240,6 @@ pub mod APOD {
             }
         }
     }
-
-    /*pub fn get_apod() -> Result<String, Box<dyn Error>> {
-        let key: String = keys::get_key()?;
-        let url: String = format!("https://api.nasa.gov/planetary/apod?api_key={}", key);
-
-        let res: String = ureq::get(&url).call()?.into_string()?;
-        let apod = to_string_pretty(res).unwrap();
-
-        Ok(apod)
-    }
-    */
 }
 
 /// Contains methods for interacting with Solar Flare and Magnetic Storm endpoints.
@@ -274,6 +263,34 @@ pub mod weather {
 
     use super::to_pretty::to_string_pretty;
     use super::{bar, keys, timing};
+
+    pub struct solar {
+        base_url: String,
+        start: String,
+        end: String,
+    }
+
+    impl solar {
+        pub fn new(start: String, end: String) -> Self {
+            solar{
+                base_url: String::from("https://api.nasa.gov/DONKI/FLR?"),
+                start,
+                end,
+            }
+        }
+
+        pub fn start(&mut self, start: String) {
+
+        }
+
+        pub fn end(&mut self, end: String) {
+
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            
+        }
+    }
 
     pub fn sflare() -> Result<String, Box<dyn Error>> {
         let now = timing::today();
