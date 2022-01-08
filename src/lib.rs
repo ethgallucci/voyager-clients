@@ -1,19 +1,26 @@
 //!
 //! # Sample Program with voyager
 //! ```
-//! use voyager_client::*;
+//! use voyager_client::{donki_client, timing};
 //!
-//! // Run this function only once
+//! // Run this function only once - Or, cargo install this crate to install the CLI binaries, then run voyager set key
 //! keys::set_key("[YOUR_API_KEY]");
 //!
-//! let magnetic_storms = weather::magnetic().unwrap();
+//! // Setup timing parameters
+//! let start = String::from("2018-01-01");
+//! let end = timing::today();
+//! 
+//! // Instantiate a Base Client
+//! let base_donki_client = Solar::new(start, end);
+//! 
+//! // Query the API
+//! let res = base_donki_client.query().unwrap();
 //! ```
 //! This will fetch a response from the magnetic storms endpoint, and convert it
 //! into a prettyfied String in JSON format
 
 #![allow(dead_code)]
 
-pub use bar::*;
 pub use keys::*;
 pub use neo_client::*;
 pub use timing::*;
@@ -138,32 +145,6 @@ pub mod timing {
             let start = format!("{}-{}-{}", local.year(), local.month() - 1, local.day());
             start
         }
-    }
-}
-
-/// Displaying progress bar in the terminal as part of the CLI
-///
-/// # Setup a progress bar
-/// ```
-/// let byte_length = response.as_bytes().len();
-/// bar::bar(byte_length);
-/// ```
-pub mod bar {
-    extern crate pbr;
-    use pbr::ProgressBar;
-
-    /// Takes a response length (in bytes) as its only argument
-    pub fn bar(res: &String) -> () {
-        let count = res.len();
-        let mut pb = ProgressBar::new(count as u64);
-        pb.format("╢▌▌-╟");
-        pb.show_percent = true;
-        pb.show_time_left = true;
-        for _ in 0..count {
-            pb.inc();
-        }
-        pb.finish_print("done!");
-        println!("{}", res);
     }
 }
 
