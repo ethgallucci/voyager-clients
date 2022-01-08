@@ -27,6 +27,7 @@ pub use timing::*;
 pub use to_pretty::*;
 pub use donki_client::*;
 pub use apod_client::*;
+pub use insight::*;
 
 /// Handling API keys for NASA's open APIs.
 /// Includes methods for storing, and retrieving keys for any user
@@ -412,6 +413,37 @@ pub mod neo_client {
             let neo = to_string_pretty(res).unwrap();
 
             Ok(neo)
+        }
+    }
+}
+
+pub mod insight {
+    use std::error::Error;
+
+    use super::to_pretty::to_string_pretty;
+    use super::keys;
+
+    pub struct InsightWeather {
+        base_url: String,
+    }
+
+    impl InsightWeather {
+        pub fn new() -> Self {
+            InsightWeather {
+                base_url: String::from("https://api.nasa.gov/insight_weather/?api_key=")
+            }
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            let key = keys::get_key()?;
+
+            let url = format!("{}{}&feedtype=json&ver=1.0", self.base_url, key);
+            println!("Starting Inisght Weather query: {}", url);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let mrover = to_string_pretty(res).unwrap();
+
+            Ok(mrover)
         }
     }
 }

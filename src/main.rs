@@ -41,10 +41,8 @@ mod test {
         // Setup timing parameters
         let start = String::from("2018-01-01");
         let end = timing::today();
-
         // Instantiate a Base Client
         let base_donki_client = donki_client::Solar::new(start, end);
-
         // Query the API
         base_donki_client.query().unwrap();
     }
@@ -91,5 +89,12 @@ mod test {
         let base = Neo::new(start, end);
         // Try query
         base.query().unwrap();
+    }
+
+    #[test]
+    fn try_insight() {
+        let base = InsightWeather::new();
+        let res = base.query().unwrap();
+        println!("{}", res);
     }
 }
