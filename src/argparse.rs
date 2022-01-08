@@ -2,13 +2,10 @@ use std::env;
 
 #[derive(Debug, PartialEq)]
 pub enum Arg {
-    APOD,
-    NEO,
-    MAG,
-    SFLARE,
     BADCOMMAND,
     SETKEY,
     GETKEY,
+    HELP
 }
 
 pub fn argparse() -> Result<Arg, ()> {
@@ -16,10 +13,6 @@ pub fn argparse() -> Result<Arg, ()> {
     assert!(args.len() > 1, "Expected at least one argument");
 
     match &args[1] as &str {
-        "apod" => Ok(Arg::APOD),
-        "neo" => Ok(Arg::NEO),
-        "magnetic" => Ok(Arg::MAG),
-        "flare" => Ok(Arg::SFLARE),
         "set" => match &args[2] as &str {
             "key" => Ok(Arg::SETKEY),
             _ => Ok(Arg::BADCOMMAND)
@@ -28,6 +21,7 @@ pub fn argparse() -> Result<Arg, ()> {
             "key" => Ok(Arg::GETKEY),
             _ => Ok(Arg::BADCOMMAND)
         },
+        "help" => Ok(Arg::HELP),
         _ => Ok(Arg::BADCOMMAND)
     }
 }

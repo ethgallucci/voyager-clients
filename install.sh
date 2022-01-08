@@ -1,3 +1,3 @@
 #! /bin/bash
 
-cp target/release/voyager /usr/local/bin
+cp target/release/voyager_client /usr/local/bin/voyager

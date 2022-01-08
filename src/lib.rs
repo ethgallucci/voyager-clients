@@ -1,12 +1,20 @@
-//! 
+//!
 //! # Sample Program with voyager
 //! ```
-//! use voyager_client::*;
-//! 
-//! // Run this function only once
+//! use voyager_client::{donki_client, timing};
+//!
+//! // Run this function only once - Or, cargo install this crate to install the CLI binaries, then run voyager set key
 //! keys::set_key("[YOUR_API_KEY]");
+//!
+//! // Setup timing parameters
+//! let start = String::from("2018-01-01");
+//! let end = timing::today();
 //! 
-//! let magnetic_storms = weather::magnetic().unwrap();
+//! // Instantiate a Base Client
+//! let base_donki_client = Solar::new(start, end);
+//! 
+//! // Query the API
+//! let res = base_donki_client.query().unwrap();
 //! ```
 //! This will fetch a response from the magnetic storms endpoint, and convert it
 //! into a prettyfied String in JSON format
@@ -14,32 +22,31 @@
 #![allow(dead_code)]
 
 pub use keys::*;
+pub use neo_client::*;
 pub use timing::*;
-pub use bar::*;
 pub use to_pretty::*;
-pub use apod::*;
-pub use weather::*;
-pub use neo::*;
+pub use donki_client::*;
+pub use apod_client::*;
 
 /// Handling API keys for NASA's open APIs.
 /// Includes methods for storing, and retrieving keys for any user
-/// 
+///
 /// # Configuring a key
 /// ```
 /// set_key("[YOUR_API_KEY]")?;
 /// ```
-/// 
+///
 /// # Retrieving a key
 /// ```
 /// let key = get_key()?;
 /// ```
 pub mod keys {
-    use std::fs;
     use std::error::Error;
+    use std::fs;
     use std::fs::File;
     use std::io::prelude::*;
 
-    use users::{ get_user_by_uid, get_current_uid };
+    use users::{get_current_uid, get_user_by_uid};
 
     /// Stores a key.
     pub fn set_key(key: &str) -> std::io::Result<()> {
@@ -58,9 +65,11 @@ pub mod keys {
     /// Retrieves a key
     pub fn get_key() -> Result<String, Box<dyn Error>> {
         let user = get_user_by_uid(get_current_uid()).unwrap();
-        let path_to_key = format!("/Users/{}/voyager/.api_key.txt", user.name().to_string_lossy());
-        let key = fs::read_to_string(&path_to_key)
-            .expect("Couldn't read api key");
+        let path_to_key = format!(
+            "/Users/{}/voyager/.api_key.txt",
+            user.name().to_string_lossy()
+        );
+        let key = fs::read_to_string(&path_to_key).expect("Couldn't read api key");
 
         Ok(key)
     }
@@ -73,8 +82,7 @@ pub mod keys {
     }
 }
 
-
-/// For handling different request timings. Methods for formatting one day requests, one week, 
+/// For handling different request timings. Methods for formatting one day requests, one week,
 /// two week, and one month requests into a String format.
 ///
 /// # Query in a one month range
@@ -94,7 +102,7 @@ pub mod timing {
     /// # Example
     /// ```
     /// let today = timing::today();
-    /// 
+    ///
     /// assert_eq!("2021-12-21", today);
     /// ```
     pub fn today() -> String {
@@ -128,49 +136,30 @@ pub mod timing {
     /// Returns the date exactly one month ago from today
     pub fn one_month() -> String {
         let local: DateTime<Local> = Local::now();
-        let start = format!("{}-{}-{}", local.year(), local.month() - 1, local.day());
-        start
-    }
-}
-
-/// Displaying progress bar in the terminal as part of the CLI 
-/// 
-/// # Setup a progress bar
-/// ```
-/// let byte_length = response.as_bytes().len();
-/// bar::bar(byte_length);
-/// ```
-pub mod bar {
-    extern crate pbr;
-    use pbr::ProgressBar;
-
-    /// Takes a response length (in bytes) as its only argument
-    pub fn bar(res: &String) -> () {
-        let count = res.len();
-        let mut pb = ProgressBar::new(count as u64);
-        pb.format("╢▌▌-╟");
-        pb.show_percent = true;
-        pb.show_time_left = true;
-        for _ in 0..count {
-            pb.inc();
+        if local.month() == 1 {
+            let last_month = 12;
+            let start = format!("{}-{}-{}", local.year() - 1, last_month, local.day());
+            start
         }
-        pb.finish_print("done!");
-        println!("{}", res);
+        else {
+            let start = format!("{}-{}-{}", local.year(), local.month() - 1, local.day());
+            start
+        }
     }
 }
 
 /// Contains methods for prettyfying JSON responses.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```
 /// let res: String = ureq::get(&url).call()?.into_string()?;
-/// let neo = to_string_pretty(res).unwrap(); 
+/// let neo = to_string_pretty(res).unwrap();
 /// ```
 /// This will output a prettyfied String (JSON format) response instead of a large unformatted JSON blob
-/// 
+///
 pub mod to_pretty {
-    use serde_json::{Value as JsonValue};
+    use serde_json::Value as JsonValue;
     use std::error::Error;
 
     /// Converts a JSON blob into a pretty string, easily readible.
@@ -183,108 +172,246 @@ pub mod to_pretty {
 }
 
 /// For interacting with NASA's Picture of the Day endpoint.
-/// 
+///
 /// # Querying APOD endpoint
-/// 
+///
 /// ```
-/// let apod = apod().unwrap();
-/// println!("{}", apod)
+/// // Instantiate the base client
+/// let mut base = apod::new();
+/// // Set the date for query
+/// base.set_date(String::from("2022-01-07"));
+/// // Query the endpoint
+/// let res = base.query().unwrap();
 /// ```
 /// This will return a response containing data on the Picture of the Day, as well as the url to the jpg file.
-/// the println! is not necessary, because each query method includes it's own print statement as part of the 
-/// progress bar function call. 
 /// 
-pub mod apod {
+pub mod apod_client {
     use std::error::Error;
 
-    use super::{keys, bar};
+    use super::keys;
     use super::to_pretty::to_string_pretty;
 
-    pub fn get_apod() -> Result<String, Box<dyn Error>> {
-        let key: String = keys::get_key()?;
-        let url: String = format!("https://api.nasa.gov/planetary/apod?api_key={}", key);
+    pub struct Apod {
+        base_url: String,
+        date: Option<String>,
+    }
 
-        let res: String = ureq::get(&url).call()?.into_string()?;
-        let apod = to_string_pretty(res).unwrap(); 
+    impl Apod {
+        pub fn new() -> Self {
+            Apod {
+                base_url: String::from("https://api.nasa.gov/planetary/apod?"),
+                date: None,
+            }
+        }
 
-        Ok(apod)
+        pub fn set_date(&mut self, date: String) {
+            self.date = Some(date);
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            let key: String = keys::get_key()?;
+
+            if self.date.is_none() {
+                let url = format!("{}api_key={}", self.base_url, key);
+
+                let res: String = ureq::get(&url).call()?.into_string()?;
+                let apod = to_string_pretty(res).unwrap();
+
+                Ok(apod)
+            }
+            else {
+                let date = self.date.as_ref().unwrap();
+                let url = format!("{}date={}&api_key={}", self.base_url, date, key);
+
+                let res: String = ureq::get(&url).call()?.into_string()?;
+                let apod = to_string_pretty(res).unwrap();
+
+                Ok(apod)
+            }
+        }
     }
 }
 
 /// Contains methods for interacting with Solar Flare and Magnetic Storm endpoints.
-/// 
+///
 /// # Querying solar flare API
-/// 
+///
 /// ```
-/// let sflare = sflare().unwrap();
+/// // Setup Timing
+/// let start = timing::one_month();
+/// let end = timing::today();
+/// 
+/// // Instantiate Base Client
+/// let mut base = Solar::new(start, end);
+/// 
+/// // (Optional) Update Timings
+/// base.set_start(String::from("2022-01-02"));
+/// 
+/// // Query Endpoint
+/// let res = base.query().unwrap();
+/// 
 /// ```
 /// all API query functions will pipe out their response into the progress bar method
 /// which will in turn print the response after it's finished processing.
-/// 
+///
 /// # Querying magnetic storm endpoints
+///
+/// ```
+/// // Setup Timing
+/// --snip--
+/// 
+/// // Instantiate Base Client
+///  let mut base = Magnetic::new(start, end);
+/// 
+/// // Query Endpoint
+/// let res = base.query().unwrap();
 /// 
 /// ```
-/// let mag = magnetic().unwrap();
-/// ```
-/// 
-pub mod weather {
+///
+pub mod donki_client {
     use std::error::Error;
 
-    use super::{timing, keys, bar};
     use super::to_pretty::to_string_pretty;
+    use super::keys;
 
-    pub fn sflare() -> Result<String, Box<dyn Error>> {
-        let now = timing::today();
-        let start = timing::two_weeks();
-        println!("Starting query from {} to {}", start, now);
-        
-        let key: String = keys::get_key().unwrap();
-        let url: String = format!("https://api.nasa.gov/DONKI/FLR?startDate={}&endDate={}&api_key={}", start, now, key);
-        
-        let res: String = ureq::get(&url).call()?.into_string()?;
-        let sflare = to_string_pretty(res).unwrap();
-        
-        Ok(sflare)
+    pub struct Solar {
+        base_url: String,
+        pub start: String,
+        pub end: String,
     }
 
-    pub fn magnetic() -> Result<String, Box<dyn Error>> {
-        
-        let key: String = keys::get_key().unwrap();
-        let url: String = format!("https://api.nasa.gov/DONKI/GST?startDate=2021-01-01&endDate=2021-12-10&api_key={}", key);
-        
-        let res: String = ureq::get(&url).call()?.into_string()?;
-        let magnetic = to_string_pretty(res).unwrap();
+    impl Solar {
+        pub fn new(start: String, end: String) -> Self {
+            Solar{
+                base_url: String::from("https://api.nasa.gov/DONKI/FLR?startDate="),
+                start,
+                end,
+            }
+        }
 
-        Ok(magnetic)
+        pub fn set_start(&mut self, start: String) {
+            self.start = start;
+        }
+
+        pub fn set_end(&mut self, end: String) {
+            self.end = end;
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            let key: String = keys::get_key()?;
+
+            let url: String = format!(
+                "{}{}&endDate={}&api_key={}",
+                self.base_url, self.start, self.end, key
+            );
+            println!("Starting solar query from {}, to {}.", self.start, self.end);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let solar = to_string_pretty(res).unwrap();
+
+            Ok(solar)
+        }
+    }
+
+    pub struct Magnetic {
+        base_url: String,
+        start: String,
+        end: String,
+    }
+
+    impl Magnetic {
+        pub fn new(start: String, end: String) -> Self {
+            Magnetic {
+                base_url: String::from("https://api.nasa.gov/DONKI/GST?startDate="),
+                start,
+                end,
+            }
+        }
+
+        pub fn set_start(&mut self, start: String) {
+            self.start = start;
+        }
+
+        pub fn set_end(&mut self, end: String) {
+            self.end = end;
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            let key: String = keys::get_key()?;
+
+            let url: String = format!(
+                "{}{}&endDate={}&api_key={}",
+                self.base_url, self.start, self.end, key
+            );
+            println!("Starting magnetic query from {}, to {}.", self.start, self.end);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let mag = to_string_pretty(res).unwrap();
+
+            Ok(mag)
+        }
     }
 }
 
 /// For interacting with the Near Earth Objects API.
-/// 
+///
 /// # Example
 /// ```
-/// let neo = neo().unwrap()
+/// // Setup Timings
+/// let start = String::from("2022-01-01");
+/// let end = String::from("2022-01-07");
+/// 
+/// // Instantiate Base Client
+/// let base = Neo::new(start, end);
+/// 
+/// // Query Endpoint
+/// let res = base.query().unwrap();
 /// ```
-/// Neo currently uses a one day query, as it's database is constantly being updated
-/// due to the nature of the data. Any query greater than a week is likely to take a long time to
+/// Neo currently reccomends a one day query, as it's database is constantly being updated
+/// due to the nature of the data. Any query greater than a month is likely to take a long time to
 /// process.
-pub mod neo {
+pub mod neo_client {
     use std::error::Error;
 
-    use super::{timing, keys, bar};
     use super::to_pretty::to_string_pretty;
+    use super::keys;
 
-    pub fn neo() -> Result<String, Box<dyn Error>> {
-        let start = timing::one_day();
-        let now = timing::today();
-        println!("Starting query from {} to {}", start, now);
-        
-        let key = keys::get_key()?;
-        let url = format!("https://api.nasa.gov/neo/rest/v1/feed?start_date={}&end_date={}&api_key={}", start, now, key);
-        
-        let res: String = ureq::get(&url).call()?.into_string()?;
-        let neo = to_string_pretty(res).unwrap();
+    pub struct Neo {
+        base_url: String,
+        start: String,
+        end: String,
+    }
 
-        Ok(neo)
+    impl Neo {
+        pub fn new(start: String, end: String) -> Self {
+            Neo {
+                base_url: String::from("https://api.nasa.gov/neo/rest/v1/feed?start_date="),
+                start,
+                end
+            }
+        }
+
+        pub fn set_start(&mut self, start: String) {
+            self.start = start;
+        }
+
+        pub fn set_end(&mut self, end: String) {
+            self.end = end;
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            let key: String = keys::get_key()?;
+
+            let url: String = format!(
+                "{}{}&endDate={}&api_key={}",
+                self.base_url, self.start, self.end, key
+            );
+            println!("Starting Neo query from {}, to {}.", self.start, self.end);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let neo = to_string_pretty(res).unwrap();
+
+            Ok(neo)
+        }
     }
 }
