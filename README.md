@@ -16,7 +16,7 @@
 
 
 ## Overview
-Voyager is a swiss army knife library for the NASA Open APIs. It is designed to bundle all the NASA APIs into a single package. Voyager can be used to gather data from a variety of NASA's endpoints, including: Picture of The Day, Solar Flares, Magnetic Storms etc.
+Voyager is a swiss army knife library for the NASA Open APIs. It is designed to bundle all the NASA APIs into a single package. Voyager can be used to gather data from a variety of NASA's endpoints, including: Picture of The Day, Solar Flares, Magnetic Storms, Near Earth Objects etc.
 
 Future versions of voyager will strive to incorporate more endpoints, until all of them are integrated.
 
@@ -24,17 +24,22 @@ Future versions of voyager will strive to incorporate more endpoints, until all 
 ### Sample progam with voyager_client
 Let's see how we can use the voyager_client in our Rust projects.
 ```rust
-    use voyager_client::*;
+    use voyager_client::{donki_client, timing};
 
     fn main() {
-        keys::set_key("[YOUR_API_KEY]");
-        let near_earth_objects = neo().unwrap();
-        let magnetic_storms = weather::magnetic().unwrap();
+        // Setup Timing Parameters for Query
+        let start = String::from("2019-01-01");
+        let end = String::from("2022-01-01");
+
+        // Instantiate Base Client
+        let base = donki_client::Solar::new(start, end);
+
+        // Query the API
+        let res = base.query().unwrap();
     }
 ```
-After running the set_key function once, voyager will create a text file at /Users/you/voyager/.api_key.txt that will store your api key. As such, you will only need to run the function once and it will generate errors if you try to run it again. To avoid this, you can read the section below about installing the CLI and configuring the api key through the command line.
-
-Notice we did not use the println! macro to output the responses to our console. Each API query function includes a println! statement as well as a progress bar in the terminal. This can be changed in the future very easily.
+Notice we must supply a start and end date to our function in which we instantiate our base client. This is because NASA's endpoints are constantly being updated with new data. If our queries have too long of a time range, it's likely to timeout before processing our request. This way, it's more of 
+a concious decision in how wide of a range you want to query for. 
 
 ## CLI Installation
 
@@ -61,23 +66,6 @@ If you don't have an API key yet, you can visit [NASA's Open API Documentation](
 ```
 Run this command to ensure voyager has saved your key properly.
 
-## CLI Usage
-
-### Available commands
-```sh
-    voyager magnetic
-```
-This command will retrive data from NASA's magnetic storms API. 
-
-```sh
-    voyager flare
-```
-Retrieves solar flare data.
-```sh
-    voyager apod
-```
-This command will access NASA's 'A Picture a Day' API endpoint and retrieve data about today's picture from NASA!
-The output contains the url to the picture, future versions of voyager will support flags that will allow the image to be downloaded to the current directory.
 
 [version-shield]: https://img.shields.io/crates/v/voyager_client?style=plastic
 
