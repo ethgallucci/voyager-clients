@@ -256,7 +256,19 @@ pub mod apod_client {
 /// # Querying solar flare API
 ///
 /// ```
-/// let sflare = sflare().unwrap();
+/// // Setup Timing
+/// let start = timing::one_month();
+/// let end = timing::today();
+/// 
+/// // Instantiate Base Client
+/// let mut base = Solar::new(start, end);
+/// 
+/// // (Optional) Update Timings
+/// base.set_start(String::from("2022-01-02"));
+/// 
+/// // Query Endpoint
+/// let res = base.query().unwrap();
+/// 
 /// ```
 /// all API query functions will pipe out their response into the progress bar method
 /// which will in turn print the response after it's finished processing.
@@ -264,14 +276,22 @@ pub mod apod_client {
 /// # Querying magnetic storm endpoints
 ///
 /// ```
-/// let mag = magnetic().unwrap();
+/// // Setup Timing
+/// --snip--
+/// 
+/// // Instantiate Base Client
+///  let mut base = Magnetic::new(start, end);
+/// 
+/// // Query Endpoint
+/// let res = base.query().unwrap();
+/// 
 /// ```
 ///
 pub mod donki_client {
     use std::error::Error;
 
     use super::to_pretty::to_string_pretty;
-    use super::{keys, timing};
+    use super::keys;
 
     pub struct Solar {
         base_url: String,
@@ -356,16 +376,24 @@ pub mod donki_client {
 ///
 /// # Example
 /// ```
-/// let neo = neo().unwrap()
+/// // Setup Timings
+/// let start = String::from("2022-01-01");
+/// let end = String::from("2022-01-07");
+/// 
+/// // Instantiate Base Client
+/// let base = Neo::new(start, end);
+/// 
+/// // Query Endpoint
+/// let res = base.query().unwrap();
 /// ```
-/// Neo currently uses a one day query, as it's database is constantly being updated
-/// due to the nature of the data. Any query greater than a week is likely to take a long time to
+/// Neo currently reccomends a one day query, as it's database is constantly being updated
+/// due to the nature of the data. Any query greater than a month is likely to take a long time to
 /// process.
 pub mod neo_client {
     use std::error::Error;
 
     use super::to_pretty::to_string_pretty;
-    use super::{keys, timing};
+    use super::keys;
 
     pub struct Neo {
         base_url: String,
@@ -380,6 +408,14 @@ pub mod neo_client {
                 start,
                 end
             }
+        }
+
+        pub fn set_start(&mut self, start: String) {
+            self.start = start;
+        }
+
+        pub fn set_end(&mut self, end: String) {
+            self.end = end;
         }
 
         pub fn query(&self) -> Result<String, Box<dyn Error>> {

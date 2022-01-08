@@ -1,8 +1,29 @@
+use std::env;
 mod lib;
 use lib::*;
 
+mod argparse;
+use argparse::*;
 
-fn main() {}
+fn main() {
+    // Collect the arguments
+    let args: Vec<String> = env::args().collect();
+    let command = argparse().unwrap();
+    // check if the command is a config command
+    if command == Arg::SETKEY {
+        // Set the API key
+        keys::set_key(&args[3]).unwrap();
+    }
+    else if command == Arg::GETKEY {
+        let key = keys::get_key();
+        println!("key: {:?}", key.unwrap());
+    }
+
+    // Command is not a config command
+    else {
+        println!("Command is not a recognized config command");
+    }
+}
 
 #[cfg(test)]
 mod test {
