@@ -1,5 +1,5 @@
 //!
-//! # Sample Program with voyager
+//! # Sample program with voyager_client
 //! ```
 //! use voyager_client::{donki_client, timing};
 //!
@@ -7,12 +7,12 @@
 //! keys::set_key("[YOUR_API_KEY]");
 //!
 //! // Instantiate a Base Client
-//! let base_donki_client = Solar::new();
-//! 
+//! let base_donki_client = donki_client::Solar::new();
+//!
 //! // Setup timing parameters
 //! let start = String::from("2018-01-01");
 //! let end = timing::today();
-//! 
+//!
 //! // Query the API
 //! let res = base_donki_client.query(start, end).unwrap();
 //! ```
@@ -21,25 +21,17 @@
 
 #![allow(dead_code)]
 
-pub use keys::*;
-pub use neo_client::*;
-pub use timing::*;
-pub use to_pretty::*;
-pub use donki_client::*;
-pub use apod_client::*;
-pub use insight::*;
-
 /// Handling API keys for NASA's open APIs.
 /// Includes methods for storing, and retrieving keys for any user
 ///
 /// # Configuring a key
 /// ```
-/// set_key("[YOUR_API_KEY]")?;
+/// set_key("[YOUR_API_KEY]").unwrap();
 /// ```
 ///
 /// # Retrieving a key
 /// ```
-/// let key = get_key()?;
+/// let key = get_key().unwrap();
 /// ```
 pub mod keys {
     use std::error::Error;
@@ -83,8 +75,7 @@ pub mod keys {
     }
 }
 
-/// For handling different request timings. Methods for formatting one day requests, one week,
-/// two week, and one month requests into a String format.
+/// For handling different request timings. Known overflow errors at the moment, so use with caution. Use manual dates if possible.
 ///
 /// # Query in a one month range
 /// ```
@@ -141,8 +132,7 @@ pub mod timing {
             let last_month = 12;
             let start = format!("{}-{}-{}", local.year() - 1, last_month, local.day());
             start
-        }
-        else {
+        } else {
             let start = format!("{}-{}-{}", local.year(), local.month() - 1, local.day());
             start
         }
@@ -185,7 +175,7 @@ pub mod to_pretty {
 /// let res = base.query().unwrap();
 /// ```
 /// This will return a response containing data on the Picture of the Day, as well as the url to the jpg file.
-/// 
+///
 pub mod apod_client {
     use std::error::Error;
 
@@ -219,8 +209,7 @@ pub mod apod_client {
                 let apod = to_string_pretty(res).unwrap();
 
                 Ok(apod)
-            }
-            else {
+            } else {
                 let date = self.date.as_ref().unwrap();
                 let url = format!("{}date={}&api_key={}", self.base_url, date, key);
 
@@ -233,20 +222,20 @@ pub mod apod_client {
     }
 }
 
-/// Contains methods for interacting with Solar Flare and Magnetic Storm endpoints.
+/// Contains methods for interacting with the DONKI client library.
 ///
 /// # Querying solar flare API
 ///
 /// ```
 /// // Instantiate Base Client
 /// let mut base = Solar::new();
-/// 
+///
 /// // Setup Timing
 /// let start = timing::one_month();
 /// let end = timing::today();
 /// // Query Endpoint
 /// let res = base.query(start, end).unwrap();
-/// 
+///
 /// ```
 /// all API query functions will pipe out their response into the progress bar method
 /// which will in turn print the response after it's finished processing.
@@ -256,20 +245,20 @@ pub mod apod_client {
 /// ```
 /// // Setup Timing
 /// --snip--
-/// 
+///
 /// // Instantiate Base Client
 ///  let mut base = Magnetic::new(start, end);
-/// 
+///
 /// // Query Endpoint
 /// let res = base.query().unwrap();
-/// 
+///
 /// ```
 ///
 pub mod donki_client {
     use std::error::Error;
 
-    use super::to_pretty::to_string_pretty;
     use super::keys;
+    use super::to_pretty::to_string_pretty;
 
     pub struct Solar {
         base_url: String,
@@ -277,7 +266,7 @@ pub mod donki_client {
 
     impl Solar {
         pub fn new() -> Self {
-            Solar{
+            Solar {
                 base_url: String::from("https://api.nasa.gov/DONKI/FLR?startDate="),
             }
         }
@@ -285,10 +274,7 @@ pub mod donki_client {
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::get_key()?;
 
-            let url: String = format!(
-                "{}{}&endDate={}&api_key={}",
-                self.base_url, start, end, key
-            );
+            let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
             println!("Starting solar query from {}, to {}.", start, end);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
@@ -312,10 +298,7 @@ pub mod donki_client {
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::get_key()?;
 
-            let url: String = format!(
-                "{}{}&endDate={}&api_key={}",
-                self.base_url, start, end, key
-            );
+            let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
             println!("Starting magnetic query from {}, to {}.", start, end);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
@@ -325,6 +308,20 @@ pub mod donki_client {
         }
     }
 
+    /// For interacting with the Coronal Mass Ejction API.
+    ///
+    /// # Example
+    /// ```
+    /// // Instantiate Base Client
+    /// let base = CoronalMassEjection::new(start, end);
+    ///
+    /// /// // Setup Timings
+    /// let start = String::from("2022-01-01");
+    /// let end = String::from("2022-01-07");
+    ///
+    /// // Query Endpoint
+    /// let res = base.query(start, end).unwrap();
+    /// ```
     pub struct CoronalMassEjection {
         base_url: String,
     }
@@ -332,17 +329,14 @@ pub mod donki_client {
     impl CoronalMassEjection {
         pub fn new() -> Self {
             CoronalMassEjection {
-                base_url: String::from("https://api.nasa.gov/DONKI/CME?startDate=")
+                base_url: String::from("https://api.nasa.gov/DONKI/CME?startDate="),
             }
         }
 
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
             let key = keys::get_key()?;
 
-            let url = format!(
-                "{}{}&endDate={}&api_key={}",
-                self.base_url, start, end, key
-            );
+            let url = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
             println!("Starting CME query from {}, to {}.", start, end);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
@@ -357,15 +351,15 @@ pub mod donki_client {
 ///
 /// # Example
 /// ```
-/// // Setup Timings
-/// let start = String::from("2022-01-01");
-/// let end = String::from("2022-01-07");
-/// 
 /// // Instantiate Base Client
 /// let base = Neo::new(start, end);
-/// 
+///
+/// /// // Setup Timings
+/// let start = String::from("2022-01-01");
+/// let end = String::from("2022-01-07");
+///
 /// // Query Endpoint
-/// let res = base.query().unwrap();
+/// let res = base.query(start, end).unwrap();
 /// ```
 /// Neo currently reccomends a one day query, as it's database is constantly being updated
 /// due to the nature of the data. Any query greater than a month is likely to take a long time to
@@ -373,8 +367,8 @@ pub mod donki_client {
 pub mod neo_client {
     use std::error::Error;
 
-    use super::to_pretty::to_string_pretty;
     use super::keys;
+    use super::to_pretty::to_string_pretty;
 
     pub struct Neo {
         base_url: String,
@@ -387,7 +381,7 @@ pub mod neo_client {
             Neo {
                 base_url: String::from("https://api.nasa.gov/neo/rest/v1/feed?start_date="),
                 start,
-                end
+                end,
             }
         }
 
@@ -416,11 +410,25 @@ pub mod neo_client {
     }
 }
 
+/// For interacting with the Insight Rover API.
+///
+/// # Example
+/// ```
+/// // Instantiate Base Client
+/// let base = Neo::new(start, end);
+///
+/// // Setup Timing Params
+/// let start = String::from("2021-01-01");
+/// let end = timing::today();
+///
+/// // Query Endpoint
+/// let res = base.query(start, end).unwrap();
+/// ```
 pub mod insight {
     use std::error::Error;
 
-    use super::to_pretty::to_string_pretty;
     use super::keys;
+    use super::to_pretty::to_string_pretty;
 
     pub struct InsightWeather {
         base_url: String,
@@ -429,7 +437,7 @@ pub mod insight {
     impl InsightWeather {
         pub fn new() -> Self {
             InsightWeather {
-                base_url: String::from("https://api.nasa.gov/insight_weather/?api_key=")
+                base_url: String::from("https://api.nasa.gov/insight_weather/?api_key="),
             }
         }
 
@@ -446,4 +454,3 @@ pub mod insight {
         }
     }
 }
-

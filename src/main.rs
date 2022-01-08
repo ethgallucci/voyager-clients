@@ -38,17 +38,21 @@ mod test {
     fn doc_test() {
         use voyager_client::{donki_client, timing};
 
+        // Instantiate a Base Client
+        let base_donki_client = donki_client::Solar::new();
+
         // Setup timing parameters
         let start = String::from("2018-01-01");
         let end = timing::today();
-        // Instantiate a Base Client
-        let base_donki_client = donki_client::Solar::new();
+
         // Query the API
         base_donki_client.query(start, end).unwrap();
     }
 
     #[test]
     fn try_apod() {
+        use voyager_client::apod_client::*;
+
         // Instantiate base
         let mut base = Apod::new();
         // Try to set the date for query
@@ -59,17 +63,21 @@ mod test {
 
     #[test]
     fn try_solar() {
+        use voyager_client::donki_client::*;
+
         // Setup timing
         let start = timing::one_week();
         let end = timing::today();
         // Instantiate base
-        let mut base = Solar::new();
+        let base = Solar::new();
         // Try query
         base.query(start, end).unwrap();
     }
 
     #[test]
     fn try_magnetic() {
+        use voyager_client::donki_client::*;
+
         // Setup timing
         let start = String::from("2019-01-01");
         let end = String::from("2022-01-01");
@@ -81,6 +89,8 @@ mod test {
 
     #[test]
     fn try_neo() {
+        use voyager_client::neo_client::*;
+
         let start = String::from("2022-01-01");
         let end = timing::today();
         // Instantiate base
@@ -91,12 +101,16 @@ mod test {
 
     #[test]
     fn try_insight() {
+        use voyager_client::insight::*;
+
         let base = InsightWeather::new();
         base.query().unwrap();
     }
 
     #[test]
     fn try_cme() {
+        use voyager_client::donki_client::*;
+
         let base = CoronalMassEjection::new();
 
         let start = String::from("2022-01-01");

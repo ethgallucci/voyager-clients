@@ -27,19 +27,18 @@ Let's see how we can use the voyager_client in our Rust projects.
     use voyager_client::{donki_client, timing};
 
     fn main() {
+        // Instantiate Base Client
+        let base = donki_client::CoronalMassEjection::new();
+        
         // Setup Timing Parameters for Query
         let start = String::from("2019-01-01");
-        let end = String::from("2022-01-01");
-
-        // Instantiate Base Client
-        let base = donki_client::Solar::new(start, end);
+        let end = timing::today();
 
         // Query the API
-        let res = base.query().unwrap();
+        let res = base.query(start, end).unwrap();
     }
 ```
-Notice we must supply a start and end date to our function in which we instantiate our base client. This is because NASA's endpoints are constantly being updated with new data. If our queries have too long of a time range, it's likely to timeout before processing our request. This way, it's more of 
-a concious decision in how wide of a range you want to query for. 
+This is a very simple program using voyager_client. We instantiate our base client for the Coronal Mass Ejection endpoint, and setup our timing parameters for our query. Then we pass the start and end dates into the query function. This will return a JSON string in prettyfied format.
 
 ## CLI Installation
 
