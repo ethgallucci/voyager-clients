@@ -129,8 +129,15 @@ pub mod timing {
     /// Returns the date exactly one month ago from today
     pub fn one_month() -> String {
         let local: DateTime<Local> = Local::now();
-        let start = format!("{}-{}-{}", local.year(), local.month() - 1, local.day());
-        start
+        if local.month() == 1 {
+            let last_month = 12;
+            let start = format!("{}-{}-{}", local.year() - 1, last_month, local.day());
+            start
+        }
+        else {
+            let start = format!("{}-{}-{}", local.year(), local.month() - 1, local.day());
+            start
+        }
     }
 }
 
@@ -266,8 +273,8 @@ pub mod weather {
 
     pub struct solar {
         base_url: String,
-        start: String,
-        end: String,
+        pub start: String,
+        pub end: String,
     }
 
     impl solar {
@@ -280,15 +287,27 @@ pub mod weather {
         }
 
         pub fn start(&mut self, start: String) {
-
+            println!("{}", self.start);
+            self.start = start;
         }
 
         pub fn end(&mut self, end: String) {
-
+            self.end = end;
         }
 
         pub fn query(&self) -> Result<String, Box<dyn Error>> {
-            
+            let key: String = keys::get_key()?;
+
+            let url: String = format!(
+                "https://api.nasa.gov/DONKI/FLR?startDate={}&endDate={}&api_key={}",
+                self.start, self.end, key
+            );
+            println!("Starting solar query from {}, to {}", self.start, self.end);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let solar = to_string_pretty(res).unwrap();
+
+            Ok(solar)
         }
     }
 
