@@ -10,7 +10,10 @@ pub enum Arg {
 
 pub fn argparse() -> Result<Arg, ()> {
     let args: Vec<String> = env::args().collect();
-    assert!(args.len() > 1, "Expected at least one argument");
+
+    if args.len() == 1 {
+        return Ok(Arg::HELP)
+    }
 
     match &args[1] as &str {
         "set" => match &args[2] as &str {
