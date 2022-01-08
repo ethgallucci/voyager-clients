@@ -6,15 +6,15 @@
 //! // Run this function only once - Or, cargo install this crate to install the CLI binaries, then run voyager set key
 //! keys::set_key("[YOUR_API_KEY]");
 //!
+//! // Instantiate a Base Client
+//! let base_donki_client = Solar::new();
+//! 
 //! // Setup timing parameters
 //! let start = String::from("2018-01-01");
 //! let end = timing::today();
 //! 
-//! // Instantiate a Base Client
-//! let base_donki_client = Solar::new(start, end);
-//! 
 //! // Query the API
-//! let res = base_donki_client.query().unwrap();
+//! let res = base_donki_client.query(start, end).unwrap();
 //! ```
 //! This will fetch a response from the magnetic storms endpoint, and convert it
 //! into a prettyfied String in JSON format
@@ -238,18 +238,14 @@ pub mod apod_client {
 /// # Querying solar flare API
 ///
 /// ```
+/// // Instantiate Base Client
+/// let mut base = Solar::new();
+/// 
 /// // Setup Timing
 /// let start = timing::one_month();
 /// let end = timing::today();
-/// 
-/// // Instantiate Base Client
-/// let mut base = Solar::new(start, end);
-/// 
-/// // (Optional) Update Timings
-/// base.set_start(String::from("2022-01-02"));
-/// 
 /// // Query Endpoint
-/// let res = base.query().unwrap();
+/// let res = base.query(start, end).unwrap();
 /// 
 /// ```
 /// all API query functions will pipe out their response into the progress bar method
@@ -277,35 +273,23 @@ pub mod donki_client {
 
     pub struct Solar {
         base_url: String,
-        pub start: String,
-        pub end: String,
     }
 
     impl Solar {
-        pub fn new(start: String, end: String) -> Self {
+        pub fn new() -> Self {
             Solar{
                 base_url: String::from("https://api.nasa.gov/DONKI/FLR?startDate="),
-                start,
-                end,
             }
         }
 
-        pub fn set_start(&mut self, start: String) {
-            self.start = start;
-        }
-
-        pub fn set_end(&mut self, end: String) {
-            self.end = end;
-        }
-
-        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+        pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::get_key()?;
 
             let url: String = format!(
                 "{}{}&endDate={}&api_key={}",
-                self.base_url, self.start, self.end, key
+                self.base_url, start, end, key
             );
-            println!("Starting solar query from {}, to {}.", self.start, self.end);
+            println!("Starting solar query from {}, to {}.", start, end);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
             let solar = to_string_pretty(res).unwrap();
@@ -316,40 +300,55 @@ pub mod donki_client {
 
     pub struct Magnetic {
         base_url: String,
-        start: String,
-        end: String,
     }
 
     impl Magnetic {
-        pub fn new(start: String, end: String) -> Self {
+        pub fn new() -> Self {
             Magnetic {
                 base_url: String::from("https://api.nasa.gov/DONKI/GST?startDate="),
-                start,
-                end,
             }
         }
 
-        pub fn set_start(&mut self, start: String) {
-            self.start = start;
-        }
-
-        pub fn set_end(&mut self, end: String) {
-            self.end = end;
-        }
-
-        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+        pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::get_key()?;
 
             let url: String = format!(
                 "{}{}&endDate={}&api_key={}",
-                self.base_url, self.start, self.end, key
+                self.base_url, start, end, key
             );
-            println!("Starting magnetic query from {}, to {}.", self.start, self.end);
+            println!("Starting magnetic query from {}, to {}.", start, end);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
             let mag = to_string_pretty(res).unwrap();
 
             Ok(mag)
+        }
+    }
+
+    pub struct CoronalMassEjection {
+        base_url: String,
+    }
+
+    impl CoronalMassEjection {
+        pub fn new() -> Self {
+            CoronalMassEjection {
+                base_url: String::from("https://api.nasa.gov/DONKI/CME?startDate=")
+            }
+        }
+
+        pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
+            let key = keys::get_key()?;
+
+            let url = format!(
+                "{}{}&endDate={}&api_key={}",
+                self.base_url, start, end, key
+            );
+            println!("Starting CME query from {}, to {}.", start, end);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let cme = to_string_pretty(res).unwrap();
+
+            Ok(cme)
         }
     }
 }
@@ -447,3 +446,4 @@ pub mod insight {
         }
     }
 }
+

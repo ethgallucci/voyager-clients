@@ -42,9 +42,9 @@ mod test {
         let start = String::from("2018-01-01");
         let end = timing::today();
         // Instantiate a Base Client
-        let base_donki_client = donki_client::Solar::new(start, end);
+        let base_donki_client = donki_client::Solar::new();
         // Query the API
-        base_donki_client.query().unwrap();
+        base_donki_client.query(start, end).unwrap();
     }
 
     #[test]
@@ -63,11 +63,9 @@ mod test {
         let start = timing::one_week();
         let end = timing::today();
         // Instantiate base
-        let mut base = Solar::new(start, end);
-        // Change start date by one month
-        base.set_start(timing::one_month());
+        let mut base = Solar::new();
         // Try query
-        base.query().unwrap();
+        base.query(start, end).unwrap();
     }
 
     #[test]
@@ -76,9 +74,9 @@ mod test {
         let start = String::from("2019-01-01");
         let end = String::from("2022-01-01");
         // Instantiate base
-        let base = Magnetic::new(start, end);
+        let base = Magnetic::new();
         // Try query
-        base.query().unwrap();
+        base.query(start, end).unwrap();
     }
 
     #[test]
@@ -94,7 +92,15 @@ mod test {
     #[test]
     fn try_insight() {
         let base = InsightWeather::new();
-        let res = base.query().unwrap();
-        println!("{}", res);
+        base.query().unwrap();
+    }
+
+    #[test]
+    fn try_cme() {
+        let base = CoronalMassEjection::new();
+
+        let start = String::from("2022-01-01");
+        let end = timing::today();
+        base.query(start, end).unwrap();
     }
 }
