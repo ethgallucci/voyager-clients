@@ -5,6 +5,7 @@ pub enum Arg {
     BADCOMMAND,
     SETKEY,
     GETKEY,
+    HELP
 }
 
 pub fn argparse() -> Result<Arg, ()> {
@@ -20,6 +21,7 @@ pub fn argparse() -> Result<Arg, ()> {
             "key" => Ok(Arg::GETKEY),
             _ => Ok(Arg::BADCOMMAND)
         },
+        "help" => Ok(Arg::HELP),
         _ => Ok(Arg::BADCOMMAND)
     }
 }

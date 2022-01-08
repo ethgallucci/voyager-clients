@@ -19,6 +19,14 @@ fn main() {
         println!("key: {:?}", key.unwrap());
     }
 
+    // Check if the command is a help command
+    else if command == Arg::HELP {
+        println!("\nconfig directory can be found at /Users/<Username>/voyager");
+        println!("api key can be found at the config directory in .api_key.txt");
+        println!("\nCommands:\nset key [key] -> stores API key in config directory");
+        println!("get key -> retrieves API key from config directory");
+    }
+
     // Command is not a config command
     else {
         println!("Command is not a recognized config command");
