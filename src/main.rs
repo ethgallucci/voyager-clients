@@ -41,4 +41,14 @@ mod test {
         // Try query
         base.query().unwrap();
     }
+
+    #[test]
+    fn try_neo() {
+        let start = String::from("2022-01-01");
+        let end = timing::today();
+        // Instantiate base
+        let base = Neo::new(start, end);
+        // Try query
+        base.query().unwrap();
+    }
 }

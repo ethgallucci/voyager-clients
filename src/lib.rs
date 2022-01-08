@@ -15,7 +15,7 @@
 
 pub use bar::*;
 pub use keys::*;
-pub use neo::*;
+pub use neo_client::*;
 pub use timing::*;
 pub use to_pretty::*;
 pub use donki_client::*;
@@ -361,26 +361,40 @@ pub mod donki_client {
 /// Neo currently uses a one day query, as it's database is constantly being updated
 /// due to the nature of the data. Any query greater than a week is likely to take a long time to
 /// process.
-pub mod neo {
+pub mod neo_client {
     use std::error::Error;
 
     use super::to_pretty::to_string_pretty;
     use super::{keys, timing};
 
-    pub fn neo() -> Result<String, Box<dyn Error>> {
-        let start = timing::one_day();
-        let now = timing::today();
-        println!("Starting query from {} to {}", start, now);
+    pub struct Neo {
+        base_url: String,
+        start: String,
+        end: String,
+    }
 
-        let key = keys::get_key()?;
-        let url = format!(
-            "https://api.nasa.gov/neo/rest/v1/feed?start_date={}&end_date={}&api_key={}",
-            start, now, key
-        );
+    impl Neo {
+        pub fn new(start: String, end: String) -> Self {
+            Neo {
+                base_url: String::from("https://api.nasa.gov/neo/rest/v1/feed?start_date="),
+                start,
+                end
+            }
+        }
 
-        let res: String = ureq::get(&url).call()?.into_string()?;
-        let neo = to_string_pretty(res).unwrap();
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            let key: String = keys::get_key()?;
 
-        Ok(neo)
+            let url: String = format!(
+                "{}{}&endDate={}&api_key={}",
+                self.base_url, self.start, self.end, key
+            );
+            println!("Starting Neo query from {}, to {}.", self.start, self.end);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let neo = to_string_pretty(res).unwrap();
+
+            Ok(neo)
+        }
     }
 }
