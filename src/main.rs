@@ -50,6 +50,11 @@ mod test {
     }
 
     #[test]
+    fn test_main() {
+        main()
+    }
+
+    #[test]
     fn try_apod() {
         use voyager_client::apod_client::*;
 
@@ -94,9 +99,9 @@ mod test {
         let start = String::from("2022-01-01");
         let end = timing::today();
         // Instantiate base
-        let base = Neo::new(start, end);
+        let base = Neo::new();
         // Try query
-        base.query().unwrap();
+        base.query(start, end).unwrap();
     }
 
     #[test]

@@ -372,35 +372,23 @@ pub mod neo_client {
 
     pub struct Neo {
         base_url: String,
-        start: String,
-        end: String,
     }
 
     impl Neo {
-        pub fn new(start: String, end: String) -> Self {
+        pub fn new() -> Self {
             Neo {
                 base_url: String::from("https://api.nasa.gov/neo/rest/v1/feed?start_date="),
-                start,
-                end,
             }
         }
 
-        pub fn set_start(&mut self, start: String) {
-            self.start = start;
-        }
-
-        pub fn set_end(&mut self, end: String) {
-            self.end = end;
-        }
-
-        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+        pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::get_key()?;
 
             let url: String = format!(
                 "{}{}&endDate={}&api_key={}",
-                self.base_url, self.start, self.end, key
+                self.base_url, start, end, key
             );
-            println!("Starting Neo query from {}, to {}.", self.start, self.end);
+            println!("Starting Neo query from {}, to {}.", start, end);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
             let neo = to_string_pretty(res).unwrap();
