@@ -107,8 +107,7 @@ mod test {
         let base = TechTransferClient::new();
 
         let query = String::from("engine");
-        let res = base.query(query).unwrap();
-        println!("{}", res);
+        base.query(query).unwrap();
     }
 
     #[test]
@@ -119,7 +118,16 @@ mod test {
         base.switch(Collections::Software).unwrap();
 
         let query = String::from("engine");
-        let res = base.query(query).unwrap();
-        println!("{}", res);
+        base.query(query).unwrap();
+    }
+
+    #[test]
+    fn try_fireball() {
+        use voyager_client::jpl;
+
+        let mut base = jpl::FireballClient::new();
+        base.limit(Some(1));
+
+        base.query().unwrap();
     }
 }

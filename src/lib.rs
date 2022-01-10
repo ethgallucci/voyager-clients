@@ -516,3 +516,65 @@ pub mod tech_transfer {
         }
     }
 }
+
+/// Jet Propulsion Laboratory
+pub mod jpl {
+    use std::error::Error;
+
+    use super::to_pretty::to_string_pretty;
+
+    /// Atmospheric Impact Data
+    /// # Example usage
+    /// ```
+    /// use voyager_client::jpl;
+    /// 
+    /// let mut base = jpl::FireballClient::new();
+    /// // Optionally limit the number of responses
+    /// base.limit(Some(10));
+    /// 
+    /// base.query().unwrap();
+    /// ```
+    pub struct FireballClient {
+        base_url: String,
+        limit: Option<u32>
+    }
+
+    impl FireballClient {
+        pub fn new() -> Self {
+            FireballClient {
+                base_url: String::from("https://ssd-api.jpl.nasa.gov/fireball.api"),
+                limit: None
+            }
+        }
+
+        pub fn limit(&mut self, limit: Option<u32>) {
+            self.limit = limit
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+
+            if self.limit.is_none() {
+                let url = format!(
+                    "{}", self.base_url
+                );
+
+                let res: String = ureq::get(&url).call()?.into_string()?;
+                let fireball = to_string_pretty(res).unwrap();
+                Ok(fireball)
+            }
+            else {
+                let limit = self.limit.as_ref().unwrap();
+
+                let url = format!(
+                    "{}?limit={}",
+                    self.base_url, limit
+                );
+
+                let res: String = ureq::get(&url).call()?.into_string()?;
+                let fireball = to_string_pretty(res).unwrap();
+
+                Ok(fireball)
+            }
+        }
+    }
+}
