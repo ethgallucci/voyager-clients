@@ -21,8 +21,9 @@ Voyager is a swiss army knife library for the NASA Open APIs. It is designed to 
 Future versions of voyager will strive to incorporate more endpoints, until all of them are integrated.
 
 ## Crate Usage
+### Key Store
+First create a .env file at the root of your project and add a variable named "API_KEY" with your API key from NASA as it's value. Make sure to add .env to your gitignore!
 ### Sample progam with voyager_client
-First create a .env file at the root of your project and add a variable named "API_KEY" with your API key from NASA as it's value.
 ```rust
     use voyager_client::{donki_client, timing};
 
@@ -40,39 +41,9 @@ First create a .env file at the root of your project and add a variable named "A
 ```
 This is a very simple program using voyager_client. We instantiate our base client for the Coronal Mass Ejection endpoint, and setup our timing parameters for our query. Then we pass the start and end dates into the query function. This will return a JSON string in prettyfied format.
 
-## CLI Installation
-
-### Install with cargo
-```sh
-    cargo install voyager_client
-    sudo mv /Users/[YOUR_USERNAME]/.cargo/bin/voyager_client /Users/[YOUR_USERNAME]/.cargo/bin/voyager
-```
-
-### Build binaries
-To build the voyager binaries, run:
-```sh
-    cargo build --release
-```
-
-### Copying binaries to your local path
-```sh
-    bash install.sh
-```
-
-### Setup
-Once you have the binaries installed, you must first configure your API key to use with voyager.
-If you have one already setup through NASA, you can simply run the following command:
-```sh
-    voyager set key [YOUR_API_KEY]
-```
-If you don't have an API key yet, you can visit [NASA's Open API Documentation](https://api.nasa.gov/index.html) to set one up. Then run the command above to link your key with voyager. The key will be written to /Users/you/voyager/.api_key.txt.
-```sh
-    voyager get key
-```
-Run this command to ensure voyager has saved your key properly.
 
 ## Contributing
-The entire library can be found in [lib.rs](https://github.com/ethgallucci/voyager/blob/main/src/lib.rs), as well as it's documentation. [main.rs](https://github.com/ethgallucci/voyager/blob/main/src/main.rs) is a small executable that acts as a CLI for managing API keys, and [argparse.rs](https://github.com/ethgallucci/voyager/blob/main/src/argparse.rs) is a small helper file for the CLI. All contributors are welcome! Simply clone this repository and work on a new branch, when you are ready you can open a PR.
+The entire library can be found in [lib.rs](https://github.com/ethgallucci/voyager/blob/main/src/lib.rs), as well as it's documentation. [main.rs](https://github.com/ethgallucci/voyager/blob/main/src/main.rs) is a small executable that contains unit-tests for the voyager_client crate. All contributors are welcome! Simply clone this repository and work on a new branch, when you are ready you can open a PR.
 
 The .cargo directory contains a config file that defines some aliases that are handy for test-driven development. In the root directory you can run: 
 ```sh
