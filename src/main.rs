@@ -1,7 +1,7 @@
 mod lib;
 
 fn main() {
-    println!("Voyager v0.2.4")
+    println!("Voyager v0.2.5")
 }
 
 #[cfg(test)]

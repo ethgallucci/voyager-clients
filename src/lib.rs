@@ -1,5 +1,9 @@
 //!
 //! # Sample program with voyager_client
+//! 
+//! Create a .env file at the root of your project
+//! and add your api key with the variable name API_KEY
+//! 
 //! ```
 //! use voyager_client::{donki_client, timing};
 //!
