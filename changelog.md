@@ -1,3 +1,11 @@
+v0.2.8:
+
+Adds support for the JPL Collection of api bindings.
+
+Implemented Fireball Client
+
+------------------------------------------------------------------------------------------------
+
 v0.2.6:
 
 Adds support for the Tech Transfer client.
