@@ -1,10 +1,7 @@
 //!
 //! # Sample program with voyager_client
 //! ```
-//! use voyager_client::{donki_client, timing, keys};
-//!
-//! // Run this function only once - Or, cargo install this crate to install the CLI binaries, then run voyager_client set key [YOUR_KEY]
-//! // keys::set_key("DEMO_KEY");
+//! use voyager_client::{donki_client, timing};
 //!
 //! // Instantiate a Base Client
 //! let base_donki_client = donki_client::Solar::new();
@@ -21,53 +18,25 @@
 
 #![allow(dead_code)]
 
-/// Handling API keys for NASA's open APIs.
-/// Includes methods for storing, and retrieving keys for any user
+/// Handling API keys for NASA's open APIs from .env files.
+///  All keys must be stored in a .env file in the root directory of your project with the key "API_KEY".
 /// 
 /// # Retrieving a key
 /// ```
 /// use voyager_client::keys::*;
-/// let key = get_key().unwrap();
+/// 
+/// let key = keys::from_dotenv().unwrap();
 /// ```
 pub mod keys {
     use std::error::Error;
-    use std::fs;
-    use std::fs::File;
-    use std::io::prelude::*;
+    use dotenv;
 
-    use users::{get_current_uid, get_user_by_uid};
+    pub fn from_dotenv() -> Result<String, Box<dyn Error>> {
+        dotenv::dotenv().ok();
 
-    /// Stores a key.
-    pub fn set_key(key: &str) -> std::io::Result<()> {
-        let username = get_user();
-
-        let path_to_voyager = format!("/Users/{}/voyager", username);
-        std::fs::create_dir(&path_to_voyager).unwrap();
-
-        let path_to_key = format!("{}/.api_key.txt", &path_to_voyager);
-        let mut file = File::create(path_to_key)?;
-        file.write_all(&key.as_bytes())?;
-        println!("Set key for {}", username);
-        Ok(())
-    }
-
-    /// Retrieves a key
-    pub fn get_key() -> Result<String, Box<dyn Error>> {
-        let user = get_user_by_uid(get_current_uid()).unwrap();
-        let path_to_key = format!(
-            "/Users/{}/voyager/.api_key.txt",
-            user.name().to_string_lossy()
-        );
-        let key = fs::read_to_string(&path_to_key).expect("Couldn't read api key");
-
-        Ok(key)
-    }
-
-    /// Retrieves current username - Useful for setting the path to store the keys.
-    pub fn get_user() -> String {
-        let user = get_user_by_uid(get_current_uid()).unwrap();
-        let username = user.name().to_string_lossy();
-        username.to_string()
+        let key = "API_KEY";
+        let value = dotenv::var(key)?;
+        Ok(value)
     }
 }
 
@@ -197,7 +166,7 @@ pub mod apod_client {
         }
 
         pub fn query(&self) -> Result<String, Box<dyn Error>> {
-            let key: String = keys::get_key()?;
+            let key: String = keys::from_dotenv()?;
 
             if self.date.is_none() {
                 let url = format!("{}api_key={}", self.base_url, key);
@@ -274,7 +243,7 @@ pub mod donki_client {
         }
 
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
-            let key: String = keys::get_key()?;
+            let key: String = keys::from_dotenv()?;
 
             let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
             println!("Starting solar query from {}, to {}.", start, end);
@@ -298,7 +267,7 @@ pub mod donki_client {
         }
 
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
-            let key: String = keys::get_key()?;
+            let key: String = keys::from_dotenv()?;
 
             let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
             println!("Starting magnetic query from {}, to {}.", start, end);
@@ -338,7 +307,7 @@ pub mod donki_client {
         }
 
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
-            let key = keys::get_key()?;
+            let key = keys::from_dotenv()?;
 
             let url = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
             println!("Starting CME query from {}, to {}.", start, end);
@@ -388,7 +357,7 @@ pub mod neo_client {
         }
 
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
-            let key: String = keys::get_key()?;
+            let key: String = keys::from_dotenv()?;
 
             let url: String = format!(
                 "{}{}&endDate={}&api_key={}",
@@ -438,7 +407,7 @@ pub mod insight {
         }
 
         pub fn query(&self) -> Result<String, Box<dyn Error>> {
-            let key = keys::get_key()?;
+            let key = keys::from_dotenv()?;
 
             let url = format!("{}{}&feedtype=json&ver=1.0", self.base_url, key);
             println!("Starting Inisght Weather query: {}", url);
