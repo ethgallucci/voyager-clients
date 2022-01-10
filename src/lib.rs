@@ -382,10 +382,10 @@ pub mod neo_client {
 ///
 /// # Example
 /// ```
-/// use voyager_client::{insight, timing};
+/// use voyager_client::{insight_client, timing};
 /// 
 /// // Instantiate Base Client
-/// let base = insight::InsightWeatherClient::new();
+/// let base = insight_client::InsightWeather::new();
 ///
 /// // Setup Timing Params
 /// let start = String::from("2021-01-01");
