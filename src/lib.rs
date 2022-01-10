@@ -27,7 +27,7 @@
 /// 
 /// # Retrieving a key
 /// ```
-/// use voyager_client::keys::*;
+/// use voyager_client::keys;
 /// 
 /// let key = keys::from_dotenv().unwrap();
 /// ```
