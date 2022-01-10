@@ -3,7 +3,7 @@
 //! ```
 //! use voyager_client::{donki_client, timing, keys};
 //!
-//! // Run this function only once - Or, cargo install this crate to install the CLI binaries, then run voyager set key
+//! // Run this function only once - Or, cargo install this crate to install the CLI binaries, then run voyager_client set key [YOUR_KEY]
 //! // keys::set_key("DEMO_KEY");
 //!
 //! // Instantiate a Base Client
@@ -360,7 +360,7 @@ pub mod donki_client {
 /// // Instantiate Base Client
 /// let base = neo_client::Neo::new();
 ///
-/// /// // Setup Timings
+/// // Setup Timings
 /// let start = String::from("2022-01-01");
 /// let end = String::from("2022-01-07");
 ///
