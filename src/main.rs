@@ -72,7 +72,7 @@ mod test {
         use voyager_client::donki_client::*;
 
         // Setup timing
-        let start = timing::one_week();
+        let start = timing::one_month();
         let end = timing::today();
         // Instantiate base
         let base = Solar::new();

@@ -42,6 +42,12 @@ This is a very simple program using voyager_client. We instantiate our base clie
 
 ## CLI Installation
 
+### Install with cargo
+```sh
+    cargo install voyager_client
+    sudo mv /Users/[YOUR_USERNAME]/.cargo/bin/voyager_client /Users/[YOUR_USERNAME]/.cargo/bin/voyager
+```
+
 ### Build binaries
 To build the voyager binaries, run:
 ```sh
@@ -65,6 +71,14 @@ If you don't have an API key yet, you can visit [NASA's Open API Documentation](
 ```
 Run this command to ensure voyager has saved your key properly.
 
+## Contributing
+The entire library can be found in [lib.rs](https://github.com/ethgallucci/voyager/blob/main/src/lib.rs), as well as it's documentation. [main.rs](https://github.com/ethgallucci/voyager/blob/main/src/main.rs) is a small executable that acts as a CLI for managing API keys, and [argparse.rs](https://github.com/ethgallucci/voyager/blob/main/src/argparse.rs) is a small helper file for the CLI. All contributors are welcome! Simply clone this repository and work on a new branch, when you are ready you can open a PR.
+
+The .cargo directory contains a config file that defines an alias that is handy for test-driven development. In the root directory you can run: 
+```sh
+    cargo unit-test
+```
+This is a quick way to run all unit tests defined in [main.rs](https://github.com/ethgallucci/voyager/blob/main/src/main.rs).
 
 [version-shield]: https://img.shields.io/crates/v/voyager_client?style=plastic
 
