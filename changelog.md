@@ -1,3 +1,12 @@
+v0.2.5:
+
+Breaking Change!
+
+Overhauled key store architecture, deprecated CLI.
+Voyager now relies on a .env file in the root with a variable called "API_KEY" in order for its base clients to successfully query endpoints
+
+------------------------------------------------------------------------------------------------
+
 v0.2.2:
 
 Added support for Insight Rover and Coronal Mass Ejection API endpoints.
