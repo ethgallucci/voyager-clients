@@ -1,39 +1,11 @@
-use std::env;
-
 mod lib;
-use lib::*;
-
-mod argparse;
-use argparse::*;
 
 fn main() {
-    // Collect the arguments
-    let args: Vec<String> = env::args().collect();
-    let command = argparse().unwrap();
-    // check if the command is a config command
-    if command == Arg::SETKEY {
-        // Set the API key
-        keys::set_key(&args[3]).unwrap();
-    } else if command == Arg::GETKEY {
-        let key = keys::get_key();
-        println!("key: {:?}", key.unwrap());
-    }
-    // Check if the command is a help command
-    else if command == Arg::HELP {
-        println!("\nconfig directory can be found at /Users/<Username>/voyager");
-        println!("api key can be found at the config directory in .api_key.txt");
-        println!("\nCommands:\nset key [key] -> stores API key in config directory");
-        println!("get key -> retrieves API key from config directory");
-    }
-    // Command is not a config command
-    else {
-        println!("Command is not a recognized config command");
-    }
+    println!("Voyager v0.2.5")
 }
 
 #[cfg(test)]
 mod test {
-    use super::*;
 
     #[test]
     fn doc_test() {
@@ -52,6 +24,8 @@ mod test {
 
     #[test]
     fn test_main() {
+        use super::*;
+
         main()
     }
 
@@ -69,13 +43,13 @@ mod test {
 
     #[test]
     fn try_solar() {
-        use voyager_client::donki_client::*;
+        use voyager_client::{donki_client, timing};
 
         // Setup timing
         let start = timing::one_month();
         let end = timing::today();
         // Instantiate base
-        let base = Solar::new();
+        let base = donki_client::Solar::new();
         // Try query
         base.query(start, end).unwrap();
     }
@@ -95,12 +69,12 @@ mod test {
 
     #[test]
     fn try_neo() {
-        use voyager_client::neo_client::*;
+        use voyager_client::{neo_client, timing};
 
         let start = String::from("2022-01-01");
         let end = timing::today();
         // Instantiate base
-        let base = Neo::new();
+        let base = neo_client::Neo::new();
         // Try query
         base.query(start, end).unwrap();
     }
@@ -115,6 +89,7 @@ mod test {
 
     #[test]
     fn try_cme() {
+        use voyager_client::timing;
         use voyager_client::donki_client::*;
 
         let base = CoronalMassEjection::new();
@@ -122,5 +97,13 @@ mod test {
         let start = String::from("2022-01-01");
         let end = timing::today();
         base.query(start, end).unwrap();
+    }
+
+    #[test]
+    fn try_env_keys() {
+        use voyager_client::keys::from_dotenv;
+
+        let key = from_dotenv().unwrap();
+        println!("{}", key);
     }
 }

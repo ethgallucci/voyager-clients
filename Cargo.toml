@@ -1,6 +1,6 @@
 [package]
 name = "voyager_client"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2021"
 description = "Client for interacting with NASA's Open APIs"
 license = "MIT"
@@ -9,6 +9,7 @@ license = "MIT"
 
 [dependencies]
 chrono = "0.4.19"
+dotenv = "0.15.0"
 pbr = "1.0.4"
 serde = "1.0.131"
 serde_derive = "1.0.131"
