@@ -74,9 +74,9 @@ mod test {
 
     #[test]
     fn try_insight() {
-        use voyager_client::insight::*;
+        use voyager_client::insight_client::*;
 
-        let base = InsightWeatherClient::new();
+        let base = InsightWeather::new();
         base.query().unwrap();
     }
 
@@ -107,7 +107,6 @@ mod test {
         let base = TechTransferClient::new();
 
         let query = String::from("engine");
-
         let res = base.query(query).unwrap();
         println!("{}", res);
     }
@@ -117,11 +116,9 @@ mod test {
         use voyager_client::tech_transfer::*;
 
         let mut base = TechTransferClient::new();
-
         base.software();
 
         let query = String::from("engine");
-
         let res = base.query(query).unwrap();
         println!("{}", res);
     }

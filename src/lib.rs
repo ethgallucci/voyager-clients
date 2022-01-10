@@ -394,19 +394,19 @@ pub mod neo_client {
 /// // Query Endpoint
 /// let res = base.query().unwrap();
 /// ```
-pub mod insight {
+pub mod insight_client {
     use std::error::Error;
 
     use super::keys;
     use super::to_pretty::to_string_pretty;
 
-    pub struct InsightWeatherClient {
+    pub struct InsightWeather {
         base_url: String,
     }
 
-    impl InsightWeatherClient {
+    impl InsightWeather {
         pub fn new() -> Self {
-            InsightWeatherClient {
+            InsightWeather {
                 base_url: String::from("https://api.nasa.gov/insight_weather/?api_key="),
             }
         }
@@ -428,6 +428,19 @@ pub mod insight {
 /// For interacting with the Tech Transfer API
 /// Defaults to the patent collection
 /// Can also be switched to software via the .software() method
+/// 
+/// # Example
+/// ```
+/// use voyager_client::tech_transfer::*;
+/// 
+/// let mut base = TechTransferClient::new();
+/// 
+/// // Default collection is patents, can switch to software
+/// base.software();
+/// 
+/// let query = String::from("engine");
+/// base.query(query).unwrap();
+/// ```
 
 pub mod tech_transfer {
     use std::error::Error;
