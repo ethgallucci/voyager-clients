@@ -8,14 +8,14 @@
 //! use voyager_client::{donki_client, timing};
 //!
 //! // Instantiate a Base Client
-//! let base_donki_client = donki_client::Solar::new();
+//! let base = donki_client::CoronalMassEjection::new();
 //!
 //! // Setup timing parameters
-//! let start = String::from("2018-01-01");
+//! let start = String::from("2020-01-01");
 //! let end = timing::today();
 //!
 //! // Query the API
-//! let res = base_donki_client.query(start, end).unwrap();
+//! base.query(start, end).unwrap();
 //! ```
 //! This will fetch a response from the magnetic storms endpoint, and convert it
 //! into a prettyfied String in JSON format
