@@ -76,7 +76,7 @@ mod test {
     fn try_insight() {
         use voyager_client::insight::*;
 
-        let base = InsightWeather::new();
+        let base = InsightWeatherClient::new();
         base.query().unwrap();
     }
 
@@ -98,5 +98,16 @@ mod test {
 
         let key = from_dotenv().unwrap();
         println!("{}", key);
+    }
+
+    #[test]
+    fn try_tech_transfer() {
+        use voyager_client::tech_transfer::TechTransferClient;
+
+        let base = TechTransferClient::new();
+
+        let query = String::from("engine");
+
+        base.query(query).unwrap();
     }
 }
