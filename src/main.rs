@@ -23,13 +23,6 @@ mod test {
     }
 
     #[test]
-    fn test_main() {
-        use super::*;
-
-        main()
-    }
-
-    #[test]
     fn try_apod() {
         use voyager_client::apod_client::*;
 

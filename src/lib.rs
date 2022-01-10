@@ -21,7 +21,7 @@
 //! into a prettyfied String in JSON format
 
 #![allow(dead_code)]
-
+#![forbid(unsafe_code)]
 /// Handling API keys for NASA's open APIs from .env files.
 ///  All keys must be stored in a .env file in the root directory of your project with the key "API_KEY".
 /// 
@@ -31,6 +31,7 @@
 /// 
 /// let key = keys::from_dotenv().unwrap();
 /// ```
+
 pub mod keys {
     use std::error::Error;
     use dotenv;

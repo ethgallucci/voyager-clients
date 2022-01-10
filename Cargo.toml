@@ -2,17 +2,24 @@
 name = "voyager_client"
 version = "0.2.5"
 edition = "2021"
-description = "Client for interacting with NASA's Open APIs"
+description = "Crate that contains base clients for interacting with the NASA Open APIs"
+categories = ["api-bindings", "science", "aerospace"]
+documentation = "https://docs.rs/voyager_client"
+repository = "https://github.com/ethgallucci/voyager"
 license = "MIT"
+authors = ["Ethan Gallucci <ethgallucci@gmail.com>"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "voyager_client"
+path = "src/lib.rs"
+test = true
+doctest = true
+bench = true
 
 [dependencies]
 chrono = "0.4.19"
 dotenv = "0.15.0"
-pbr = "1.0.4"
 serde = "1.0.131"
 serde_derive = "1.0.131"
 serde_json = "1.0.73"
 ureq = "2.3.1"
-users = "0.11.0"
