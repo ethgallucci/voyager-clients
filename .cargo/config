@@ -1,2 +1,3 @@
 [alias]
 unit-test = "test --package voyager_client --bin voyager_client -- test --nocapture"
+doc-test = "test --doc"
