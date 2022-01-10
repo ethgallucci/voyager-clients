@@ -385,7 +385,7 @@ pub mod neo_client {
 /// use voyager_client::{insight, timing};
 /// 
 /// // Instantiate Base Client
-/// let base = insight::InsightWeather::new();
+/// let base = insight::InsightWeatherClient::new();
 ///
 /// // Setup Timing Params
 /// let start = String::from("2021-01-01");
@@ -394,7 +394,7 @@ pub mod neo_client {
 /// // Query Endpoint
 /// let res = base.query().unwrap();
 /// ```
-pub mod insight {
+pub mod insight_client {
     use std::error::Error;
 
     use super::keys;
@@ -421,6 +421,66 @@ pub mod insight {
             let mrover = to_string_pretty(res).unwrap();
 
             Ok(mrover)
+        }
+    }
+}
+
+/// For interacting with the Tech Transfer API
+/// Defaults to the patent collection
+/// Can also be switched to software via the .software() method
+/// 
+/// # Example
+/// ```
+/// use voyager_client::tech_transfer::*;
+/// 
+/// let mut base = TechTransferClient::new();
+/// 
+/// // Default collection is patents, can switch to software
+/// base.software();
+/// 
+/// let query = String::from("engine");
+/// base.query(query).unwrap();
+/// ```
+
+pub mod tech_transfer {
+    use std::error::Error;
+
+    use super::keys;
+    use super::to_pretty::to_string_pretty;
+
+    pub struct TechTransferClient {
+        base_url: String,
+    }
+
+    impl TechTransferClient {
+        pub fn new() -> Self {
+            TechTransferClient {
+                base_url: String::from("https://api.nasa.gov/techtransfer/patent/?")
+            }
+        }
+
+        /// Switches collection from patent to software
+        pub fn software(&mut self) {
+            self.base_url = String::from("https://api.nasa.gov/techtransfer/software/?");
+        }
+
+        pub fn query(&self, query: String) -> Result<String, Box<dyn Error>> {
+            let key: String = keys::from_dotenv()?;
+
+            let url = format!(
+                "{}{}&api_key={}",
+                self.base_url, query, key
+            );
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let tech = to_string_pretty(res);
+
+            if tech.is_ok() {
+                Ok(tech.unwrap())
+            }
+            else { 
+                Err(tech.unwrap_err())
+            }
         }
     }
 }

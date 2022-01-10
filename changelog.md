@@ -1,3 +1,17 @@
+v0.2.6:
+
+Adds support for the Tech Transfer client.
+
+Implements the patent collection by default, but can be switched to the software collection via usage of the software method.
+
+# Example
+```rust
+    let mut base = TechTransferClient::new();
+    base.software();
+```
+
+------------------------------------------------------------------------------------------------
+
 v0.2.5:
 
 Breaking Change!
