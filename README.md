@@ -22,7 +22,7 @@ Future versions of voyager will strive to incorporate more endpoints, until all 
 
 ## Crate Usage
 ### Sample progam with voyager_client
-Let's see how we can use the voyager_client in our Rust projects.
+First create a .env file at the root of your project and add a variable named "API_KEY" with your API key from NASA as it's value.
 ```rust
     use voyager_client::{donki_client, timing};
 
