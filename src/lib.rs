@@ -1,10 +1,10 @@
 //!
 //! # Sample program with voyager_client
 //! ```
-//! use voyager_client::{donki_client, timing};
+//! use voyager_client::{donki_client, timing, keys};
 //!
 //! // Run this function only once - Or, cargo install this crate to install the CLI binaries, then run voyager set key
-//! keys::set_key("[YOUR_API_KEY]");
+//! // keys::set_key("DEMO_KEY");
 //!
 //! // Instantiate a Base Client
 //! let base_donki_client = donki_client::Solar::new();
@@ -23,14 +23,10 @@
 
 /// Handling API keys for NASA's open APIs.
 /// Includes methods for storing, and retrieving keys for any user
-///
-/// # Configuring a key
-/// ```
-/// set_key("[YOUR_API_KEY]").unwrap();
-/// ```
-///
+/// 
 /// # Retrieving a key
 /// ```
+/// use voyager_client::keys::*;
 /// let key = get_key().unwrap();
 /// ```
 pub mod keys {
@@ -79,11 +75,15 @@ pub mod keys {
 ///
 /// # Query in a one month range
 /// ```
+/// use voyager_client::timing;
+/// 
 /// let start_date = timing::one_month();
 /// let end_date = timing::today();
 /// ```
 /// # Query in a week range
 /// ```
+/// use voyager_client::timing;
+/// 
 /// let start_date = timing::one_week();
 /// let end_date = timing::today();
 /// ```
@@ -93,9 +93,10 @@ pub mod timing {
     /// Returns the current date in YYYY-MM-DD format as a String
     /// # Example
     /// ```
+    /// use voyager_client::timing;
+    /// 
     /// let today = timing::today();
     ///
-    /// assert_eq!("2021-12-21", today);
     /// ```
     pub fn today() -> String {
         let local: DateTime<Local> = Local::now();
@@ -141,13 +142,7 @@ pub mod timing {
 
 /// Contains methods for prettyfying JSON responses.
 ///
-/// # Example
-///
-/// ```
-/// let res: String = ureq::get(&url).call()?.into_string()?;
-/// let neo = to_string_pretty(res).unwrap();
-/// ```
-/// This will output a prettyfied String (JSON format) response instead of a large unformatted JSON blob
+/// Will output a prettyfied String (JSON format) response instead of a large unformatted JSON blob
 ///
 pub mod to_pretty {
     use serde_json::Value as JsonValue;
@@ -167,8 +162,10 @@ pub mod to_pretty {
 /// # Querying APOD endpoint
 ///
 /// ```
+/// use voyager_client::{apod_client, timing};
+/// 
 /// // Instantiate the base client
-/// let mut base = apod::new();
+/// let mut base = apod_client::Apod::new();
 /// // Set the date for query
 /// base.set_date(String::from("2022-01-07"));
 /// // Query the endpoint
@@ -227,8 +224,10 @@ pub mod apod_client {
 /// # Querying solar flare API
 ///
 /// ```
+/// use voyager_client::{donki_client, timing};
+/// 
 /// // Instantiate Base Client
-/// let mut base = Solar::new();
+/// let mut base = donki_client::Solar::new();
 ///
 /// // Setup Timing
 /// let start = timing::one_month();
@@ -243,14 +242,17 @@ pub mod apod_client {
 /// # Querying magnetic storm endpoints
 ///
 /// ```
-/// // Setup Timing
-/// --snip--
+/// use voyager_client::{donki_client, timing};
+/// 
+/// // Setup timing
+/// let start = String::from("2019-01-01");
+/// let end = String::from("2022-01-01");
 ///
 /// // Instantiate Base Client
-///  let mut base = Magnetic::new(start, end);
+///  let mut base = donki_client::Magnetic::new();
 ///
 /// // Query Endpoint
-/// let res = base.query().unwrap();
+/// let res = base.query(start, end).unwrap();
 ///
 /// ```
 ///
@@ -312,8 +314,10 @@ pub mod donki_client {
     ///
     /// # Example
     /// ```
+    /// use voyager_client::{donki_client, timing};
+    /// 
     /// // Instantiate Base Client
-    /// let base = CoronalMassEjection::new(start, end);
+    /// let base = donki_client::CoronalMassEjection::new();
     ///
     /// /// // Setup Timings
     /// let start = String::from("2022-01-01");
@@ -351,8 +355,10 @@ pub mod donki_client {
 ///
 /// # Example
 /// ```
+/// use voyager_client::{neo_client, timing};
+/// 
 /// // Instantiate Base Client
-/// let base = Neo::new(start, end);
+/// let base = neo_client::Neo::new();
 ///
 /// /// // Setup Timings
 /// let start = String::from("2022-01-01");
@@ -402,15 +408,17 @@ pub mod neo_client {
 ///
 /// # Example
 /// ```
+/// use voyager_client::{insight, timing};
+/// 
 /// // Instantiate Base Client
-/// let base = Neo::new(start, end);
+/// let base = insight::InsightWeather::new();
 ///
 /// // Setup Timing Params
 /// let start = String::from("2021-01-01");
 /// let end = timing::today();
 ///
 /// // Query Endpoint
-/// let res = base.query(start, end).unwrap();
+/// let res = base.query().unwrap();
 /// ```
 pub mod insight {
     use std::error::Error;
