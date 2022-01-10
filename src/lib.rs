@@ -153,6 +153,7 @@ pub mod apod_client {
     use super::keys;
     use super::to_pretty::to_string_pretty;
 
+    #[derive(Debug, PartialEq)]
     pub struct Apod {
         base_url: String,
         date: Option<String>,
@@ -236,6 +237,7 @@ pub mod donki_client {
     use super::keys;
     use super::to_pretty::to_string_pretty;
 
+    #[derive(Debug, PartialEq)]
     pub struct Solar {
         base_url: String,
     }
@@ -260,6 +262,7 @@ pub mod donki_client {
         }
     }
 
+    #[derive(Debug, PartialEq)]
     pub struct Magnetic {
         base_url: String,
     }
@@ -300,6 +303,8 @@ pub mod donki_client {
     /// // Query Endpoint
     /// let res = base.query(start, end).unwrap();
     /// ```
+    
+    #[derive(Debug, PartialEq)]
     pub struct CoronalMassEjection {
         base_url: String,
     }
@@ -350,6 +355,7 @@ pub mod neo_client {
     use super::keys;
     use super::to_pretty::to_string_pretty;
 
+    #[derive(Debug, PartialEq)]
     pub struct Neo {
         base_url: String,
     }
@@ -400,6 +406,7 @@ pub mod insight_client {
     use super::keys;
     use super::to_pretty::to_string_pretty;
 
+    #[derive(Debug, PartialEq)]
     pub struct InsightWeather {
         base_url: String,
     }
@@ -436,7 +443,7 @@ pub mod insight_client {
 /// let mut base = TechTransferClient::new();
 /// 
 /// // Default collection is patents, can switch to software
-/// base.software();
+/// base.switch(Collections::Software).unwrap();
 /// 
 /// let query = String::from("engine");
 /// base.query(query).unwrap();
@@ -448,6 +455,14 @@ pub mod tech_transfer {
     use super::keys;
     use super::to_pretty::to_string_pretty;
 
+    pub enum Collections {
+        Patent,
+        PatentIssued,
+        Software,
+        Spinoff
+    }
+
+    #[derive(Debug, PartialEq)]
     pub struct TechTransferClient {
         base_url: String,
     }
@@ -459,9 +474,26 @@ pub mod tech_transfer {
             }
         }
 
-        /// Switches collection from patent to software
-        pub fn software(&mut self) {
-            self.base_url = String::from("https://api.nasa.gov/techtransfer/software/?");
+        /// Switches Collection
+        pub fn switch(&mut self, collection: Collections) -> Result<(), Box<dyn Error>> {
+            match collection {
+                Collections::Patent => {
+                    self.base_url = String::from("https://api.nasa.gov/techtransfer/patent/?");
+                    Ok(())
+                }
+                Collections::PatentIssued => {
+                    self.base_url = String::from("https://api.nasa.gov/techtransfer/patent_issued/?");
+                    Ok(())
+                }
+                Collections::Software => {
+                    self.base_url = String::from("https://api.nasa.gov/techtransfer/software/?");
+                    Ok(())
+                }
+                Collections::Spinoff => {
+                    self.base_url = String::from("https://api.nasa.gov/techtransfer/spinoff/?");
+                    Ok(())
+                }
+            }
         }
 
         pub fn query(&self, query: String) -> Result<String, Box<dyn Error>> {

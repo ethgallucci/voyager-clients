@@ -116,7 +116,7 @@ mod test {
         use voyager_client::tech_transfer::*;
 
         let mut base = TechTransferClient::new();
-        base.software();
+        base.switch(Collections::Software).unwrap();
 
         let query = String::from("engine");
         let res = base.query(query).unwrap();
