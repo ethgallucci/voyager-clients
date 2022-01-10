@@ -101,13 +101,28 @@ mod test {
     }
 
     #[test]
-    fn try_tech_transfer() {
-        use voyager_client::tech_transfer::TechTransferClient;
+    fn try_tech_transfer_patent() {
+        use voyager_client::tech_transfer::*;
 
         let base = TechTransferClient::new();
 
         let query = String::from("engine");
 
-        base.query(query).unwrap();
+        let res = base.query(query).unwrap();
+        println!("{}", res);
+    }
+
+    #[test]
+    fn try_tech_transfer_software() {
+        use voyager_client::tech_transfer::*;
+
+        let mut base = TechTransferClient::new();
+
+        base.software();
+
+        let query = String::from("engine");
+
+        let res = base.query(query).unwrap();
+        println!("{}", res);
     }
 }

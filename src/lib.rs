@@ -427,6 +427,7 @@ pub mod insight {
 
 /// For interacting with the Tech Transfer API
 /// Defaults to the patent collection
+/// Can also be switched to software via the .software() method
 
 pub mod tech_transfer {
     use std::error::Error;
@@ -443,6 +444,11 @@ pub mod tech_transfer {
             TechTransferClient {
                 base_url: String::from("https://api.nasa.gov/techtransfer/patent/?")
             }
+        }
+
+        /// Switches collection from patent to software
+        pub fn software(&mut self) {
+            self.base_url = String::from("https://api.nasa.gov/techtransfer/software/?");
         }
 
         pub fn query(&self, query: String) -> Result<String, Box<dyn Error>> {
