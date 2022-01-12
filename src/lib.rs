@@ -1,9 +1,9 @@
 //!
 //! # Sample program with voyager_client
-//! 
+//!
 //! Create a .env file at the root of your project
 //! and add your api key with the variable name API_KEY. Make sure to add .env to your .gitignore!
-//! 
+//!
 //! ```
 //! use voyager_client::{donki_client, timing};
 //!
@@ -24,17 +24,17 @@
 #![forbid(unsafe_code)]
 /// Handling API keys for NASA's open APIs from .env files.
 ///  All keys must be stored in a .env file in the root directory of your project with the key "API_KEY".
-/// 
+///
 /// # Retrieving a key
 /// ```
 /// use voyager_client::keys;
-/// 
+///
 /// let key = keys::from_dotenv().unwrap();
 /// ```
 
 pub mod keys {
-    use std::error::Error;
     use dotenv;
+    use std::error::Error;
 
     pub fn from_dotenv() -> Result<String, Box<dyn Error>> {
         dotenv::dotenv().ok();
@@ -50,14 +50,14 @@ pub mod keys {
 /// # Query in a one month range
 /// ```
 /// use voyager_client::timing;
-/// 
+///
 /// let start_date = timing::one_month();
 /// let end_date = timing::today();
 /// ```
 /// # Query in a week range
 /// ```
 /// use voyager_client::timing;
-/// 
+///
 /// let start_date = timing::one_week();
 /// let end_date = timing::today();
 /// ```
@@ -68,7 +68,7 @@ pub mod timing {
     /// # Example
     /// ```
     /// use voyager_client::timing;
-    /// 
+    ///
     /// let today = timing::today();
     ///
     /// ```
@@ -137,7 +137,7 @@ pub mod to_pretty {
 ///
 /// ```
 /// use voyager_client::{apod_client, timing};
-/// 
+///
 /// // Instantiate the base client
 /// let mut base = apod_client::Apod::new();
 /// // Set the date for query
@@ -200,7 +200,7 @@ pub mod apod_client {
 ///
 /// ```
 /// use voyager_client::{donki_client, timing};
-/// 
+///
 /// // Instantiate Base Client
 /// let mut base = donki_client::Solar::new();
 ///
@@ -218,7 +218,7 @@ pub mod apod_client {
 ///
 /// ```
 /// use voyager_client::{donki_client, timing};
-/// 
+///
 /// // Setup timing
 /// let start = String::from("2019-01-01");
 /// let end = String::from("2022-01-01");
@@ -292,7 +292,7 @@ pub mod donki_client {
     /// # Example
     /// ```
     /// use voyager_client::{donki_client, timing};
-    /// 
+    ///
     /// // Instantiate Base Client
     /// let base = donki_client::CoronalMassEjection::new();
     ///
@@ -303,7 +303,7 @@ pub mod donki_client {
     /// // Query Endpoint
     /// let res = base.query(start, end).unwrap();
     /// ```
-    
+
     #[derive(Debug, PartialEq)]
     pub struct CoronalMassEjection {
         base_url: String,
@@ -335,7 +335,7 @@ pub mod donki_client {
 /// # Example
 /// ```
 /// use voyager_client::{neo_client, timing};
-/// 
+///
 /// // Instantiate Base Client
 /// let base = neo_client::Neo::new();
 ///
@@ -370,10 +370,7 @@ pub mod neo_client {
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::from_dotenv()?;
 
-            let url: String = format!(
-                "{}{}&endDate={}&api_key={}",
-                self.base_url, start, end, key
-            );
+            let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
             println!("Starting Neo query from {}, to {}.", start, end);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
@@ -389,7 +386,7 @@ pub mod neo_client {
 /// # Example
 /// ```
 /// use voyager_client::{insight_client, timing};
-/// 
+///
 /// // Instantiate Base Client
 /// let base = insight_client::InsightWeather::new();
 ///
@@ -435,16 +432,16 @@ pub mod insight_client {
 /// For interacting with the Tech Transfer API
 /// Defaults to the patent collection
 /// Can also be switched to software via the .software() method
-/// 
+///
 /// # Example
 /// ```
 /// use voyager_client::tech_transfer::*;
-/// 
+///
 /// let mut base = TechTransferClient::new();
-/// 
+///
 /// // Default collection is patents, can switch to software
 /// base.switch(Collections::Software).unwrap();
-/// 
+///
 /// let query = String::from("engine");
 /// base.query(query).unwrap();
 /// ```
@@ -459,7 +456,7 @@ pub mod tech_transfer {
         Patent,
         PatentIssued,
         Software,
-        Spinoff
+        Spinoff,
     }
 
     #[derive(Debug, PartialEq)]
@@ -470,7 +467,7 @@ pub mod tech_transfer {
     impl TechTransferClient {
         pub fn new() -> Self {
             TechTransferClient {
-                base_url: String::from("https://api.nasa.gov/techtransfer/patent/?")
+                base_url: String::from("https://api.nasa.gov/techtransfer/patent/?"),
             }
         }
 
@@ -482,7 +479,8 @@ pub mod tech_transfer {
                     Ok(())
                 }
                 Collections::PatentIssued => {
-                    self.base_url = String::from("https://api.nasa.gov/techtransfer/patent_issued/?");
+                    self.base_url =
+                        String::from("https://api.nasa.gov/techtransfer/patent_issued/?");
                     Ok(())
                 }
                 Collections::Software => {
@@ -499,18 +497,14 @@ pub mod tech_transfer {
         pub fn query(&self, query: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::from_dotenv()?;
 
-            let url = format!(
-                "{}{}&api_key={}",
-                self.base_url, query, key
-            );
+            let url = format!("{}{}&api_key={}", self.base_url, query, key);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
             let tech = to_string_pretty(res);
 
             if tech.is_ok() {
                 Ok(tech.unwrap())
-            }
-            else { 
+            } else {
                 Err(tech.unwrap_err())
             }
         }
@@ -527,53 +521,126 @@ pub mod jpl {
     /// # Example usage
     /// ```
     /// use voyager_client::jpl;
-    /// 
+    ///
     /// let mut base = jpl::FireballClient::new();
     /// // Optionally limit the number of responses
-    /// base.limit(Some(10));
-    /// 
+    /// base.limit(10);
+    ///
     /// base.query().unwrap();
     /// ```
+
+    #[derive(Debug, PartialEq)]
     pub struct FireballClient {
         base_url: String,
-        limit: Option<u32>
+        limit: Option<u32>,
     }
 
     impl FireballClient {
         pub fn new() -> Self {
             FireballClient {
                 base_url: String::from("https://ssd-api.jpl.nasa.gov/fireball.api"),
-                limit: None
+                limit: None,
             }
         }
 
-        pub fn limit(&mut self, limit: Option<u32>) {
-            self.limit = limit
+        pub fn limit(&mut self, limit: u32) {
+            self.limit = Some(limit)
         }
 
         pub fn query(&self) -> Result<String, Box<dyn Error>> {
-
             if self.limit.is_none() {
-                let url = format!(
-                    "{}", self.base_url
-                );
+                let url = format!("{}", self.base_url);
 
                 let res: String = ureq::get(&url).call()?.into_string()?;
                 let fireball = to_string_pretty(res).unwrap();
                 Ok(fireball)
-            }
-            else {
+            } else {
                 let limit = self.limit.as_ref().unwrap();
 
-                let url = format!(
-                    "{}?limit={}",
-                    self.base_url, limit
-                );
+                let url = format!("{}?limit={}", self.base_url, limit);
 
                 let res: String = ureq::get(&url).call()?.into_string()?;
                 let fireball = to_string_pretty(res).unwrap();
 
                 Ok(fireball)
+            }
+        }
+    }
+
+    #[derive(Debug, PartialEq)]
+    pub struct MissionDesign {
+        base_url: String,
+        mode: Option<MissionMode>,
+        limit: Option<u32>,
+    }
+
+    #[derive(Debug, PartialEq)]
+    pub enum MissionMode {
+        Accessible,
+        Map,
+        MissionExtesnion
+    }
+
+    #[derive(Debug, PartialEq)]
+    pub enum QueryType {
+        /// designation (provisional or IAU-number) of the desired object (e.g., 2015 AB or 141P or 433).
+        /// NOTE: when submitting a des containing a space in your query string, you must replace the space with %20, for example 2015%20AB.
+        DES,
+        /// object search string: designation in various forms (including MPC packed form), case-insensitive name, or SPK-ID;
+        /// designation can be an alternate provisional designation; examples: atira, 2003 CP20, 2003cp20, K03C20P, 163693, 2163693
+        SSTR,
+    }
+
+    impl MissionDesign {
+        pub fn new() -> Self {
+            MissionDesign {
+                base_url: String::from("https://ssd-api.jpl.nasa.gov/mdesign.api?"),
+                mode: None,
+                limit: None,
+            }
+        }
+
+        /// Query is the default mode used - Optionally switch to Accessible, Map, or Mission Extension
+        pub fn mode(&mut self, mode: MissionMode) {
+            match mode {
+                MissionMode::Map => self.mode = Some(MissionMode::Map),
+                MissionMode::MissionExtesnion => self.mode = Some(MissionMode::MissionExtesnion),
+                MissionMode::Accessible => self.mode = Some(MissionMode::Accessible),
+            }
+        }
+
+        /// Optionally set a limit to the number of responses returned
+        pub fn limit(&mut self, limit: u32) {
+            self.limit = Some(limit)
+        }
+
+        /// Must be in default mode to call this function.
+        /// If you're using Accessible, Map, or Mission Extension mode use the corresponding methods
+        pub fn query(
+            &mut self,
+            query_type: QueryType,
+            query: &str,
+        ) -> Result<String, Box<dyn Error>> {
+            // Default Query Mode
+            assert!(self.mode == None);
+
+            match query_type {
+                QueryType::DES => {
+                    let url = format!("{}des={}", self.base_url, query);
+
+                    let res: String = ureq::get(&url).call()?.into_string()?;
+                    let mission = to_string_pretty(res).unwrap();
+
+                    Ok(mission)
+                }
+                QueryType::SSTR => {
+                    let url = format!("{}sstr={}", self.base_url, query);
+
+                    let res: String = ureq::get(&url).call()?.into_string()?;
+                    let mission = to_string_pretty(res).unwrap();
+
+                    Ok(mission)
+                }
             }
         }
     }

@@ -126,8 +126,17 @@ mod test {
         use voyager_client::jpl;
 
         let mut base = jpl::FireballClient::new();
-        base.limit(Some(1));
+        base.limit(1);
 
         base.query().unwrap();
+    }
+
+    #[test]
+    fn try_mission_design() {
+        use voyager_client::jpl;
+        use voyager_client::jpl::QueryType;
+
+        let mut base = jpl::MissionDesign::new();
+        base.query(QueryType::DES, "2012%20TC4").unwrap();
     }
 }
