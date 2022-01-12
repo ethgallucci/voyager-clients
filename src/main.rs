@@ -151,4 +151,18 @@ mod test {
 
         base.lim_crit_year().unwrap();
     }
+
+    #[test]
+    fn try_mission_design_map_mode() {
+        use voyager_client::jpl::*;
+
+        let mut base = MissionDesignMap::new();
+        base.designation("2012%20TC4");
+        base.mjd(58490);
+        base.span(3652);
+        base.tof(10, 36);
+        base.step(2);
+
+        base.query().unwrap();
+    }
 }

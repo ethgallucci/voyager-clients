@@ -577,6 +577,8 @@ pub mod jpl {
     /// base.query(QueryType::DES, "2012%20TC4").unwrap();
     /// ```
     ///
+    
+    /// Mission Design in Q Mode (query)
     #[derive(Debug, PartialEq)]
     pub struct MissionDesign {
         base_url: String,
@@ -623,7 +625,7 @@ pub mod jpl {
         }
     }
 
-    /// Base Client for Mission Design in Accessible Mode
+    /// Base Client for Mission Design in Accessible Mode (A)
     #[derive(Debug, PartialEq)]
     pub struct MissionDesignAccessible {
         base_url: String,
@@ -682,6 +684,76 @@ pub mod jpl {
             let pretty = to_string_pretty(res).unwrap();
 
             Ok(pretty)
+        }
+    }
+
+    #[derive(Debug, PartialEq)]
+    pub struct MissionDesignMap {
+        base_url: String,
+        des: Option<String>,
+        mjd0: Option<u32>,
+        span: Option<u32>,
+        tof_min: Option<u32>,
+        tof_max: Option<u32>,
+        step: Option<u8>
+    }
+
+    impl MissionDesignMap {
+        pub fn new() -> Self {
+            MissionDesignMap {
+                base_url: String::from("https://ssd-api.jpl.nasa.gov/mdesign.api?"),
+                des: None,
+                mjd0: None,
+                span: None,
+                tof_min: None,
+                tof_max: None,
+                step: None
+            }
+        }
+
+        pub fn designation(&mut self, des: &str) {
+            self.des = Some(String::from(des))
+        }
+
+        pub fn mjd(&mut self, x: u32) {
+            self.mjd0 = Some(x)
+        }
+
+        pub fn span(&mut self, span: u32) {
+            self.span = Some(span)
+        }
+
+        pub fn tof(&mut self, min: u32, max: u32) {
+            self.tof_min = Some(min);
+            self.tof_max = Some(max);
+        }
+
+        pub fn step(&mut self, step: u8) {
+            self.step = Some(step)
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            assert!(self.des != None, "Des is None");
+            assert!(self.mjd0 != None, "Mjd0 is None");
+            assert!(self.span != None, "Span is None");
+            assert!(self.tof_min != None, "tof_min is None");
+            assert!(self.tof_max != None, "tof_max is None");
+            assert!(self.step != None, "Step is None");
+
+            let url = format!(
+                "{}des={}&mjd0={}&span={}&tof-min={}&tof-max={}&step={}",
+                self.base_url, self.des.as_ref().unwrap(), 
+                self.mjd0.as_ref().unwrap(), self.span.as_ref().unwrap(),
+                self.tof_min.as_ref().unwrap(), self.tof_max.as_ref().unwrap(),
+                self.step.as_ref().unwrap()
+            );
+
+            println!("Url: {}", url);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let map = to_string_pretty(res).unwrap();
+
+            Ok(map)
         }
     }
 }
