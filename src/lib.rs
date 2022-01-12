@@ -61,6 +61,7 @@ pub mod keys {
 /// let start_date = timing::one_week();
 /// let end_date = timing::today();
 /// ```
+
 pub mod timing {
     use chrono::prelude::*;
 
@@ -230,7 +231,7 @@ pub mod apod_client {
 /// let res = base.query(start, end).unwrap();
 ///
 /// ```
-///
+
 pub mod donki_client {
     use std::error::Error;
 
@@ -326,6 +327,33 @@ pub mod donki_client {
             let cme = to_string_pretty(res).unwrap();
 
             Ok(cme)
+        }
+    }
+
+    #[derive(Debug, PartialEq)]
+    pub struct SolarEnergeticParticle {
+        base_url: String,
+    }
+
+    impl SolarEnergeticParticle {
+        pub fn new() -> Self {
+            SolarEnergeticParticle {
+                base_url: String::from("https://api.nasa.gov/DONKI/SEP?")
+            }
+        }
+
+        pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
+            let key = keys::from_dotenv()?;
+
+            let url = format!(
+                "{}startDate={}&endDate={}&api_key={}",
+                self.base_url, start, end, key
+            );
+
+            let res = ureq::get(&url).call()?.into_string()?;
+            let sep = to_string_pretty(res).unwrap();
+
+            Ok(sep)
         }
     }
 }
@@ -710,8 +738,9 @@ pub mod jpl {
     /// base.tof(10, 36);
     /// base.step(2);
     /// 
-    /// base.query().unwrap();;
+    /// base.query().unwrap();
     /// ```
+    
     #[derive(Debug, PartialEq)]
     pub struct MissionDesignMap {
         base_url: String,

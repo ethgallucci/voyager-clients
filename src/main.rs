@@ -165,4 +165,15 @@ mod test {
 
         base.query().unwrap();
     }
+
+    #[test]
+    fn try_solar_energetic_particle() {
+        use voyager_client::donki_client::*;
+
+        let base = SolarEnergeticParticle::new();
+        let start = "2021-09-12".to_string();
+        let end = "2022-01-11".to_string();
+
+        base.query(start, end).unwrap();
+    }
 }
