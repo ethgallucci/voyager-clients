@@ -53,7 +53,7 @@ impl FireballClient {
 ///
 
 /// Mission Design in Q Mode (query)
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct MissionDesign {
     base_url: String,
 }
