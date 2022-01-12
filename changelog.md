@@ -1,3 +1,11 @@
+v0.2.9:
+
+Adds more support for the JPL Collection of api bindings.
+
+Implemented light support for Mission Design api bindings. Including Mission Design in Query mode (Q), Accessible mode (A) and Map mode (M).
+
+------------------------------------------------------------------------------------------------
+
 v0.2.8:
 
 Adds support for the JPL Collection of api bindings.
