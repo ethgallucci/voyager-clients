@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use crate::key;
-use crate::pretty::*;
+use crate::response::*;
 
 /// Base Client for ApodClient api
 #[derive(Debug, PartialEq)]
@@ -25,7 +25,7 @@ impl ApodClient {
     }
 
     /// Query function
-    pub fn query(&self) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self) -> Result<Response, Box<dyn Error>> {
         let key: String = key::from_dotenv()?;
 
         if self.date.is_none() {
@@ -34,7 +34,7 @@ impl ApodClient {
             println!("Url: {}", url);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
-            let apod = to_string_pretty(res).unwrap();
+            let apod: Response = into_response(res.as_str())?;
 
             Ok(apod)
         } else {
@@ -42,7 +42,7 @@ impl ApodClient {
             let url = format!("{}date={}&api_key={}", self.base_url, date, key);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
-            let apod = to_string_pretty(res).unwrap();
+            let apod: Response = into_response(res.as_str())?;
 
             Ok(apod)
         }

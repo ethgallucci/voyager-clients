@@ -134,6 +134,8 @@ pub mod neo;
 pub mod insight;
 
 
+pub mod response;
+
 /// For interacting with the Tech Transfer API. Defaults to the patent collection but can 
 /// also be switched to patent protected, software, or spinoff via the .switch() method.
 ///
