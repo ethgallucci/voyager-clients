@@ -10,7 +10,7 @@ v0.2.6:
 
 Adds support for the Tech Transfer client.
 
-Implements the patent collection by default, but can be switched to the software collection via usage of the software method.
+Implements the patent collection by default, but can be switched to the software collection via usage of the switch method.
 
 # Example
 ```rust
