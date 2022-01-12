@@ -1,9 +1,9 @@
 //!
 //! # Sample program with voyager_client
-//! 
+//!
 //! Create a .env file at the root of your project
 //! and add your api key with the variable name API_KEY. Make sure to add .env to your .gitignore!
-//! 
+//!
 //! ```
 //! use voyager_client::{donki_client, timing};
 //!
@@ -24,17 +24,17 @@
 #![forbid(unsafe_code)]
 /// Handling API keys for NASA's open APIs from .env files.
 ///  All keys must be stored in a .env file in the root directory of your project with the key "API_KEY".
-/// 
+///
 /// # Retrieving a key
 /// ```
 /// use voyager_client::keys;
-/// 
+///
 /// let key = keys::from_dotenv().unwrap();
 /// ```
 
 pub mod keys {
-    use std::error::Error;
     use dotenv;
+    use std::error::Error;
 
     pub fn from_dotenv() -> Result<String, Box<dyn Error>> {
         dotenv::dotenv().ok();
@@ -50,14 +50,14 @@ pub mod keys {
 /// # Query in a one month range
 /// ```
 /// use voyager_client::timing;
-/// 
+///
 /// let start_date = timing::one_month();
 /// let end_date = timing::today();
 /// ```
 /// # Query in a week range
 /// ```
 /// use voyager_client::timing;
-/// 
+///
 /// let start_date = timing::one_week();
 /// let end_date = timing::today();
 /// ```
@@ -68,7 +68,7 @@ pub mod timing {
     /// # Example
     /// ```
     /// use voyager_client::timing;
-    /// 
+    ///
     /// let today = timing::today();
     ///
     /// ```
@@ -137,7 +137,7 @@ pub mod to_pretty {
 ///
 /// ```
 /// use voyager_client::{apod_client, timing};
-/// 
+///
 /// // Instantiate the base client
 /// let mut base = apod_client::Apod::new();
 /// // Set the date for query
@@ -200,7 +200,7 @@ pub mod apod_client {
 ///
 /// ```
 /// use voyager_client::{donki_client, timing};
-/// 
+///
 /// // Instantiate Base Client
 /// let mut base = donki_client::Solar::new();
 ///
@@ -218,7 +218,7 @@ pub mod apod_client {
 ///
 /// ```
 /// use voyager_client::{donki_client, timing};
-/// 
+///
 /// // Setup timing
 /// let start = String::from("2019-01-01");
 /// let end = String::from("2022-01-01");
@@ -292,7 +292,7 @@ pub mod donki_client {
     /// # Example
     /// ```
     /// use voyager_client::{donki_client, timing};
-    /// 
+    ///
     /// // Instantiate Base Client
     /// let base = donki_client::CoronalMassEjection::new();
     ///
@@ -303,7 +303,7 @@ pub mod donki_client {
     /// // Query Endpoint
     /// let res = base.query(start, end).unwrap();
     /// ```
-    
+
     #[derive(Debug, PartialEq)]
     pub struct CoronalMassEjection {
         base_url: String,
@@ -335,7 +335,7 @@ pub mod donki_client {
 /// # Example
 /// ```
 /// use voyager_client::{neo_client, timing};
-/// 
+///
 /// // Instantiate Base Client
 /// let base = neo_client::Neo::new();
 ///
@@ -370,10 +370,7 @@ pub mod neo_client {
         pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::from_dotenv()?;
 
-            let url: String = format!(
-                "{}{}&endDate={}&api_key={}",
-                self.base_url, start, end, key
-            );
+            let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
             println!("Starting Neo query from {}, to {}.", start, end);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
@@ -389,7 +386,7 @@ pub mod neo_client {
 /// # Example
 /// ```
 /// use voyager_client::{insight_client, timing};
-/// 
+///
 /// // Instantiate Base Client
 /// let base = insight_client::InsightWeather::new();
 ///
@@ -435,16 +432,16 @@ pub mod insight_client {
 /// For interacting with the Tech Transfer API
 /// Defaults to the patent collection
 /// Can also be switched to software via the .software() method
-/// 
+///
 /// # Example
 /// ```
 /// use voyager_client::tech_transfer::*;
-/// 
+///
 /// let mut base = TechTransferClient::new();
-/// 
+///
 /// // Default collection is patents, can switch to software
 /// base.switch(Collections::Software).unwrap();
-/// 
+///
 /// let query = String::from("engine");
 /// base.query(query).unwrap();
 /// ```
@@ -459,7 +456,7 @@ pub mod tech_transfer {
         Patent,
         PatentIssued,
         Software,
-        Spinoff
+        Spinoff,
     }
 
     #[derive(Debug, PartialEq)]
@@ -470,7 +467,7 @@ pub mod tech_transfer {
     impl TechTransferClient {
         pub fn new() -> Self {
             TechTransferClient {
-                base_url: String::from("https://api.nasa.gov/techtransfer/patent/?")
+                base_url: String::from("https://api.nasa.gov/techtransfer/patent/?"),
             }
         }
 
@@ -482,7 +479,8 @@ pub mod tech_transfer {
                     Ok(())
                 }
                 Collections::PatentIssued => {
-                    self.base_url = String::from("https://api.nasa.gov/techtransfer/patent_issued/?");
+                    self.base_url =
+                        String::from("https://api.nasa.gov/techtransfer/patent_issued/?");
                     Ok(())
                 }
                 Collections::Software => {
@@ -499,18 +497,14 @@ pub mod tech_transfer {
         pub fn query(&self, query: String) -> Result<String, Box<dyn Error>> {
             let key: String = keys::from_dotenv()?;
 
-            let url = format!(
-                "{}{}&api_key={}",
-                self.base_url, query, key
-            );
+            let url = format!("{}{}&api_key={}", self.base_url, query, key);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
             let tech = to_string_pretty(res);
 
             if tech.is_ok() {
                 Ok(tech.unwrap())
-            }
-            else { 
+            } else {
                 Err(tech.unwrap_err())
             }
         }
@@ -527,54 +521,239 @@ pub mod jpl {
     /// # Example usage
     /// ```
     /// use voyager_client::jpl;
-    /// 
+    ///
     /// let mut base = jpl::FireballClient::new();
     /// // Optionally limit the number of responses
-    /// base.limit(Some(10));
-    /// 
+    /// base.limit(10);
+    ///
     /// base.query().unwrap();
     /// ```
+
+    #[derive(Debug, PartialEq)]
     pub struct FireballClient {
         base_url: String,
-        limit: Option<u32>
+        limit: Option<u32>,
     }
 
     impl FireballClient {
         pub fn new() -> Self {
             FireballClient {
                 base_url: String::from("https://ssd-api.jpl.nasa.gov/fireball.api"),
-                limit: None
+                limit: None,
             }
         }
 
-        pub fn limit(&mut self, limit: Option<u32>) {
-            self.limit = limit
+        pub fn limit(&mut self, limit: u32) {
+            self.limit = Some(limit)
         }
 
         pub fn query(&self) -> Result<String, Box<dyn Error>> {
-
             if self.limit.is_none() {
-                let url = format!(
-                    "{}", self.base_url
-                );
+                let url = format!("{}", self.base_url);
 
                 let res: String = ureq::get(&url).call()?.into_string()?;
                 let fireball = to_string_pretty(res).unwrap();
                 Ok(fireball)
-            }
-            else {
+            } else {
                 let limit = self.limit.as_ref().unwrap();
 
-                let url = format!(
-                    "{}?limit={}",
-                    self.base_url, limit
-                );
+                let url = format!("{}?limit={}", self.base_url, limit);
 
                 let res: String = ureq::get(&url).call()?.into_string()?;
                 let fireball = to_string_pretty(res).unwrap();
 
                 Ok(fireball)
             }
+        }
+    }
+
+    /// Base Client for the JPL Mission Design API in Query Mode.
+    /// # Example
+    /// ```
+    /// use voyager_client::jpl::{MissionDesign, QueryType};
+    ///
+    /// let mut base = MissionDesign::new();
+    ///
+    /// base.query(QueryType::DES, "2012%20TC4").unwrap();
+    /// ```
+    ///
+    
+    /// Mission Design in Q Mode (query)
+    #[derive(Debug, PartialEq)]
+    pub struct MissionDesign {
+        base_url: String,
+    }
+
+    #[derive(Debug, PartialEq)]
+    pub enum QueryType {
+        /// designation (provisional or IAU-number) of the desired object (e.g., 2015 AB or 141P or 433).
+        /// NOTE: when submitting a des containing a space in your query string, you must replace the space with %20, for example 2015%20AB.
+        DES,
+        /// object search string: designation in various forms (including MPC packed form), case-insensitive name, or SPK-ID;
+        /// designation can be an alternate provisional designation; examples: atira, 2003 CP20, 2003cp20, K03C20P, 163693, 2163693
+        SSTR,
+    }
+
+    impl MissionDesign {
+        pub fn new() -> Self {
+            MissionDesign {
+                base_url: String::from("https://ssd-api.jpl.nasa.gov/mdesign.api?"),
+            }
+        }
+
+        /// Mission Design: Q mode (query)
+        pub fn query(&self, query_type: QueryType, query: &str) -> Result<String, Box<dyn Error>> {
+            // Default Query Mode
+            match query_type {
+                QueryType::DES => {
+                    let url = format!("{}des={}", self.base_url, query);
+
+                    let res: String = ureq::get(&url).call()?.into_string()?;
+                    let mission = to_string_pretty(res).unwrap();
+
+                    Ok(mission)
+                }
+                QueryType::SSTR => {
+                    let url = format!("{}sstr={}", self.base_url, query);
+
+                    let res: String = ureq::get(&url).call()?.into_string()?;
+                    let mission = to_string_pretty(res).unwrap();
+
+                    Ok(mission)
+                }
+            }
+        }
+    }
+
+    /// Base Client for Mission Design in Accessible Mode (A)
+    #[derive(Debug, PartialEq)]
+    pub struct MissionDesignAccessible {
+        base_url: String,
+        limit: Option<u32>,
+        crit: Option<u8>,
+        year: Option<String>,
+        rdvz: Option<bool>,
+        class: Option<String>
+    }
+
+    impl MissionDesignAccessible {
+        /// Create a new MissionDesignAccessible base client with None set for the limit, crit, year, rdvz and class fields
+        pub fn new() -> Self {
+            MissionDesignAccessible {
+                base_url: String::from("https://ssd-api.jpl.nasa.gov/mdesign.api?"),
+                limit: None,
+                crit: None,
+                year: None,
+                rdvz: None,
+                class: None,
+            }
+        }
+
+        pub fn limit(&mut self, limit: u32) {
+            self.limit = Some(limit)
+        }
+
+        pub fn crit(&mut self, crit: u8) {
+            self.crit = Some(crit)
+        }
+
+        pub fn year(&mut self, year: String) {
+            self.year = Some(year)
+        }
+
+        pub fn rdvz(&mut self, rdvz: bool) {
+            self.rdvz = Some(rdvz)
+        }
+
+        pub fn class(&mut self, class: String) {
+            self.class = Some(class)
+        }
+
+        /// Must set Limit, Crit, and year values
+        pub fn lim_crit_year(&self) -> Result<String, Box<dyn Error>> {
+            assert!(self.limit != None, "Limit is None");
+            assert!(self.crit != None, "Crit is None");
+            assert!(self.year != None, "Year is None");
+
+            let url = format!(
+                "{}lim={}&crit={}&year={}",
+                self.base_url, self.limit.as_ref().unwrap(), self.crit.as_ref().unwrap(), self.year.as_ref().unwrap()
+            );
+
+            let res = ureq::get(&url).call()?.into_string()?;
+            let pretty = to_string_pretty(res).unwrap();
+
+            Ok(pretty)
+        }
+    }
+
+    #[derive(Debug, PartialEq)]
+    pub struct MissionDesignMap {
+        base_url: String,
+        des: Option<String>,
+        mjd0: Option<u32>,
+        span: Option<u32>,
+        tof_min: Option<u32>,
+        tof_max: Option<u32>,
+        step: Option<u8>
+    }
+
+    impl MissionDesignMap {
+        pub fn new() -> Self {
+            MissionDesignMap {
+                base_url: String::from("https://ssd-api.jpl.nasa.gov/mdesign.api?"),
+                des: None,
+                mjd0: None,
+                span: None,
+                tof_min: None,
+                tof_max: None,
+                step: None
+            }
+        }
+
+        pub fn designation(&mut self, des: &str) {
+            self.des = Some(String::from(des))
+        }
+
+        pub fn mjd(&mut self, x: u32) {
+            self.mjd0 = Some(x)
+        }
+
+        pub fn span(&mut self, span: u32) {
+            self.span = Some(span)
+        }
+
+        pub fn tof(&mut self, min: u32, max: u32) {
+            self.tof_min = Some(min);
+            self.tof_max = Some(max);
+        }
+
+        pub fn step(&mut self, step: u8) {
+            self.step = Some(step)
+        }
+
+        pub fn query(&self) -> Result<String, Box<dyn Error>> {
+            assert!(self.des != None, "Des is None");
+            assert!(self.mjd0 != None, "Mjd0 is None");
+            assert!(self.span != None, "Span is None");
+            assert!(self.tof_min != None, "tof_min is None");
+            assert!(self.tof_max != None, "tof_max is None");
+            assert!(self.step != None, "Step is None");
+
+            let url = format!(
+                "{}des={}&mjd0={}&span={}&tof-min={}&tof-max={}&step={}",
+                self.base_url, self.des.as_ref().unwrap(), 
+                self.mjd0.as_ref().unwrap(), self.span.as_ref().unwrap(),
+                self.tof_min.as_ref().unwrap(), self.tof_max.as_ref().unwrap(),
+                self.step.as_ref().unwrap()
+            );
+
+            println!("Url: {}", url);
+
+            let res: String = ureq::get(&url).call()?.into_string()?;
+            let map = to_string_pretty(res).unwrap();
+
+            Ok(map)
         }
     }
 }

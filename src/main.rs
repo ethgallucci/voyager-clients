@@ -126,7 +126,42 @@ mod test {
         use voyager_client::jpl;
 
         let mut base = jpl::FireballClient::new();
-        base.limit(Some(1));
+        base.limit(1);
+
+        base.query().unwrap();
+    }
+
+    #[test]
+    fn try_default_mission_design() {
+        use voyager_client::jpl;
+        use voyager_client::jpl::QueryType;
+
+        let base = jpl::MissionDesign::new();
+        base.query(QueryType::DES, "2012%20TC4").unwrap();
+    }
+
+    #[test]
+    fn try_mission_design_accessible_lim_crit_year() {
+        use voyager_client::jpl::*;
+
+        let mut base = MissionDesignAccessible::new();
+        base.limit(10);
+        base.crit(1);
+        base.year(String::from("2025,2026,2027,2028,2029"));
+
+        base.lim_crit_year().unwrap();
+    }
+
+    #[test]
+    fn try_mission_design_map_mode() {
+        use voyager_client::jpl::*;
+
+        let mut base = MissionDesignMap::new();
+        base.designation("2012%20TC4");
+        base.mjd(58490);
+        base.span(3652);
+        base.tof(10, 36);
+        base.step(2);
 
         base.query().unwrap();
     }
