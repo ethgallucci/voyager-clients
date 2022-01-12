@@ -626,6 +626,17 @@ pub mod jpl {
     }
 
     /// Base Client for Mission Design in Accessible Mode (A)
+    /// # Example
+    /// ```
+    /// use voyager_client::jpl::*;
+    ///
+    /// let mut base = MissionDesignAccessible::new();
+    /// base.limit(10);
+    /// base.crit(1);
+    /// base.year(String::from("2025,2026,2027,2028,2029"));
+    /// 
+    /// base.lim_crit_year().unwrap();
+    /// ```
     #[derive(Debug, PartialEq)]
     pub struct MissionDesignAccessible {
         base_url: String,
@@ -687,6 +698,20 @@ pub mod jpl {
         }
     }
 
+    /// Base Client for Mission Design in Map Mode (M)
+    /// # Example
+    /// ```
+    /// use voyager_client::jpl::*;
+    ///
+    /// let mut base = MissionDesignMap::new();
+    /// base.designation("2012%20TC4");
+    /// base.mjd(58490);
+    /// base.span(3652);
+    /// base.tof(10, 36);
+    /// base.step(2);
+    /// 
+    /// base.query().unwrap();;
+    /// ```
     #[derive(Debug, PartialEq)]
     pub struct MissionDesignMap {
         base_url: String,
