@@ -132,11 +132,23 @@ mod test {
     }
 
     #[test]
-    fn try_mission_design() {
+    fn try_default_mission_design() {
         use voyager_client::jpl;
         use voyager_client::jpl::QueryType;
 
-        let mut base = jpl::MissionDesign::new();
+        let base = jpl::MissionDesign::new();
         base.query(QueryType::DES, "2012%20TC4").unwrap();
+    }
+
+    #[test]
+    fn try_mission_design_accessible_lim_crit_year() {
+        use voyager_client::jpl::*;
+
+        let mut base = MissionDesignAccessible::new();
+        base.limit(10);
+        base.crit(1);
+        base.year(String::from("2025,2026,2027,2028,2029"));
+
+        base.lim_crit_year().unwrap();
     }
 }

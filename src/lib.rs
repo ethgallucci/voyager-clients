@@ -567,18 +567,19 @@ pub mod jpl {
         }
     }
 
+    /// Base Client for the JPL Mission Design API in Query Mode.
+    /// # Example
+    /// ```
+    /// use voyager_client::jpl::{MissionDesign, QueryType};
+    ///
+    /// let mut base = MissionDesign::new();
+    ///
+    /// base.query(QueryType::DES, "2012%20TC4").unwrap();
+    /// ```
+    ///
     #[derive(Debug, PartialEq)]
     pub struct MissionDesign {
         base_url: String,
-        mode: Option<MissionMode>,
-        limit: Option<u32>,
-    }
-
-    #[derive(Debug, PartialEq)]
-    pub enum MissionMode {
-        Accessible,
-        Map,
-        MissionExtesnion
     }
 
     #[derive(Debug, PartialEq)]
@@ -595,35 +596,12 @@ pub mod jpl {
         pub fn new() -> Self {
             MissionDesign {
                 base_url: String::from("https://ssd-api.jpl.nasa.gov/mdesign.api?"),
-                mode: None,
-                limit: None,
             }
         }
 
-        /// Query is the default mode used - Optionally switch to Accessible, Map, or Mission Extension
-        pub fn mode(&mut self, mode: MissionMode) {
-            match mode {
-                MissionMode::Map => self.mode = Some(MissionMode::Map),
-                MissionMode::MissionExtesnion => self.mode = Some(MissionMode::MissionExtesnion),
-                MissionMode::Accessible => self.mode = Some(MissionMode::Accessible),
-            }
-        }
-
-        /// Optionally set a limit to the number of responses returned
-        pub fn limit(&mut self, limit: u32) {
-            self.limit = Some(limit)
-        }
-
-        /// Must be in default mode to call this function.
-        /// If you're using Accessible, Map, or Mission Extension mode use the corresponding methods
-        pub fn query(
-            &mut self,
-            query_type: QueryType,
-            query: &str,
-        ) -> Result<String, Box<dyn Error>> {
+        /// Mission Design: Q mode (query)
+        pub fn query(&self, query_type: QueryType, query: &str) -> Result<String, Box<dyn Error>> {
             // Default Query Mode
-            assert!(self.mode == None);
-
             match query_type {
                 QueryType::DES => {
                     let url = format!("{}des={}", self.base_url, query);
@@ -642,6 +620,68 @@ pub mod jpl {
                     Ok(mission)
                 }
             }
+        }
+    }
+
+    /// Base Client for Mission Design in Accessible Mode
+    #[derive(Debug, PartialEq)]
+    pub struct MissionDesignAccessible {
+        base_url: String,
+        limit: Option<u32>,
+        crit: Option<u8>,
+        year: Option<String>,
+        rdvz: Option<bool>,
+        class: Option<String>
+    }
+
+    impl MissionDesignAccessible {
+        /// Create a new MissionDesignAccessible base client with None set for the limit, crit, year, rdvz and class fields
+        pub fn new() -> Self {
+            MissionDesignAccessible {
+                base_url: String::from("https://ssd-api.jpl.nasa.gov/mdesign.api?"),
+                limit: None,
+                crit: None,
+                year: None,
+                rdvz: None,
+                class: None,
+            }
+        }
+
+        pub fn limit(&mut self, limit: u32) {
+            self.limit = Some(limit)
+        }
+
+        pub fn crit(&mut self, crit: u8) {
+            self.crit = Some(crit)
+        }
+
+        pub fn year(&mut self, year: String) {
+            self.year = Some(year)
+        }
+
+        pub fn rdvz(&mut self, rdvz: bool) {
+            self.rdvz = Some(rdvz)
+        }
+
+        pub fn class(&mut self, class: String) {
+            self.class = Some(class)
+        }
+
+        /// Must set Limit, Crit, and year values
+        pub fn lim_crit_year(&self) -> Result<String, Box<dyn Error>> {
+            assert!(self.limit != None, "Limit is None");
+            assert!(self.crit != None, "Crit is None");
+            assert!(self.year != None, "Year is None");
+
+            let url = format!(
+                "{}lim={}&crit={}&year={}",
+                self.base_url, self.limit.as_ref().unwrap(), self.crit.as_ref().unwrap(), self.year.as_ref().unwrap()
+            );
+
+            let res = ureq::get(&url).call()?.into_string()?;
+            let pretty = to_string_pretty(res).unwrap();
+
+            Ok(pretty)
         }
     }
 }
