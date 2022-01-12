@@ -1,18 +1,13 @@
-mod lib;
-
-fn main() {
-    println!("Voyager v0.2.5")
-}
-
 #[cfg(test)]
 mod test {
 
     #[test]
     fn doc_test() {
-        use voyager_client::{donki_client, timing};
+        use voyager_client::donki_client;
+        use voyager_client::time::*;
 
         // Instantiate a Base Client
-        let base_donki_client = donki_client::Solar::new();
+        let base_donki_client = donki_client::SolarFlare::new();
 
         // Setup timing parameters
         let start = String::from("2018-01-01");
@@ -24,25 +19,26 @@ mod test {
 
     #[test]
     fn try_apod() {
-        use voyager_client::apod_client::*;
+        use voyager_client::apod;
 
         // Instantiate base
-        let mut base = Apod::new();
+        let mut base = apod::ApodClient::new();
         // Try to set the date for query
-        base.set_date(String::from("2015-06-07"));
+        base.set_date(String::from("2021-06-07"));
         // Try query
         base.query().unwrap();
     }
 
     #[test]
     fn try_solar() {
-        use voyager_client::{donki_client, timing};
+        use voyager_client::donki::donki_client;
+        use voyager_client::time::timing;
 
         // Setup timing
         let start = timing::one_month();
         let end = timing::today();
         // Instantiate base
-        let base = donki_client::Solar::new();
+        let base = donki_client::SolarFlare::new();
         // Try query
         base.query(start, end).unwrap();
     }
@@ -62,7 +58,8 @@ mod test {
 
     #[test]
     fn try_neo() {
-        use voyager_client::{neo_client, timing};
+        use voyager_client::neo_client;
+        use voyager_client::time::*;
 
         let start = String::from("2022-01-01");
         let end = timing::today();
@@ -74,15 +71,15 @@ mod test {
 
     #[test]
     fn try_insight() {
-        use voyager_client::insight_client::*;
+        use voyager_client::insight;
 
-        let base = InsightWeather::new();
+        let base = insight::InsightWeather::new();
         base.query().unwrap();
     }
 
     #[test]
     fn try_cme() {
-        use voyager_client::timing;
+        use voyager_client::time::*;
         use voyager_client::donki_client::*;
 
         let base = CoronalMassEjection::new();
@@ -94,15 +91,15 @@ mod test {
 
     #[test]
     fn try_env_keys() {
-        use voyager_client::keys::from_dotenv;
+        use voyager_client::key::*;
 
-        let key = from_dotenv().unwrap();
+        let key = keys::from_dotenv().unwrap();
         println!("{}", key);
     }
 
     #[test]
     fn try_tech_transfer_patent() {
-        use voyager_client::tech_transfer::*;
+        use voyager_client::tech::tech_transfer::*;
 
         let base = TechTransferClient::new();
 
@@ -112,7 +109,7 @@ mod test {
 
     #[test]
     fn try_tech_transfer_software() {
-        use voyager_client::tech_transfer::*;
+        use voyager_client::tech::tech_transfer::*;
 
         let mut base = TechTransferClient::new();
         base.switch(Collections::Software).unwrap();
@@ -123,9 +120,9 @@ mod test {
 
     #[test]
     fn try_fireball() {
-        use voyager_client::jpl;
+        use voyager_client::jpl_client::*;
 
-        let mut base = jpl::FireballClient::new();
+        let mut base = FireballClient::new();
         base.limit(1);
 
         base.query().unwrap();
@@ -133,16 +130,15 @@ mod test {
 
     #[test]
     fn try_default_mission_design() {
-        use voyager_client::jpl;
-        use voyager_client::jpl::QueryType;
+        use voyager_client::jpl_client::*;
 
-        let base = jpl::MissionDesign::new();
+        let base = MissionDesign::new();
         base.query(QueryType::DES, "2012%20TC4").unwrap();
     }
 
     #[test]
     fn try_mission_design_accessible_lim_crit_year() {
-        use voyager_client::jpl::*;
+        use voyager_client::jpl_client::*;
 
         let mut base = MissionDesignAccessible::new();
         base.limit(10);
@@ -154,7 +150,7 @@ mod test {
 
     #[test]
     fn try_mission_design_map_mode() {
-        use voyager_client::jpl::*;
+        use voyager_client::jpl_client::*;
 
         let mut base = MissionDesignMap::new();
         base.designation("2012%20TC4");
@@ -168,7 +164,7 @@ mod test {
 
     #[test]
     fn try_solar_energetic_particle() {
-        use voyager_client::donki_client::*;
+        use voyager_client::donki::donki_client::*;
 
         let base = SolarEnergeticParticle::new();
         let start = "2021-09-12".to_string();
