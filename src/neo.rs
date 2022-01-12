@@ -3,7 +3,7 @@ use std::error::Error;
 use crate::key;
 use crate::pretty::*;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct Neo {
     base_url: String,
 }

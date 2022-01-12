@@ -6,7 +6,7 @@
 //! # Sample program with the GeoMagnetic base client
 //!
 //! Create a .env file at the root of your project
-//! and add your api key with the variable name API_KEY. Make sure to add .env to your .gitignore!
+//! and add your api key with the variable name API_KEY.
 //!
 //! ```
 //! use voyager_client::{donki, time};
@@ -22,8 +22,7 @@
 //! let res = base.query(start, end).unwrap();
 //! 
 //! ```
-//! This will fetch a response from the magnetic storms endpoint, and convert it
-//! into a prettyfied String in JSON format
+//! Base clients query methods return a serde_json::Value.
 //! 
 
 /// For interacting with NASA's Picture of the Day endpoint.
@@ -62,8 +61,6 @@ pub mod apod;
 /// let res = base.query(start, end).unwrap();
 ///
 /// ```
-/// all API query functions will pipe out their response into the progress bar method
-/// which will in turn print the response after it's finished processing.
 ///
 /// # Querying magnetic storm endpoints
 ///
@@ -97,7 +94,6 @@ pub mod key;
 
 
 /// Contains methods for prettyfying JSON responses.
-/// Will output a prettyfied String (JSON format) response instead of a large unformatted JSON blob
 pub mod pretty;
 pub use pretty::*;
 
@@ -138,9 +134,8 @@ pub mod neo;
 pub mod insight;
 
 
-/// For interacting with the Tech Transfer API
-/// Defaults to the patent collection
-/// Can also be switched to software via the .software() method
+/// For interacting with the Tech Transfer API. Defaults to the patent collection but can 
+/// also be switched to patent protected, software, or spinoff via the .switch() method.
 ///
 /// # Example
 /// ```

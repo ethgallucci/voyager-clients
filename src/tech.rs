@@ -10,7 +10,7 @@ pub enum Collections {
     Spinoff,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct TechTransferClient {
     base_url: String,
 }
