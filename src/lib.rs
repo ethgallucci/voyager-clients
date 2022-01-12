@@ -135,8 +135,8 @@ pub mod neo;
 /// // Query Endpoint
 /// let res = base.query().unwrap();
 /// ```
-
 pub mod insight;
+
 
 /// For interacting with the Tech Transfer API
 /// Defaults to the patent collection
@@ -182,7 +182,6 @@ pub mod tech;
 /// base.query(QueryType::DES, "2012%20TC4").unwrap();
 /// ```
 /// 
-
 pub mod jpl;
 
 
