@@ -28,15 +28,17 @@ First create a .env file at the root of your project and add a variable named "A
     use voyager_client::{donki_client, timing};
 
     fn main() {
-        // Instantiate Base Client
-        let base = donki_client::CoronalMassEjection::new();
-        
-        // Setup Timing Parameters for Query
-        let start = String::from("2019-01-01");
-        let end = timing::today();
+        use voyager_client::{donki, time};
 
-        // Query the API
-        let res = base.query(start, end).unwrap();
+        // Instantiate a base client
+        let base = donki::GeoMagnetic::new();
+        
+        // Setup time
+        let start = String::from("2015-01-01");
+        let end = time::today();
+        
+        // Query the endpoint
+        base.query(start, end).unwrap();
     }
 ```
 This is a very simple program using voyager_client. We instantiate our base client for the Coronal Mass Ejection endpoint, and setup our timing parameters for our query. Then we pass the start and end dates into the query function. This will return a JSON string in prettyfied format.
