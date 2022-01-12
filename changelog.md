@@ -1,3 +1,17 @@
+v0.3.0:
+
+Breaking Change!
+
+This release restructures the entire crate into more a intuitive package architecture. Modules have been moved into their own files for easier maintainability in development, main has been removed, tests have moved into the tests directory in unit_test.rs. While there were strong efforts to keep all modules in the same trees, some had to move to successfully make the existing structure more intuitive.
+
+- All donki clients have moved into the donki module
+- All jpl clients moved into the jpl module
+- Timing module was renamed to time
+- To_pretty module was renamed to pretty
+- Insight_client was renamed to insight
+
+------------------------------------------------------------------------------------------------
+
 v0.2.9:
 
 Adds more support for the JPL Collection of api bindings.
