@@ -1,8 +1,8 @@
 
 use std::error::Error;
 
-use crate::key::*;
-use crate::to_pretty::to_pretty::*;
+use crate::key;
+use crate::pretty::*;
 
 /// Base Client for ApodClient api
 #[derive(Debug, PartialEq)]
@@ -15,7 +15,7 @@ impl ApodClient {
     /// Constructor
     pub fn new() -> Self {
         ApodClient {
-            base_url: String::from("https://api.nasa.gov/planetary/ApodClient?"),
+            base_url: String::from("https://api.nasa.gov/planetary/apod?"),
             date: None,
         }
     }
@@ -27,7 +27,7 @@ impl ApodClient {
 
     /// Query function
     pub fn query(&self) -> Result<String, Box<dyn Error>> {
-        let key: String = keys::from_dotenv()?;
+        let key: String = key::from_dotenv()?;
 
         if self.date.is_none() {
             let url = format!("{}api_key={}", self.base_url, key);

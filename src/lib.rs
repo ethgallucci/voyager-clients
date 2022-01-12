@@ -1,25 +1,30 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 
-//! # Sample program with voyager_client
+//! # API bindings for NASA's Open APIs
+//! Features light bindings for a multitude of APIs. Including the APOD, DONKI, Insight, JPL, NEO, and Tech Transfer collections.
+//! 
+//! # Sample program with the GeoMagnetic base client
 //!
 //! Create a .env file at the root of your project
 //! and add your api key with the variable name API_KEY. Make sure to add .env to your .gitignore!
 //!
 //! ```
-//! use voyager_client::{donki_client, timing};
+//! use voyager_client::{donki, time};
 //!
-//! // Instantiate a Base Client
-//! let base = donki_client::CoronalMassEjection::new();
-//!
-//! // Setup timing parameters
-//! let start = String::from("2020-01-01");
-//! let end = timing::today();
-//!
-//! // Query the API
-//! base.query(start, end).unwrap();
+//! // Instantiate a base client
+//! let base = donki::GeoMagnetic::new();
+//! 
+//! // Setup time
+//! let start = String::from("2015-01-01");
+//! let end = time::today();
+//! 
+//! // Query the endpoint
+//! let res = base.query(start, end).unwrap();
+//! 
 //! ```
 //! This will fetch a response from the magnetic storms endpoint, and convert it
 //! into a prettyfied String in JSON format
+//! 
 
 /// For interacting with NASA's Picture of the Day endpoint.
 ///
@@ -37,7 +42,6 @@
 /// ```
 /// This will return a response containing data on the Picture of the Day, as well as the url to the jpg file.
 pub mod apod;
-pub use apod::*;
 
 
 /// Contains methods for interacting with the DONKI client library.
@@ -45,15 +49,15 @@ pub use apod::*;
 /// # Querying solar flare API
 ///
 /// ```
-/// use voyager_client::donki_client;
-/// use voyager_client::timing;
+/// use voyager_client::donki;
+/// use voyager_client::time;
 ///
 /// // Instantiate Base Client
-/// let mut base = donki_client::SolarFlare::new();
+/// let mut base = donki::SolarFlare::new();
 ///
-/// // Setup Timing
-/// let start = timing::one_month();
-/// let end = timing::today();
+/// // Setup time
+/// let start = time::one_month();
+/// let end = time::today();
 /// // Query Endpoint
 /// let res = base.query(start, end).unwrap();
 ///
@@ -64,21 +68,20 @@ pub use apod::*;
 /// # Querying magnetic storm endpoints
 ///
 /// ```
-/// use voyager_client::{donki_client, timing};
+/// use voyager_client::donki;
 ///
-/// // Setup timing
+/// // Setup time
 /// let start = String::from("2019-01-01");
 /// let end = String::from("2022-01-01");
 ///
 /// // Instantiate Base Client
-///  let mut base = donki_client::Magnetic::new();
+///  let mut base = donki::GeoMagnetic::new();
 ///
 /// // Query Endpoint
 /// let res = base.query(start, end).unwrap();
 ///
 /// ```
 pub mod donki;
-pub use donki::*;
 
 
 /// Handling API keys for NASA's open APIs from .env files.
@@ -86,30 +89,28 @@ pub use donki::*;
 ///
 /// # Retrieving a key
 /// ```
-/// use voyager_client::keys;
+/// use voyager_client::key;
 ///
-/// let key = keys::from_dotenv().unwrap();
+/// let key = key::from_dotenv().unwrap();
 /// ```
 pub mod key;
-pub use key::keys;
 
 
 /// Contains methods for prettyfying JSON responses.
 /// Will output a prettyfied String (JSON format) response instead of a large unformatted JSON blob
-pub mod to_pretty;
-pub use to_pretty::*;
-
+pub mod pretty;
+pub use pretty::*;
 
 /// For interacting with the Near Earth Objects API.
 ///
 /// # Example
 /// ```
-/// use voyager_client::{neo_client, timing};
+/// use voyager_client::{neo, time};
 ///
 /// // Instantiate Base Client
-/// let base = neo_client::Neo::new();
+/// let base = neo::Neo::new();
 ///
-/// // Setup Timings
+/// // Setup times
 /// let start = String::from("2022-01-01");
 /// let end = String::from("2022-01-07");
 ///
@@ -120,7 +121,6 @@ pub use to_pretty::*;
 /// due to the nature of the data. Any query greater than a month is likely to take a long time to
 /// process.
 pub mod neo;
-pub use neo::*;
 
 
 /// For interacting with the Insight Rover API.
@@ -128,14 +128,9 @@ pub use neo::*;
 /// # Example
 /// ```
 /// use voyager_client::insight;
-/// use voyager_client::timing;
 ///
 /// // Instantiate Base Client
 /// let base = insight::InsightWeather::new();
-///
-/// // Setup Timing Params
-/// let start = String::from("2021-01-01");
-/// let end = timing::today();
 ///
 /// // Query Endpoint
 /// let res = base.query().unwrap();
@@ -149,9 +144,10 @@ pub mod insight;
 ///
 /// # Example
 /// ```
-/// use voyager_client::tech_transfer::*;
+/// use voyager_client::tech;
+/// use tech::Collections;
 ///
-/// let mut base = TechTransferClient::new();
+/// let mut base = tech::TechTransferClient::new();
 ///
 /// // Default collection is patents, can switch to software
 /// base.switch(Collections::Software).unwrap();
@@ -160,40 +156,50 @@ pub mod insight;
 /// base.query(query).unwrap();
 /// ```
 pub mod tech;
-pub use tech::tech_transfer;
 
 
 /// Jet Propulsion Laboratory
-/// # Example usage
+/// # Example usage with FireballClient
 /// ```
-/// use voyager_client::jpl_client::*;
+/// use voyager_client::jpl::*;
 ///
+/// // Instantiate Base Client
 /// let mut base = FireballClient::new();
+/// 
 /// // Optionally limit the number of responses
 /// base.limit(10);
 ///
 /// base.query().unwrap();
 /// ```
+/// 
+/// # Example usage with MissionDesign
+/// ```
+/// use voyager_client::jpl::*;
+/// 
+/// // Instantiate Base Client
+/// let mut base = MissionDesign::new();
+/// 
+/// base.query(QueryType::DES, "2012%20TC4").unwrap();
+/// ```
+/// 
 
 pub mod jpl;
-pub use jpl::*;
 
 
-/// For handling different request timings. Known overflow errors at the moment, so use with caution. Use manual dates if possible.
+/// For handling different request times. Known overflow errors at the moment, so use with caution. Use manual dates if possible.
 ///
 /// # Query in a one month range
 /// ```
-/// use voyager_client::timing;
+/// use voyager_client::time;
 ///
-/// let start_date = timing::one_month();
-/// let end_date = timing::today();
+/// let start_date = time::one_month();
+/// let end_date = time::today();
 /// ```
 /// # Query in a week range
 /// ```
-/// use voyager_client::timing;
+/// use voyager_client::time;
 ///
-/// let start_date = timing::one_week();
-/// let end_date = timing::today();
+/// let start_date = time::one_week();
+/// let end_date = time::today();
 /// ```
 pub mod time;
-pub use time::timing;
