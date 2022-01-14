@@ -3,12 +3,14 @@ use std::error::Error;
 use crate::key;
 use crate::response::*;
 
+/// Base client for the Near Earth Objects API. Contains two methods, new, and query.
 #[derive(Debug)]
 pub struct Neo {
     base_url: String,
 }
 
 impl Neo {
+
     pub fn new() -> Self {
         Neo {
             base_url: String::from("https://api.nasa.gov/neo/rest/v1/feed?start_date="),
