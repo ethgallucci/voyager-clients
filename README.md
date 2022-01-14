@@ -26,13 +26,11 @@ First create a .env file at the root of your project and add a variable named "A
 ### Sample progam with voyager_client
 ```rust
     use voyager_client::{donki, timing};
+    use voyager_client::response::*;
+
+    use serde_json::Value as JsonValue;
 
     fn main() {
-        use voyager_client::{donki, time};
-        use voyager_client::response::*;
-
-        use serde_json::Value as JsonValue;
-
         // instantiate a base client
         let base = donki::SolarFlare::new();
 
