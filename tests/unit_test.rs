@@ -26,9 +26,7 @@ mod test {
         base.set_date(String::from("2021-06-07"));
         // Try query
         let res: Response = base.query().unwrap();
-
-        let json = res.json();
-        println!("{}", json.unwrap());
+        println!("{}", res.to_pretty().unwrap());
     }
 
     #[test]

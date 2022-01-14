@@ -21,6 +21,12 @@ impl Response {
         let dump = self.json.clone();
         Ok(dump)
     }
+
+    pub fn to_pretty(&self) -> Result<String, Box<dyn Error>> {
+        let json = self.json.clone();
+        let pretty = serde_json::to_string_pretty(&json)?;
+        Ok(pretty)
+    }
 }
 
 /// Handles responses
