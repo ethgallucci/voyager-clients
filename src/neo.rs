@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use crate::key;
-use crate::pretty::*;
+use crate::response::*;
 
 #[derive(Debug)]
 pub struct Neo {
@@ -15,14 +15,14 @@ impl Neo {
         }
     }
 
-    pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self, start: String, end: String) -> Result<Response, Box<dyn Error>> {
         let key: String = key::from_dotenv()?;
 
         let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
         println!("Starting Neo query from {}, to {}.", start, end);
 
         let res: String = ureq::get(&url).call()?.into_string()?;
-        let neo = to_string_pretty(res).unwrap();
+        let neo = into_response(res.as_str()).unwrap();
 
         Ok(neo)
     }

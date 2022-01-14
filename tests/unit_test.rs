@@ -25,11 +25,10 @@ mod test {
         // Try to set the date for query
         base.set_date(String::from("2021-06-07"));
         // Try query
-        let mut res: Response = base.query().unwrap();
-        println!("{:?}", res);
+        let res: Response = base.query().unwrap();
 
-        let bytes_vec = res.bytedump();
-        println!("{:?}", bytes_vec)
+        let json = res.json();
+        println!("{}", json.unwrap());
     }
 
     #[test]

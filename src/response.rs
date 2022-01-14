@@ -2,7 +2,6 @@ use serde_json::Value as JsonValue;
 use serde_derive::{Serialize, Deserialize};
 use std::error::Error;
 
-
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Response {
     json: JsonValue,
@@ -13,9 +12,14 @@ impl Response {
         Response { json }
     }
 
-    pub fn bytedump(&mut self) -> Result<Vec<u8>, Box<dyn Error>> {
+    pub fn bytedump(&self) -> Result<Vec<u8>, Box<dyn Error>> {
         let bytes: Vec<u8> = serde_json::to_vec(&self.json)?;
         Ok(bytes)
+    }
+
+    pub fn json(&self) -> Result<JsonValue, Box<dyn Error>> {
+        let dump = self.json.clone();
+        Ok(dump)
     }
 }
 
