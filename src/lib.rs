@@ -2,11 +2,18 @@
 
 //! # API bindings for NASA's Open APIs
 //! Features light bindings for a multitude of APIs. Including:
-//! * APOD
-//! * DONKI
-//! * JPL
-//! * NEO
-//! * TECH_TRANSFER
+//! * Picture of the day -> [`apod`]
+//! * Database of Notifications, Knowledge, Information -> [`donki`]  
+//! * Jet Propulsion Laboratory -> [`jpl`]
+//! * Near Earth Objects -> [`neo`]
+//! * Tech Transfer -> [`tech`]
+
+//! # Features
+//! * Base clients for interacting with NASA's open APIs
+//! * Methods for easily turning responses into serde_json values
+//! * Each client is it's own struct that holds at least one field (base_url: String). Some clients
+//! that take more complex query params may have a field for each parmater, and include methods to
+//! update the params before sending the query.
 
 //! # Sample program with the GeoMagnetic base client
 //! Create a .env file at the root of your project
@@ -224,3 +231,5 @@ pub mod jpl;
 /// let end_date = time::today();
 /// ```
 pub mod time;
+
+
