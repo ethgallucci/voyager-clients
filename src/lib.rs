@@ -1,15 +1,22 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 
 //! # API bindings for NASA's Open APIs
-//! Features light bindings for a multitude of APIs. Including the APOD, DONKI, Insight, JPL, NEO, and Tech Transfer collections.
-//! 
+//! Features light bindings for a multitude of APIs. Including:
+//! * APOD
+//! * DONKI
+//! * JPL
+//! * NEO
+//! * TECH_TRANSFER
+
 //! # Sample program with the GeoMagnetic base client
-//!
 //! Create a .env file at the root of your project
 //! and add your api key with the variable name API_KEY.
 //!
 //! ```
 //! use voyager_client::{donki, time};
+//! use voyager_client::response::*;
+//! 
+//! use serde_json::Value as JsonValue;
 //!
 //! // Instantiate a base client
 //! let base = donki::GeoMagnetic::new();
@@ -17,13 +24,14 @@
 //! // Setup time
 //! let start = String::from("2015-01-01");
 //! let end = time::today();
-//! 
 //! // Query the endpoint
-//! let res = base.query(start, end).unwrap();
+//! let res: Response = base.query(start, end).unwrap();
 //! 
+//! // Manipulating the response
+//! let json: JsonValue = res.json().unwrap();
+//! let bytes_vec: Vec<u8> = res.bytedump().unwrap();
 //! ```
-//! Base clients query methods return a serde_json::Value.
-//! 
+//! Base clients query methods return a Response object. 
 
 /// For interacting with NASA's Picture of the Day endpoint.
 ///

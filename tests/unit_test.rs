@@ -1,18 +1,27 @@
+#![allow(unused_variables)]
+
 #[cfg(test)]
 mod test {
     #[test]
-    fn doc_test() {
-        use voyager_client::{donki, time};
+    fn readme() {
+        use voyager_client::donki;
+        use voyager_client::response::*;
 
-        // Instantiate a base client
-        let base = donki::GeoMagnetic::new();
-        
-        // Setup time
-        let start = String::from("2015-01-01");
-        let end = time::today();
-        
-        // Query the endpoint
-        base.query(start, end).unwrap();
+        use serde_json::Value as JsonValue;
+
+        // instantiate a base client
+        let base = donki::SolarFlare::new();
+
+        // setup range for query params
+        let start = String::from("2021-01-01");
+        let end = String::from("2022-01-01");
+
+        // query the endpoint
+        let res: Response = base.query(start, end).unwrap();
+
+        // manipulating responses..
+        let json: JsonValue = res.json().unwrap();
+        let bytes_vec: Vec<u8> = res.bytedump().unwrap();
     }
 
     #[test]

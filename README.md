@@ -25,20 +25,27 @@ Future versions of voyager will strive to incorporate more endpoints, until all 
 First create a .env file at the root of your project and add a variable named "API_KEY" with your API key from NASA as it's value. Make sure to add .env to your gitignore!
 ### Sample progam with voyager_client
 ```rust
-    use voyager_client::{donki_client, timing};
+    use voyager_client::{donki, timing};
 
     fn main() {
         use voyager_client::{donki, time};
+        use voyager_client::response::*;
 
-        // Instantiate a base client
-        let base = donki::GeoMagnetic::new();
-        
-        // Setup time
-        let start = String::from("2015-01-01");
-        let end = time::today();
-        
-        // Query the endpoint
-        base.query(start, end).unwrap();
+        use serde_json::Value as JsonValue;
+
+        // instantiate a base client
+        let base = donki::SolarFlare::new();
+
+        // setup range for query params
+        let start = String::from("2021-01-01");
+        let end = String::from("2022-01-01");
+
+        // query the endpoint
+        let res: Response = base.query(start, end).unwrap();
+
+        // manipulating responses..
+        let json: JsonValue = res.json().unwrap();
+        let bytes_vec: Vec<u8> = res.bytedump().unwrap();
     }
 ```
 This is a very simple program using voyager_client. We instantiate our base client for the Coronal Mass Ejection endpoint, and setup our timing parameters for our query. Then we pass the start and end dates into the query function. This will return a JSON string in prettyfied format.
