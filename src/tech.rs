@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use crate::key;
-use crate::pretty::*;
+use crate::response::*;
 
 pub enum Collections {
     Patent,
@@ -45,18 +45,14 @@ impl TechTransferClient {
         }
     }
 
-    pub fn query(&self, query: String) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self, query: String) -> Result<Response, Box<dyn Error>> {
         let key: String = key::from_dotenv()?;
 
         let url = format!("{}{}&api_key={}", self.base_url, query, key);
 
         let res: String = ureq::get(&url).call()?.into_string()?;
-        let tech = to_string_pretty(res);
+        let tech = into_response(res.as_str()).unwrap();
 
-        if tech.is_ok() {
-            Ok(tech.unwrap())
-        } else {
-            Err(tech.unwrap_err())
-        }
+        Ok(tech)
     }
 }

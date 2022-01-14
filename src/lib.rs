@@ -134,6 +134,25 @@ pub mod neo;
 pub mod insight;
 
 
+/// Methods for manipulating responses. Get serde_json dumps or byte vectors from responses.
+/// # Example
+/// ```
+/// use voyager_client::donki::*;
+/// use serde_json::Value as JsonValue;
+///
+/// // Setup range
+/// let start = String::from("2019-01-01");
+/// let end = String::from("2022-01-01");
+/// // Instantiate base
+/// let base = GeoMagnetic::new();
+/// // Try query
+/// let res = base.query(start, end).unwrap();
+/// // Handle Response
+/// let json: JsonValue = res.json().unwrap();
+/// let bytes_vec: Vec<u8> = res.bytedump().unwrap();
+/// ```
+pub mod response;
+
 /// For interacting with the Tech Transfer API. Defaults to the patent collection but can 
 /// also be switched to patent protected, software, or spinoff via the .switch() method.
 ///

@@ -2,6 +2,7 @@ use std::error::Error;
 
 use crate::key;
 use crate::pretty::*;
+use crate::response::*;
 
 /// Base Client for Solar Flare API
 #[derive(Debug, PartialEq)]
@@ -18,14 +19,14 @@ impl SolarFlare {
     }
 
     /// Query method
-    pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self, start: String, end: String) -> Result<Response, Box<dyn Error>> {
         let key: String = key::from_dotenv()?;
 
         let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
         println!("Starting solar query from {}, to {}.", start, end);
 
         let res: String = ureq::get(&url).call()?.into_string()?;
-        let solar = to_string_pretty(res).unwrap();
+        let solar: Response = into_response(res.as_str()).unwrap();
 
         Ok(solar)
     }
@@ -46,14 +47,14 @@ impl GeoMagnetic {
     }
 
     /// Query method
-    pub fn query(&self, start: String, end: String) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self, start: String, end: String) -> Result<Response, Box<dyn Error>> {
         let key: String = key::from_dotenv()?;
 
         let url: String = format!("{}{}&endDate={}&api_key={}", self.base_url, start, end, key);
         println!("Starting GeoMagnetic query from {}, to {}.", start, end);
 
         let res: String = ureq::get(&url).call()?.into_string()?;
-        let mag = to_string_pretty(res).unwrap();
+        let mag = into_response(res.as_str()).unwrap();
 
         Ok(mag)
     }

@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use crate::key;
-use crate::pretty::*;
+use crate::response::*;
 
 #[derive(Debug, PartialEq)]
 pub struct InsightWeather {
@@ -15,14 +15,14 @@ impl InsightWeather {
         }
     }
 
-    pub fn query(&self) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self) -> Result<Response, Box<dyn Error>> {
         let key = key::from_dotenv()?;
 
         let url = format!("{}{}&feedtype=json&ver=1.0", self.base_url, key);
         println!("Starting Inisght Weather query: {}", url);
 
         let res: String = ureq::get(&url).call()?.into_string()?;
-        let mrover = to_string_pretty(res).unwrap();
+        let mrover = into_response(res.as_str()).unwrap();
 
         Ok(mrover)
     }

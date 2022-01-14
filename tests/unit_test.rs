@@ -18,13 +18,15 @@ mod test {
     #[test]
     fn try_apod() {
         use voyager_client::apod;
+        use voyager_client::response::*;
 
         // Instantiate base
         let mut base = apod::ApodClient::new();
         // Try to set the date for query
         base.set_date(String::from("2021-06-07"));
         // Try query
-        base.query().unwrap();
+        let res: Response = base.query().unwrap();
+        println!("{}", res.to_pretty().unwrap());
     }
 
     #[test]

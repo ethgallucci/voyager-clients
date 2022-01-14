@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::pretty::*;
+use crate::response::*;
 
 /// Atmospheric Impact Data
 #[derive(Debug, PartialEq)]
@@ -21,12 +21,12 @@ impl FireballClient {
         self.limit = Some(limit)
     }
 
-    pub fn query(&self) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self) -> Result<Response, Box<dyn Error>> {
         if self.limit.is_none() {
             let url = format!("{}", self.base_url);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
-            let fireball = to_string_pretty(res).unwrap();
+            let fireball = into_response(res.as_str()).unwrap();
             Ok(fireball)
         } else {
             let limit = self.limit.as_ref().unwrap();
@@ -34,7 +34,7 @@ impl FireballClient {
             let url = format!("{}?limit={}", self.base_url, limit);
 
             let res: String = ureq::get(&url).call()?.into_string()?;
-            let fireball = to_string_pretty(res).unwrap();
+            let fireball = into_response(res.as_str()).unwrap();
 
             Ok(fireball)
         }
@@ -76,14 +76,14 @@ impl MissionDesign {
     }
 
     /// Mission Design: Q mode (query)
-    pub fn query(&self, query_type: QueryType, query: &str) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self, query_type: QueryType, query: &str) -> Result<Response, Box<dyn Error>> {
         // Default Query Mode
         match query_type {
             QueryType::DES => {
                 let url = format!("{}des={}", self.base_url, query);
 
                 let res: String = ureq::get(&url).call()?.into_string()?;
-                let mission = to_string_pretty(res).unwrap();
+                let mission = into_response(res.as_str()).unwrap();
 
                 Ok(mission)
             }
@@ -91,7 +91,7 @@ impl MissionDesign {
                 let url = format!("{}sstr={}", self.base_url, query);
 
                 let res: String = ureq::get(&url).call()?.into_string()?;
-                let mission = to_string_pretty(res).unwrap();
+                let mission = into_response(res.as_str()).unwrap();
 
                 Ok(mission)
             }
@@ -155,7 +155,7 @@ impl MissionDesignAccessible {
     }
 
     /// Must set Limit, Crit, and year values
-    pub fn lim_crit_year(&self) -> Result<String, Box<dyn Error>> {
+    pub fn lim_crit_year(&self) -> Result<Response, Box<dyn Error>> {
         assert!(self.limit != None, "Limit is None");
         assert!(self.crit != None, "Crit is None");
         assert!(self.year != None, "Year is None");
@@ -169,7 +169,7 @@ impl MissionDesignAccessible {
         );
 
         let res = ureq::get(&url).call()?.into_string()?;
-        let pretty = to_string_pretty(res).unwrap();
+        let pretty = into_response(res.as_str()).unwrap();
 
         Ok(pretty)
     }
@@ -235,7 +235,7 @@ impl MissionDesignMap {
         self.step = Some(step)
     }
 
-    pub fn query(&self) -> Result<String, Box<dyn Error>> {
+    pub fn query(&self) -> Result<Response, Box<dyn Error>> {
         assert!(self.des != None, "Des is None");
         assert!(self.mjd0 != None, "Mjd0 is None");
         assert!(self.span != None, "Span is None");
@@ -257,7 +257,7 @@ impl MissionDesignMap {
         println!("Url: {}", url);
 
         let res: String = ureq::get(&url).call()?.into_string()?;
-        let map = to_string_pretty(res).unwrap();
+        let map = into_response(res.as_str()).unwrap();
 
         Ok(map)
     }
