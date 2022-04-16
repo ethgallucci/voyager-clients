@@ -1,185 +1,34 @@
-#![allow(unused_variables)]
-
 #[cfg(test)]
 mod test {
+    use serde_json::Value as JsonValue;
+
+    use voyager_client::*;
+    use client::BaseLayer;
+    use acl::OpenApiClient;
+
     #[test]
-    fn readme() {
-        use voyager_client::donki;
-        use voyager_client::response::*;
-
-        use serde_json::Value as JsonValue;
-
-        // instantiate a base client
-        let base = donki::SolarFlare::new();
-
-        // setup range for query params
-        let start = String::from("2021-01-01");
-        let end = String::from("2022-01-01");
-
-        // query the endpoint
-        let res: Response = base.query(start, end).unwrap();
-
-        // manipulating responses..
-        let json: JsonValue = res.json().unwrap();
-        let bytes_vec: Vec<u8> = res.bytedump().unwrap();
+    fn can_use_bcl_trait_methods_on_acl() {
+        let mut apod = acl::apod::ApodClient::new();
+        let lastr = apod.bcl.lastr();
+        // Break the base url
+        apod.bcl.burl_update("lolwut.com".to_string())
     }
 
     #[test]
-    fn try_apod() {
-        use voyager_client::apod;
-        use voyager_client::response::*;
-
-        // Instantiate base
-        let mut base = apod::ApodClient::new();
-        // Try to set the date for query
-        base.set_date(String::from("2021-06-07"));
-        // Try query
-        let res: Response = base.query().unwrap();
-        println!("{}", res.to_pretty().unwrap());
+    fn can_build_apod_client() {
+        let apod = acl::apod::ApodClient::new();
+        let res: JsonValue = apod.query().unwrap();
+        let pretty = serde_json::to_string_pretty(&res).unwrap();
+        println!("{}", pretty)
     }
 
     #[test]
-    fn try_solar() {
-        use voyager_client::donki;
-        use voyager_client::time;
+    fn can_build_interface() {
+        use acl::interface::Interface;
+        use acl::apod;
 
-        // Setup time
-        let start = time::one_month();
-        let end = time::today();
-        // Instantiate base
-        let base = donki::SolarFlare::new();
-        // Try query
-        base.query(start, end).unwrap();
-    }
-
-    #[test]
-    fn try_magnetic() {
-        use voyager_client::donki::*;
-
-        // Setup time
-        let start = String::from("2019-01-01");
-        let end = String::from("2022-01-01");
-        // Instantiate base
-        let base = GeoMagnetic::new();
-        // Try query
-        base.query(start, end).unwrap();
-    }
-
-    #[test]
-    fn try_neo() {
-        use voyager_client::neo;
-        use voyager_client::time;
-
-        let start = String::from("2022-01-01");
-        let end = time::today();
-        // Instantiate base
-        let base = neo::Neo::new();
-        // Try query
-        base.query(start, end).unwrap();
-    }
-
-    #[test]
-    fn try_insight() {
-        use voyager_client::insight;
-
-        let base = insight::InsightWeather::new();
-        base.query().unwrap();
-    }
-
-    #[test]
-    fn try_cme() {
-        use voyager_client::time;
-        use voyager_client::donki::*;
-
-        let base = CoronalMassEjection::new();
-
-        let start = String::from("2022-01-01");
-        let end = time::today();
-        base.query(start, end).unwrap();
-    }
-
-    #[test]
-    fn try_env_keys() {
-        use voyager_client::key;
-
-        let key = key::from_dotenv().unwrap();
-        println!("{}", key);
-    }
-
-    #[test]
-    fn try_tech_transfer_patent() {
-        use voyager_client::tech;
-
-        let base = tech::TechTransferClient::new();
-
-        let query = String::from("engine");
-        base.query(query).unwrap();
-    }
-
-    #[test]
-    fn try_tech_transfer_software() {
-        use voyager_client::tech;
-        use tech::Collections;
-
-        let mut base = tech::TechTransferClient::new();
-        base.switch(Collections::Software).unwrap();
-
-        let query = String::from("engine");
-        base.query(query).unwrap();
-    }
-
-    #[test]
-    fn try_fireball() {
-        use voyager_client::jpl::*;
-
-        let mut base = FireballClient::new();
-        base.limit(1);
-
-        base.query().unwrap();
-    }
-
-    #[test]
-    fn try_default_mission_design() {
-        use voyager_client::jpl::*;
-
-        let base = MissionDesign::new();
-        base.query(QueryType::DES, "2012%20TC4").unwrap();
-    }
-
-    #[test]
-    fn try_mission_design_accessible_lim_crit_year() {
-        use voyager_client::jpl::*;
-
-        let mut base = MissionDesignAccessible::new();
-        base.limit(10);
-        base.crit(1);
-        base.year(String::from("2025,2026,2027,2028,2029"));
-
-        base.lim_crit_year().unwrap();
-    }
-
-    #[test]
-    fn try_mission_design_map_mode() {
-        use voyager_client::jpl::*;
-
-        let mut base = MissionDesignMap::new();
-        base.designation("2012%20TC4");
-        base.mjd(58490);
-        base.span(3652);
-        base.tof(10, 36);
-        base.step(2);
-
-        base.query().unwrap();
-    }
-
-    #[test]
-    fn try_solar_energetic_particle() {
-        use voyager_client::donki::*;
-
-        let base = SolarEnergeticParticle::new();
-        let start = "2021-09-12".to_string();
-        let end = "2022-01-11".to_string();
-
-        base.query(start, end).unwrap();
+        let apod = apod::ApodClient::new();
+        let iface = Interface::new(apod);
+        println!("{:?}", iface)
     }
 }
