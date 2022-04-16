@@ -88,18 +88,38 @@ pub mod acl {
     pub mod interface {
         use super::*;
         use std::fmt::Debug;
+        use std::collections::HashMap;
+
+        pub type ResMap = HashMap<String, String>;
+        pub trait HasResMap<T> 
+        where
+            T: OpenApiClient {
+            fn make_resmap(iface: Interface<T>) -> Result<ResMap, ()>;
+        }
 
         #[derive(Debug, Clone, PartialEq)]
         pub struct Interface<T: OpenApiClient> {
             pub acl: T,
+            pub queries_tried: Option<u32>,
+            pub responses_recieved: Option<u32>,
+            pub resmap: Option<ResMap>,
         }
 
         impl<T> Interface<T>
         where
             T: OpenApiClient {
             pub fn new(acl: T) -> Self {
-                Interface { acl }
+                Interface { 
+                    acl,
+                    queries_tried: None,
+                    responses_recieved: None,
+                    resmap: None,
+                }
             } 
+
+            pub fn swap_acl(&mut self, acl: T) -> () {
+                self.acl = acl
+            }
         }
 
     }
