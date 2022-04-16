@@ -24,11 +24,15 @@ mod test {
 
     #[test]
     fn can_build_interface() {
-        use acl::interface::Interface;
-        use acl::apod;
+        use interface::*;
+        use acl::{apod::ApodClient, OpenApiClient};
 
-        let apod = apod::ApodClient::new();
-        let iface = Interface::new(apod);
-        println!("{:?}", iface)
+        let apod = ApodClient::new();
+
+        #[allow(unused)]
+        let apod_interface_1 = Interface::new(apod.clone());
+        let apod_interface_2: Interface<ApodClient> = ApodClient::into_interface(apod);
+
+        println!("{:?}", apod_interface_2)
     }
 }

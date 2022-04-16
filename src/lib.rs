@@ -23,6 +23,7 @@ pub mod acl {
 
     pub trait OpenApiClient {
         fn query(&self) -> Result<JsonValue, Box<dyn Error>>;
+        fn into_interface<T: OpenApiClient>(acl: T) -> interface::Interface<T>;
     }
 
     pub fn fetch_defaults(url: &String) -> Result<JsonValue, ()> {
@@ -82,13 +83,49 @@ pub mod acl {
                 let json: JsonValue = fetch_defaults(&url).unwrap();
                 Ok(json)
             }
+            fn into_interface<T: OpenApiClient>(acl: T) -> interface::Interface<T> {
+                interface::Interface {
+                    acl,
+                    queries_tried: None,
+                    responses_recieved: None,
+                    resmap: None,
+                }
+            }
         }
     }
 
-    pub mod interface {
+    pub mod neo {
+        use super::*;
+
+        #[derive(Debug, Clone, PartialEq)]
+        pub struct NeoClient {
+            bcl: Base,
+            query: Option<NeoQuery>,
+            range: Option<(String, String)>,
+        }
+
+        #[derive(Debug, Clone, PartialEq)]
+        pub enum NeoQuery {
+            Default,
+            WithRange { range: (String, String) }
+        }
+    
+        impl NeoClient {
+            pub fn new() -> NeoClient { unimplemented!() }
+            pub fn set_range(&mut self, range: (String, String)) -> () {
+                self.range = Some(range)
+            }
+        }
+
+    }
+}
+
+pub mod interface {
         use super::*;
         use std::fmt::Debug;
         use std::collections::HashMap;
+
+        use acl::OpenApiClient;
 
         pub type ResMap = HashMap<String, String>;
         pub trait HasResMap<T> 
@@ -123,4 +160,3 @@ pub mod acl {
         }
 
     }
-}
