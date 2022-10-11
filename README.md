@@ -31,8 +31,12 @@ fn main() -> Result<(), anyhow::Error> {
 ### The OpenApiClient Interface
 ```rust
 pub trait OpenApiClient {
+    #[ doc = "accepted parameters" ]
     type Params;
+    #[ doc = "base url" ]
     const CONNECTION: &'static str;
+    
+    #[ doc = "query method" ]
     fn get(&self, params: Self::Params) -> Result<String, anyhow::Error>;
 
 ```
