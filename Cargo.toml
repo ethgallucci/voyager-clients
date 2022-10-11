@@ -1,5 +1,5 @@
 [package]
-name = "voyager_client"
+name = "nerva"
 version = "0.3.4"
 edition = "2021"
 description = "Crate that contains base clients for interacting with the NASA Open APIs"
@@ -10,7 +10,7 @@ license = "MIT"
 authors = ["Ethan Gallucci <ethgallucci@gmail.com>"]
 
 [lib]
-name = "voyager_client"
+name = "nerva"
 path = "src/lib.rs"
 test = true
 doctest = true

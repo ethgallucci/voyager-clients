@@ -1,8 +1,8 @@
 #![cfg(test)]
 #![feature(stmt_expr_attributes)]
 mod apod_test {
-    use voyager_client::apis::apod::*;
-    use voyager_client::prelude::*;
+    use nerva::apis::apod::*;
+    use nerva::prelude::*;
     #[test]
     fn test_default_ok() {
         pretty_env_logger::try_init().ok();
