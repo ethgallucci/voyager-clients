@@ -13,7 +13,7 @@ mod apod_test {
             "Default params should be today"
         );
     }
-    #[test]
+    
     fn test_get() {
         pretty_env_logger::try_init().ok();
 
