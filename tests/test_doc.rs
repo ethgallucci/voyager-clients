@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-#[test]
+// #[test]
 fn readme() {
     use nerva::apis::apod::*;
     use nerva::prelude::*;
