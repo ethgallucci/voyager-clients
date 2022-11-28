@@ -1,5 +1,4 @@
-[warning] This crate is currently _unstable_ due to its use of `stmt_expr_attributes`
-
+# nerva [![CodeFactor](https://www.codefactor.io/repository/github/phasewalk1/nerva/badge)](https://www.codefactor.io/repository/github/phasewalk1/nerva) ![CI Status](https://img.shields.io/github/workflow/status/phasewalk1/nerva/Rust)
 
 ## Forward-facing API
 
