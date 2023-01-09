@@ -10,6 +10,9 @@
 #![feature(stmt_expr_attributes)]
 pub use self::prelude::*;
 
+/// Clients for NASA's Open APIs
+pub mod client;
+
 #[doc = "Util methods for API keys"]
 #[allow(dead_code)]
 pub(crate) mod key {
@@ -21,6 +24,3 @@ pub(crate) mod key {
 
 #[doc = "Common interfaces"]
 pub mod prelude;
-
-#[doc = "Implementations of various NASA Open APIs"]
-pub mod apis;
