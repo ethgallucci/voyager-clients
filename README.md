@@ -1,86 +1,103 @@
-<div align="center">
+# nerva [![CodeFactor](https://www.codefactor.io/repository/github/phasewalk1/nerva/badge)](https://www.codefactor.io/repository/github/phasewalk1/nerva) ![CI Status](https://img.shields.io/github/workflow/status/phasewalk1/nerva/Rust)
 
-[![version-shield]][crate-link] [![downloads-shield]][crate-link] [![docs-build-shield]][docs-url] [![contributors-shield]][contributors-url] [![license-shield]][license-url] [![issues-shield]][issues-url]
+## Forward-facing API
 
-</div>
-
-
-<h1 align="center">
-    Voyager
-</h1>
-
-<div align="center">
-    <img src="/docs/img/sat.png" width="244" />
-</div>
-
-
-
-## Overview
-Voyager is a swiss army knife library for the NASA Open APIs. It is designed to bundle all the NASA APIs into a single package. Voyager can be used to gather data from a variety of NASA's endpoints, including: Picture of The Day, Solar Flares, Magnetic Storms, Near Earth Objects etc.
-
-Future versions of voyager will strive to incorporate more endpoints, until all of them are integrated.
-
-## Crate Usage
-### Key Store
-First create a .env file at the root of your project and add a variable named "API_KEY" with your API key from NASA as it's value. Make sure to add .env to your gitignore!
-### Sample progam with voyager_client
 ```rust
-    use voyager_client::{donki, timing};
-    use voyager_client::response::*;
+extern crate nerva;
+use nerva::prelude::*;
+use nerva::apis::apod::*;
 
-    use serde_json::Value as JsonValue;
-
-    fn main() {
-        // instantiate a base client
-        let base = donki::SolarFlare::new();
-
-        // setup range for query params
-        let start = String::from("2021-01-01");
-        let end = String::from("2022-01-01");
-
-        // query the endpoint
-        let res: Response = base.query(start, end).unwrap();
-
-        // manipulating responses..
-        let json: JsonValue = res.json().unwrap();
-        let bytes_vec: Vec<u8> = res.bytedump().unwrap();
+fn main() -> Result<(), anyhow::Error> {
+    let apod = ApodClient { };
+    // get today's entry in the Picture of the Day API
+    match apod.get(ApodParams::default()) {
+        Ok(response) => { println!("got response!: {}", response); return Ok(()) },
+        Err(e) => { return Err(e) },
     }
-```
-This is a very simple program using voyager_client. We instantiate our base client for the Coronal Mass Ejection endpoint, and setup our timing parameters for our query. Then we pass the start and end dates into the query function. This will return a JSON string in prettyfied format.
 
-
-## Contributing
-The entire library can be found in [lib.rs](https://github.com/ethgallucci/voyager/blob/main/src/lib.rs), as well as it's documentation. [main.rs](https://github.com/ethgallucci/voyager/blob/main/src/main.rs) is a small executable that contains unit-tests for the voyager_client crate. All contributors are welcome! Simply clone this repository and work on a new branch, when you are ready you can open a PR.
-
-The .cargo directory contains a config file that defines some aliases that are handy for test-driven development. In the root directory you can run: 
-```sh
-    cargo unit-test
-```
-This is a quick way to run all unit tests defined in [main.rs](https://github.com/ethgallucci/voyager/blob/main/src/main.rs).
-
-You can also run:
-```sh
-    cargo doc-test
+    // fetch a specific entry
+    let date = "2022-09-01".to_string();
+    match apod.get(ApodParams::Date(date)) {
+        Ok(response) => { 
+            println!("entry for {}:\n{}", date, response); return Ok(())
+        },
+        Err(e) => { return Err(e) },
+    }
+}
 ```
 
-[version-shield]: https://img.shields.io/crates/v/voyager_client?style=plastic
+## API Under the Hood: Library Design
+### The OpenApiClient Interface
+```rust
+pub trait OpenApiClient {
+    #[ doc = "accepted parameters" ]
+    type Params;
+    #[ doc = "base url" ]
+    const CONNECTION: &'static str;
+    
+    #[ doc = "query method" ]
+    fn get(&self, params: Self::Params) -> Result<String, anyhow::Error>;
 
-[contributors-shield]: https://img.shields.io/github/contributors/ethgallucci/voyager?style=plastic
+```
+This defines the interface for by which all OpenApi clients are implemented within _nerva_. `anyhow::Error` is just a placeholder here for now in the return type of `get`. It will likely be replaced by a trait-instance specific error type for bettor error handling in the future.
 
-[contributors-url]: https://github.com/ethgallucci/voyager/graphs/contributors
+### Implementing the OpenApiClient Trait
+First, to implement a client wrapper for an OpenApi, a base struct is made:
+```rust
+pub struct ApodClient { }
+```
+Then, we define the parameters we expect the Api to handle:
+```rust
+pub struct ApodParams {
+    Date(String),
+    StartDate(String),
+    EndDate(String),
+}
+```
+We can even define a __default__ value for our parameters:
+```rust
+use chrono::Utc;
+impl Default for ApodParams {
+    fn default() -> Self {
+        let today = Utc::today().format("%Y-%m-%d").to_string();
+        return ApodParams::Date(today)
+    }
+}
+```
+It helps to have a custom conversion function implemented for our parameters (into formatted query strings). By keeping this conversion implementation separate from our `get` implementation, we can use it elsewhere in our code (i.e. maybe if we want to write a CLI):
+```rust
+impl From<ApodParams> for String {
+    fn from(params: ApodParams) -> String {
+        match params {
+            ApodParams::Date(d) => { return format!("date={}", d) },
+            ...
+        }
+    }
+}
 
-[issues-shield]: https://img.shields.io/github/issues/ethgallucci/voyager?style=plastic
-[issues-url]: https://github.com/ethgallucci/voyager/issues
+```
+Our ApodClient struct seems pretty well oriented now. Let's implement our OpenApiClient trait for it:
+```rust
+impl OpenApiClient for ApodClient {
+    // API params
+    type Params = ApodParams;
+    // Endpoint
+    const CONNECTION: &'static str = "https://api.nasa.gov/planetary/apod?";
 
+    // Query w/ params
+    fn get(&self, params: Self::Params) -> Result<String, anyhow::Error> {
+        // Push our params and api key to the endpoint string
+        let mut base_url = String::from(Self::CONNECTION);
+        base_url.push_str(&format!("{}", String::from(params)));
+        base_url.push_str(&format!("&api_key={}", crate::key::load("API_KEY")));
 
-[license-shield]: https://img.shields.io/crates/l/voyager_client?style=plastic
-[license-url]: https://github.com/ethgallucci/voyager/blob/main/LICENSE
-
-[commit-shield]: https://img.shields.io/github/commit-activity/w/ethgallucci/voyager?style=plastic
-[commit-url]: https://github.com/ethgallucci/voyager/commits/main
-
-[downloads-shield]: https://img.shields.io/crates/d/voyager_client?style=plastic
-[crate-link]: https://crates.io/crates/voyager_client
-
-[docs-build-shield]: https://img.shields.io/docsrs/voyager_client/latest?label=build&style=plastic
-[docs-url]: https://docs.rs/voyager_client
+        // Send the request and return the response
+        let response = ureq::get(&base_url).call();
+        #[rustfmt::skip]
+        match response {
+            Ok(r) => { return Ok(r.into_string()?) },
+            Err(e) => { return Err(anyhow::anyhow!(e)) },
+        }
+    }
+}
+```
