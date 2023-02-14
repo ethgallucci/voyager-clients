@@ -7,20 +7,55 @@
 //! * Tech Transfer -> [`tech`]
 
 #![warn(missing_docs)]
-#![feature(stmt_expr_attributes)]
-pub use self::prelude::*;
+#![feature(associated_type_defaults)]
+#![feature(type_alias_impl_trait)]
+/// Defines the core types of the library.
+pub mod core;
+/// Exposes core interfaces for clients
+pub mod prelude;
 
-/// Clients for NASA's Open APIs
-pub mod client;
+pub mod apod
+{
+    use super::core::{ClientBuilder, OpenApi, Params};
+    use serde::{Deserialize, Serialize};
 
-#[doc = "Util methods for API keys"]
-#[allow(dead_code)]
-pub(crate) mod key {
-    pub fn load(k: &str) -> String {
-        dotenv::dotenv().ok();
-        std::env::var(k).expect(&format!("{} is not set", k))
+    #[derive(Debug, Clone, Copy, PartialEq, Deserialize, Serialize)]
+    pub(super) enum ApodParams<'p>
+    {
+        /// The date of the APOD
+        Date(&'p str),
+        /// The date of the APOD
+        DateRange(&'p str, &'p str),
+    }
+
+    impl<'p> Default for ApodParams<'p>
+    {
+        fn default() -> Self { Self::Date("2020-01-01") }
+    }
+
+    pub struct Apod {}
+
+    impl Default for Apod
+    {
+        fn default() -> Self { Self {} }
+    }
+
+    impl<'p, P> OpenApi<P> for Apod
+    where
+        P: Params,
+    {
+        type Params = P;
+        type Response = Result<reqwest::Response, reqwest::Error>;
+
+        fn get(&self, params: Self::Params) -> Self::Response { todo!() }
+        fn get_raw(&self, params: Self::Params) -> Self::Response { todo!() }
+        fn get_raw_with_headers(
+            &self,
+            params: Self::Params,
+            headers: reqwest::header::HeaderMap,
+        ) -> Self::Response
+        {
+            todo!()
+        }
     }
 }
-
-#[doc = "Common interfaces"]
-pub mod prelude;
