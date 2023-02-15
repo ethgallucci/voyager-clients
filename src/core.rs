@@ -1,63 +1,39 @@
-//! Defines the core types of the library.
-
-use reqwest::Client;
+use core::fmt::Debug as DebugImpl;
+use serde::{Deserialize, Serialize};
+use std::error::Error;
 
 pub trait Params
 where
-    Self: Into<String> + PartialEq + Clone + Copy + Default,
+    Self: Into<String> + Clone + Copy + DebugImpl + PartialEq + Default,
 {
 }
 
-#[cfg(any(feature = "response_ext"))]
-pub trait ResponseExt
-where
-    Self: serde::de::DeserializeOwned + core::fmt::Debug,
-{
-    fn into_result(self) -> Result<Self, reqwest::Error>;
-}
-
-pub trait OpenApi<P>
+pub trait Client<P>
 where
     P: Params,
+    Self: Default,
 {
-    type Params = P;
-    type Response: core::fmt::Debug;
+    const BASE_URL: &'static str;
+    type Response: for<'de> Deserialize<'de> + Serialize + Clone + DebugImpl + PartialEq;
 
-    fn get(&self, params: Self::Params) -> Self::Response;
-    fn get_raw(&self, params: Self::Params) -> Self::Response;
-    fn get_raw_with_headers(
-        &self,
-        params: Self::Params,
-        headers: reqwest::header::HeaderMap,
-    ) -> Self::Response;
+    fn get(&self, params: P) -> Result<Self::Response, Box<dyn Error>>;
 }
 
-pub struct ClientBuilder<O, P>
-where
-    O: OpenApi<P>,
-    P: Params,
+#[cfg(test)]
+mod tests
 {
-    base_url: &'static str,
-    client: reqwest::Client,
-    _marker: std::marker::PhantomData<(O, P)>,
-}
+    use super::*;
+    use crate::clients::apod::{Apod, ApodParams};
 
-impl<O, P> ClientBuilder<O, P>
-where
-    O: OpenApi<P>,
-    P: Params,
-{
-    pub fn new(base_url: &'static str) -> Self
+    #[test]
+    fn test_apod()
     {
-        Self {
-            base_url,
-            client: Client::new(),
-            _marker: std::marker::PhantomData,
+        let apod = Apod::default();
+        let res = apod.get(ApodParams::default());
+        match res
+        {
+            Ok(json) => println!("{:#?}", json),
+            Err(e) => println!("{:#?}", e),
         }
-    }
-
-    pub fn client_mut(&mut self, client: reqwest::Client) -> &mut reqwest::Client
-    {
-        return &mut self.client;
     }
 }
