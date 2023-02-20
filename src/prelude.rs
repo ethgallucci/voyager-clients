@@ -22,6 +22,35 @@ pub mod params
 {
     pub use crate::clients::apod::ApodParams;
     pub use crate::clients::neo::{feed::NeoFeedParams, lookup::NeoLookupParams};
+
+    #[derive(Copy, Clone, PartialEq, Debug)]
+    pub enum DefaultParams<'p>
+    {
+        StartDate(&'p str),
+        EndDate(&'p str),
+    }
+
+    impl<'p> Default for DefaultParams<'p>
+    {
+        fn default() -> Self
+        {
+            Self::StartDate("2020-01-01")
+        }
+    }
+
+    impl<'p> Into<String> for DefaultParams<'p>
+    {
+        fn into(self) -> String
+        {
+            match self
+            {
+                Self::StartDate(date) => format!("startDate={}", date),
+                Self::EndDate(date) => format!("endDate={}", date),
+            }
+        }
+    }
+
+    impl<'p> crate::core::Params for DefaultParams<'p> {}
 }
 
 #[cfg(test)]
