@@ -1,5 +1,5 @@
 [package]
-name = "nerva"
+name = "voyager_client"
 version = "0.3.4"
 edition = "2021"
 description = "Crate that contains base clients for interacting with the NASA Open APIs"
