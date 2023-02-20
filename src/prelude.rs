@@ -24,7 +24,6 @@ pub mod params
     pub use crate::clients::neo::{feed::NeoFeedParams, lookup::NeoLookupParams};
 }
 
-
 #[cfg(test)]
 mod test
 {

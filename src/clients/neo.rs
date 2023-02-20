@@ -89,7 +89,7 @@ pub mod feed
     }
 }
 
-/// Lookup a specific Asteroid based on its NASA JPL small body (SPK-ID) ID 
+/// Lookup a specific Asteroid based on its NASA JPL small body (SPK-ID) ID
 pub mod lookup
 {
     use super::{Client, Error, Params};
@@ -133,8 +133,9 @@ pub mod lookup
         pub fn new() -> Self { return NeoLookup::default() }
     }
 
-    impl<'p, PARAMS> Client<PARAMS> for NeoLookup 
-    where PARAMS: Params 
+    impl<'p, PARAMS> Client<PARAMS> for NeoLookup
+    where
+        PARAMS: Params,
     {
         const BASE_URL: &'static str = "https://api.nasa.gov/neo/rest/v1/neo";
         type Response = serde_json::Value;

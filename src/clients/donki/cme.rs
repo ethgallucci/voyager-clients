@@ -22,10 +22,7 @@ impl<'p> Into<String> for CMEParams<'p>
 
 impl<'p> Default for CMEParams<'p>
 {
-    fn default() -> Self
-    {
-        CMEParams::StartDate("2023-01-01")
-    }
+    fn default() -> Self { CMEParams::StartDate("2023-01-01") }
 }
 
 impl<'p> Params for CMEParams<'p> {}
@@ -33,12 +30,12 @@ impl<'p> Params for CMEParams<'p> {}
 #[derive(Clone, Debug)]
 pub struct CME {}
 
-impl Default for CME 
+impl Default for CME
 {
     fn default() -> Self { return Self {} }
 }
 
-impl CME 
+impl CME
 {
     pub fn new() -> Self { return Self::default() }
 }
@@ -57,7 +54,7 @@ where
         let url_with_key = crate::prelude::keys::include(&url_with_params)?;
         let response = ureq::get(&url_with_key).call()?;
         let json = serde_json::json!(response.into_string()?);
-        return Ok(json)
+        return Ok(json);
     }
 }
 

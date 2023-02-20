@@ -7,17 +7,17 @@
 //! * Tech Transfer -> [`tech`]
 //! ## Example Program
 //! ```no_run
-//! use nerva::prelude::*;
 //! use nerva::clients::apod;
-//! 
-//! fn main() -> Result<(), Box<dyn std::error::Error>> {
+//! use nerva::prelude::*;
+//!
+//! fn main() -> Result<(), Box<dyn std::error::Error>>
+//! {
 //!     let apod = apod::Apod::default();
 //!     let response = apod.get(params::ApodParams::default())?;
 //!     println!("{:#?}", response);
-//!     return Ok(())
+//!     return Ok(());
 //! }
 //! ```
-
 
 #![feature(return_position_impl_trait_in_trait)]
 #![feature(associated_type_defaults)]
