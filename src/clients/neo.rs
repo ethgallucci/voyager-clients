@@ -83,7 +83,11 @@ pub mod feed
             match response
             {
                 Ok(json) => println!("{:#?}", json),
-                Err(e) => println!("{}", e),
+                Err(e) =>
+                {
+                    println!("{}", e);
+                    panic!();
+                }
             }
         }
     }

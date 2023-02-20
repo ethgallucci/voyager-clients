@@ -71,7 +71,11 @@ mod cme_test
         match response
         {
             Ok(json) => println!("{:#?}", json),
-            Err(e) => println!("{:#?}", e),
+            Err(e) =>
+            {
+                println!("{:#?}", e);
+                panic!()
+            }
         }
     }
 }

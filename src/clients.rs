@@ -6,3 +6,5 @@ pub mod donki;
 pub mod neo;
 /// Earth Landsat Imagery Client
 pub mod earth;
+/// Earth Polychromatic Imaging Camera (EPIC) client
+pub mod epic;

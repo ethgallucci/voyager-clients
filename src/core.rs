@@ -38,7 +38,11 @@ mod tests
         match res
         {
             Ok(json) => println!("{:#?}", json),
-            Err(e) => println!("{:#?}", e),
+            Err(e) =>
+            {
+                println!("{:#?}", e);
+                panic!();
+            }
         }
     }
 }

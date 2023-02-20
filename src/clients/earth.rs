@@ -15,8 +15,7 @@ impl<'p> Default for EarthParams<'p>
 {
     fn default() -> Self
     {
-        Self
-        {
+        Self {
             lat: 0.0,
             lon: 0.0,
             dim: None,
@@ -28,39 +27,36 @@ impl<'p> Default for EarthParams<'p>
 
 impl<'p> EarthParams<'p>
 {
-    pub fn new() -> Self
-    {
-        Self::default()
-    }
+    pub fn new() -> Self { Self::default() }
 
     pub fn lat(mut self, lat: f64) -> Self
     {
         self.lat = lat;
-        return self
+        return self;
     }
 
     pub fn lon(mut self, lon: f64) -> Self
     {
         self.lon = lon;
-        return self
+        return self;
     }
 
     pub fn dim(mut self, dim: f64) -> Self
     {
         self.dim = Some(dim);
-        return self
+        return self;
     }
 
     pub fn date(mut self, date: &'p str) -> Self
     {
         self.date = Some(date);
-        return self
+        return self;
     }
 
     pub fn cloud_score(mut self, cloud_score: bool) -> Self
     {
         self.cloud_score = Some(cloud_score);
-        return self
+        return self;
     }
 }
 
@@ -84,8 +80,8 @@ impl<'p> Into<String> for EarthParams<'p>
         {
             params.push_str(&format!("&cloud_score={}", cloud_score));
         }
-        
-        return params
+
+        return params;
     }
 }
 
@@ -96,10 +92,7 @@ pub struct Earth {}
 
 impl Default for Earth
 {
-    fn default() -> Self
-    {
-        Self {}
-    }
+    fn default() -> Self { Self {} }
 }
 
 impl Earth
@@ -121,7 +114,7 @@ where
         let url_with_key = crate::prelude::keys::include(&url_with_params)?;
         let response = ureq::get(&url_with_key).call()?;
         let json = serde_json::json!(response.into_string()?);
-        return Ok(json)
+        return Ok(json);
     }
 }
 
@@ -139,7 +132,11 @@ mod earth_tests
         match response
         {
             Ok(json) => println!("{:#?}", json),
-            Err(e) => println!("{:#?}", e),
+            Err(e) =>
+            {
+                println!("{:#?}", e);
+                panic!()
+            }
         }
     }
 }
