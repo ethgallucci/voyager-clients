@@ -1,5 +1,5 @@
-use crate::prelude::*;
 use crate::prelude::params::DefaultParams;
+use crate::prelude::*;
 use std::error::Error;
 
 pub type ISPParams<'p> = DefaultParams<'p>;
@@ -9,18 +9,12 @@ pub struct ISP {}
 
 impl Default for ISP
 {
-    fn default() -> Self
-    {
-        Self {}
-    }
+    fn default() -> Self { Self {} }
 }
 
 impl ISP
 {
-    pub fn new() -> Self
-    {
-        Self::default()
-    }
+    pub fn new() -> Self { Self::default() }
 }
 
 impl<'p, PARAMS> Client<PARAMS> for ISP
