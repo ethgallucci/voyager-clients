@@ -5,10 +5,15 @@ use std::error::Error;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ApodParams<'p>
 {
+    #[doc = "Date of the APOD image"]
     Date(&'p str),
+    #[doc = "Start date of the interval"]
     StartDate(&'p str),
+    #[doc = "End date of the interval"]
     EndDate(&'p str),
+    #[doc = "Number of images to return"]
     Count(usize),
+    #[doc = "Include thumbnail images in the response"]
     Thumbs(bool),
 }
 

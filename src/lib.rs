@@ -22,6 +22,8 @@
 #![feature(return_position_impl_trait_in_trait)]
 #![feature(associated_type_defaults)]
 #![feature(type_alias_impl_trait)]
+#![allow(incomplete_features)]
+#![warn(missing_docs)]
 /// API client implementations
 pub mod clients;
 /// Core abstractions

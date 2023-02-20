@@ -10,7 +10,9 @@ pub mod feed
     #[derive(Clone, Copy, Debug, PartialEq)]
     pub enum NeoFeedParams<'p>
     {
+        #[doc = "Start date of the interval"]
         StartDate(&'p str),
+        #[doc = "End date of the interval"]
         EndDate(&'p str),
     }
 
@@ -37,6 +39,7 @@ pub mod feed
     #[derive(Clone, Debug)]
     pub struct NeoFeed {}
 
+    #[allow(missing_docs)]
     impl NeoFeed
     {
         pub fn new() -> Self { return NeoFeed::default() }
@@ -102,6 +105,7 @@ pub mod lookup
     #[derive(Clone, Copy, Debug, PartialEq)]
     pub enum NeoLookupParams<'p>
     {
+        #[doc = "Asteroid SPK-ID correlates to the NASA JPL small body"]
         AsteroidID(&'p str),
     }
 
@@ -132,6 +136,7 @@ pub mod lookup
         fn default() -> Self { return NeoLookup {} }
     }
 
+    #[allow(missing_docs)]
     impl NeoLookup
     {
         pub fn new() -> Self { return NeoLookup::default() }

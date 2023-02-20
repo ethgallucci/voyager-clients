@@ -1,13 +1,19 @@
 use crate::prelude::{Client, Params};
 use std::error::Error;
 
+#[doc = "Parameters for the Earth API"]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct EarthParams<'p>
 {
+    #[doc = "Latitude of the location"]
     pub lat: f64,
+    #[doc = "Longitude of the location"]
     pub lon: f64,
+    #[doc = "Dimension of the image (Optional)"]
     pub dim: Option<f64>,
+    #[doc = "Date of the image (Optional)"]
     pub date: Option<&'p str>,
+    #[doc = "Include cloud score in the response (Optional)"]
     pub cloud_score: Option<bool>,
 }
 
@@ -25,6 +31,7 @@ impl<'p> Default for EarthParams<'p>
     }
 }
 
+#[allow(missing_docs)]
 impl<'p> EarthParams<'p>
 {
     pub fn new() -> Self { Self::default() }
@@ -87,6 +94,7 @@ impl<'p> Into<String> for EarthParams<'p>
 
 impl<'p> Params for EarthParams<'p> {}
 
+#[allow(missing_docs)]
 #[derive(Clone, Debug)]
 pub struct Earth {}
 
@@ -95,6 +103,7 @@ impl Default for Earth
     fn default() -> Self { Self {} }
 }
 
+#[allow(missing_docs)]
 impl Earth
 {
     pub fn new() -> Self { return Self::default() }

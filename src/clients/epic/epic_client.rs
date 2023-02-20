@@ -1,7 +1,7 @@
-use super::epic_parameters::EPICParams as EpicParams;
 use crate::core::Client;
 use std::error::Error;
 
+#[doc = "EPIC API client"]
 #[derive(Debug, Clone)]
 pub struct EPIC {}
 
@@ -10,6 +10,7 @@ impl Default for EPIC
     fn default() -> Self { EPIC {} }
 }
 
+#[allow(missing_docs)]
 impl EPIC
 {
     pub fn new() -> Self { EPIC::default() }
@@ -37,6 +38,7 @@ where
 mod epic_tests
 {
     use super::*;
+    use crate::clients::epic::epic_parameters::EPICParams as EpicParams;
 
     #[test]
     fn test_epic_client()
