@@ -8,3 +8,5 @@ pub mod flr;
 pub mod ips;
 /// DONKI Solar Energetic Particle (SEP) Endpoint
 pub mod sep;
+/// DONKI Radiation Belt Enhancement (RBE) Endpoint
+pub mod rbe;
