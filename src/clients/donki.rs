@@ -4,3 +4,5 @@ pub mod cme;
 pub mod gst;
 // DONKI Interplanetary Shock (IPS) Endpoint
 pub mod ips;
+/// DONKI Solar Flare (FLR) Endpoint
+pub mod flr;
