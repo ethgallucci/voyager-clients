@@ -2,9 +2,9 @@ name: Rust
 
 on:
   push:
-    branches: [ "v0.1.0" ]
+    branches: [ "v0.1.0", "phasewalk1-codeov", "main" ]
   pull_request:
-    branches: [ "v0.1.0" ]
+    branches: [ "v0.1.0", "phasewalk1-codecov", "main" ]
 
 env:
   CARGO_TERM_COLOR: always
