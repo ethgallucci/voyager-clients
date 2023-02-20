@@ -1,11 +1,15 @@
 use crate::core::{Client, Params};
 use std::error::Error;
 
+/// Params for the APOD API
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ApodParams<'p>
 {
     Date(&'p str),
-    Limit(usize),
+    StartDate(&'p str),
+    EndDate(&'p str),
+    Count(usize),
+    Thumbs(bool),
 }
 
 impl<'p> Into<String> for ApodParams<'p>
@@ -15,7 +19,10 @@ impl<'p> Into<String> for ApodParams<'p>
         match self
         {
             ApodParams::Date(date) => format!("date={}", date),
-            ApodParams::Limit(limit) => format!("count={}", limit),
+            ApodParams::StartDate(date) => format!("start_date={}", date),
+            ApodParams::EndDate(date) => format!("end_date={}", date),
+            ApodParams::Count(count) => format!("count={}", count),
+            ApodParams::Thumbs(thumbs) => format!("thumbs={}", thumbs),
         }
     }
 }
@@ -31,6 +38,7 @@ impl<'p> Default for ApodParams<'p>
 
 impl<'p> Params for ApodParams<'p> {}
 
+/// APOD API client
 #[derive(Clone, Debug)]
 pub struct Apod {}
 
@@ -50,7 +58,8 @@ where
     {
         let burl: &'static str = <Apod as Client<PARAMS>>::BASE_URL;
         let url = format!("{}/?{}", burl, params.into());
-        let response = ureq::get(&url).call()?;
+        let url_with_key = crate::prelude::keys::include(&url)?;
+        let response = ureq::get(&url_with_key).call()?;
         let json = serde_json::json!(response.into_string()?);
         Ok(json)
     }
