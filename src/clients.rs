@@ -4,3 +4,5 @@ pub mod apod;
 pub mod donki;
 /// Near Earth Object (NEO) client
 pub mod neo;
+/// Earth Landsat Imagery Client
+pub mod earth;
