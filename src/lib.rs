@@ -6,16 +6,18 @@
 //! * Near Earth Objects -> [`neo`]
 //! * Tech Transfer -> [`tech`]
 //! ## Example Program
-//! ```no_run
-//! use nerva::clients::apod;
-//! use nerva::prelude::*;
+//! use nerva::client::apod::*;
 //!
-//! fn main() -> Result<(), Box<dyn std::error::Error>>
-//! {
-//!     let apod = apod::Apod::default();
-//!     let response = apod.get(params::ApodParams::default())?;
-//!     println!("{:#?}", response);
-//!     return Ok(());
+//! use nerva::filter::{filter, Match};
+//! use nerva::core::Filter;
+//! use nerva::prelude::*;
+
+//! fn main() {
+//!     let apod = Apod::default();
+//!     let response = apod.get(ApodParams::date("2023-02-21"));
+//!     let values = filter::<Match<String>>(response.unwrap(), &Match::new("explanation"));
+//!     assert!(values.is_ok());
+//!     println!("{:#?}", values.unwrap());
 //! }
 //! ```
 
@@ -28,5 +30,6 @@
 pub mod clients;
 /// Core abstractions
 pub mod core;
+pub mod filter;
 /// Re-exports
 pub mod prelude;

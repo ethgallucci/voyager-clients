@@ -156,8 +156,8 @@ pub mod lookup
             let base_url = <NeoLookup as Client<PARAMS>>::BASE_URL;
             let url_with_params = format!("{}?{}", base_url, params.into());
             let url_with_key = crate::prelude::keys::include(&url_with_params)?;
-            let response = ureq::get(&url_with_key).call()?;
-            let json = serde_json::json!(response.into_string()?);
+            let res: String = ureq::get(&url_with_key).call()?.into_string()?;
+            let json = serde_json::from_str(&res)?;
             Ok(json)
         }
     }

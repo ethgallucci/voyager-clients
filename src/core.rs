@@ -9,6 +9,11 @@ where
 {
 }
 
+pub trait Filter
+{
+    fn filter(&self, json: serde_json::Value) -> Result<Vec<serde_json::Value>, anyhow::Error>;
+}
+
 /// Interface behavior for all clients
 pub trait Client<P>
 where

@@ -58,8 +58,8 @@ where
         {
             println!("URL: {}", url_with_key)
         };
-        let response = ureq::get(&url_with_key).call()?;
-        let json_str = serde_json::json!(response.into_string()?);
+        let response = ureq::get(&url_with_key).call()?.into_string()?;
+        let json_str: serde_json::Value = serde_json::from_str(&response)?;
         return Ok(json_str);
     }
 }
