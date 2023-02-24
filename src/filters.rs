@@ -24,36 +24,43 @@ where
 {
     fn filter(&self, json: serde_json::Value) -> Result<Vec<serde_json::Value>, anyhow::Error>
     {
-        let mut filtered = Vec::new();
-        let key = &self.key;
-        let values = &self.values;
-        match json
+        // COLLECT ALL VALUES THAT MATCH THE KEY
+        let key = self.key.clone();
+        let mut result = Vec::new();
+        let mut stack = Vec::new();
+        // iterate over the json and collect all values that match the key
+        stack.push(json);
+        while let Some(value) = stack.pop()
         {
-            // a hack? not sure if this will work
-            serde_json::Value::Array(arr) =>
+            match value
             {
-                for v in arr
+                serde_json::Value::Object(map) =>
                 {
-                    let v = v.get(key).unwrap_or(&serde_json::Value::Null);
-                    if v.is_null()
+                    for (k, v) in map
                     {
-                        return Err(anyhow::anyhow!("Key not found"));
+                        if k == key
+                        {
+                            result.push(v);
+                        }
+                        else
+                        {
+                            stack.push(v);
+                        }
                     }
-                    filtered.push(v.to_owned());
                 }
-                return Ok(filtered);
-            }
-            _ =>
-            {
-                let v = json.get(key).unwrap_or(&serde_json::Value::Null);
-                if v.is_null()
+                serde_json::Value::Array(array) =>
                 {
-                    return Err(anyhow::anyhow!("Key not found"));
+                    for v in array
+                    {
+                        stack.push(v);
+                    }
                 }
-                filtered.push(v.to_owned());
-                return Ok(filtered);
+                _ =>
+                {}
             }
         }
+
+        Ok(result)
     }
 }
 
@@ -75,12 +82,22 @@ mod tests
     use crate::core::Client;
 
     #[test]
-    fn test_apod()
+    fn test_filters()
     {
+        /*
         let apod = Apod::default();
-        let response = apod.get(ApodParams::default());
+        let response = apod.get(ApodParams::Date("2023-02-21"));
         let values = filter::<Match<String>>(response.unwrap(), &Match::new("explanation"));
         assert!(values.is_ok());
+        println!("{:#?}", values.unwrap());
+        */
+
+        use crate::clients::donki::flr::*;
+        let flr = FLR::default();
+        let params = FLRParams::StartDate("2023-01-01");
+        let response = flr.get(params).unwrap();
+        println!("{:#?}", response);
+        let values = filter::<Match<u32>>(response, &Match::new("activeRegionNum"));
         println!("{:#?}", values.unwrap());
     }
 }

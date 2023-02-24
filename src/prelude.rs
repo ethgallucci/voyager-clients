@@ -31,7 +31,7 @@ pub mod params
 
     impl<'p> Default for DefaultParams<'p>
     {
-        fn default() -> Self { Self::StartDate("2020-01-01") }
+        fn default() -> Self { Self::StartDate("2022-01-01") }
     }
 
     impl<'p> Into<String> for DefaultParams<'p>

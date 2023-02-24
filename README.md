@@ -11,17 +11,31 @@ _voyager-clients_, while the library itself goes by the name **nerva**. Document
 
 ```Rust
 use nerva::prelude::*;
-use nerva::client::apod::*;
 use nerva::core::Filter;
 use nerva::filters::{filter, Match};
 
 fn main() where
 {
+    // ---- Get the explanation of an APOD entry ------
+    use nerva::clients::apod::*;
+    // Get a client
     let apod = Apod::default();
-    // Query APOD for date = 2023-02-21
-    let response = apod.get(ApodParams::date("2023-02-21"));
+    // use a default parameter
+    let response = apod.get(ApodParams::default()).unwrap();
     // Filter for the "explanation" key
-    let values = filter::<Match<String>>(response.unwrap(), &Match::new("explanation"));
+    let values = filter::<Match<String>>(response, &Match::new("explanation"));
+    assert!(values.is_ok());
+    println!("{:#?}", values.unwrap());
+
+    // ---- Get the active region numbers from DONKI Flr ----
+    use nerva::clients::donki::flr::*;
+    // Get a client
+    let flr = FLR::default();
+    // Use a custom start date
+    let params = FLRParams::StartDate("2023-01-01");
+    let response = flr.get(params).unwrap();
+    // Filter for the active region numbers
+    let values = filter::<Match<u32>>(response, &Match::new("activeRegionNum"));
     assert!(values.is_ok());
     println!("{:#?}", values.unwrap());
 }

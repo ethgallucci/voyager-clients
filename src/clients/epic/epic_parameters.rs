@@ -23,10 +23,7 @@ pub enum EPICParams<'p>
 
 impl<'p> Default for EPICParams<'p>
 {
-    fn default() -> Self
-    {
-        EPICParams::NaturalAll
-    }
+    fn default() -> Self { EPICParams::NaturalAll }
 }
 
 impl<'p> Into<String> for EPICParams<'p>
