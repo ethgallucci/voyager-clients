@@ -10,15 +10,17 @@ _voyager-clients_, while the library itself goes by the name **nerva**. Document
 ## Usage
 
 ```Rust
-use nerva::client::apod::*;
-use nerva::filter::{filter, Match};
-use nerva::core::Filter;
 use nerva::prelude::*;
+use nerva::client::apod::*;
+use nerva::core::Filter;
+use nerva::filters::{filter, Match};
 
 fn main() where
 {
     let apod = Apod::default();
+    // Query APOD for date = 2023-02-21
     let response = apod.get(ApodParams::date("2023-02-21"));
+    // Filter for the "explanation" key
     let values = filter::<Match<String>>(response.unwrap(), &Match::new("explanation"));
     assert!(values.is_ok());
     println!("{:#?}", values.unwrap());

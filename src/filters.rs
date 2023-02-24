@@ -29,16 +29,19 @@ where
         let values = &self.values;
         match json
         {
+            // a hack? not sure if this will work
             serde_json::Value::Array(arr) =>
             {
-                for item in arr
+                for v in arr
                 {
-                    match item
+                    let v = v.get(key).unwrap_or(&serde_json::Value::Null);
+                    if v.is_null()
                     {
-                        _ =>
-                        {}
+                        return Err(anyhow::anyhow!("Key not found"));
                     }
+                    filtered.push(v.to_owned());
                 }
+                return Ok(filtered);
             }
             _ =>
             {
@@ -51,7 +54,6 @@ where
                 return Ok(filtered);
             }
         }
-        return Ok(filtered);
     }
 }
 
@@ -71,7 +73,6 @@ mod tests
     use super::*;
     use crate::clients::apod::{Apod, ApodParams};
     use crate::core::Client;
-    use crate::core::Filter;
 
     #[test]
     fn test_apod()

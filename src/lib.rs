@@ -30,6 +30,6 @@
 pub mod clients;
 /// Core abstractions
 pub mod core;
-pub mod filter;
+pub mod filters;
 /// Re-exports
 pub mod prelude;

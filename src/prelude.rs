@@ -1,5 +1,4 @@
 pub use crate::core::{Client, Params};
-
 /// Util for handling API keys
 pub mod keys
 {
