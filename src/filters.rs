@@ -1,6 +1,5 @@
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone, PartialEq)]
-pub struct Match<T>
-{
+pub struct Match<T> {
     key: String,
     values: Option<Vec<T>>,
 }
@@ -9,8 +8,7 @@ impl<T> Match<T>
 where
     T: serde::Serialize + serde::de::DeserializeOwned + Clone + std::fmt::Debug + PartialEq,
 {
-    pub fn new(key: &str) -> Self
-    {
+    pub fn new(key: &str) -> Self {
         return Self {
             key: key.to_owned(),
             values: None,
@@ -22,41 +20,30 @@ impl<T> super::core::Filter for Match<T>
 where
     T: serde::Serialize + serde::de::DeserializeOwned + Clone + std::fmt::Debug + PartialEq,
 {
-    fn filter(&self, json: serde_json::Value) -> Result<Vec<serde_json::Value>, anyhow::Error>
-    {
+    fn filter(&self, json: serde_json::Value) -> Result<Vec<serde_json::Value>, anyhow::Error> {
         // COLLECT ALL VALUES THAT MATCH THE KEY
         let key = self.key.clone();
         let mut result = Vec::new();
         let mut stack = Vec::new();
         // iterate over the json and collect all values that match the key
         stack.push(json);
-        while let Some(value) = stack.pop()
-        {
-            match value
-            {
-                serde_json::Value::Object(map) =>
-                {
-                    for (k, v) in map
-                    {
-                        if k == key
-                        {
+        while let Some(value) = stack.pop() {
+            match value {
+                serde_json::Value::Object(map) => {
+                    for (k, v) in map {
+                        if k == key {
                             result.push(v);
-                        }
-                        else
-                        {
+                        } else {
                             stack.push(v);
                         }
                     }
                 }
-                serde_json::Value::Array(array) =>
-                {
-                    for v in array
-                    {
+                serde_json::Value::Array(array) => {
+                    for v in array {
                         stack.push(v);
                     }
                 }
-                _ =>
-                {}
+                _ => {}
             }
         }
 
@@ -75,15 +62,13 @@ where
 }
 
 #[cfg(test)]
-mod tests
-{
+mod tests {
     use super::*;
     use crate::clients::apod::{Apod, ApodParams};
     use crate::core::Client;
 
     #[test]
-    fn test_filters()
-    {
+    fn test_filters() {
         /*
         let apod = Apod::default();
         let response = apod.get(ApodParams::Date("2023-02-21"));

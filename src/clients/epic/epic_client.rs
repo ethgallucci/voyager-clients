@@ -5,15 +5,17 @@ use std::error::Error;
 #[derive(Debug, Clone)]
 pub struct EPIC {}
 
-impl Default for EPIC
-{
-    fn default() -> Self { EPIC {} }
+impl Default for EPIC {
+    fn default() -> Self {
+        EPIC {}
+    }
 }
 
 #[allow(missing_docs)]
-impl EPIC
-{
-    pub fn new() -> Self { EPIC::default() }
+impl EPIC {
+    pub fn new() -> Self {
+        EPIC::default()
+    }
 }
 
 impl<'p, P> Client<P> for EPIC
@@ -23,8 +25,7 @@ where
     const BASE_URL: &'static str = "https://api.nasa.gov/EPIC/api";
     type Response = serde_json::Value;
 
-    fn get(&self, params: P) -> Result<Self::Response, Box<dyn Error>>
-    {
+    fn get(&self, params: P) -> Result<Self::Response, Box<dyn Error>> {
         let base_url = <EPIC as Client<P>>::BASE_URL;
         let url_with_params = format!("{}/{}", base_url, params.into());
         let url_with_key = crate::prelude::keys::include(&url_with_params)?;
@@ -35,22 +36,18 @@ where
 }
 
 #[cfg(test)]
-mod epic_tests
-{
+mod epic_tests {
     use super::*;
     use crate::clients::epic::epic_parameters::EPICParams as EpicParams;
 
     #[test]
-    fn test_epic_client()
-    {
+    fn test_epic_client() {
         let epic = EPIC::default();
         let params = EpicParams::NaturalAll;
         let response = epic.get(params);
-        match response
-        {
+        match response {
             Ok(json) => println!("{:#?}", json),
-            Err(e) =>
-            {
+            Err(e) => {
                 println!("{:#?}", e);
                 panic!()
             }

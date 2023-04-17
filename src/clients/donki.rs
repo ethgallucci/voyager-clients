@@ -6,6 +6,8 @@ pub mod flr;
 pub mod gst;
 /// DONKI Interplanetary Shock (IPS) Endpoint
 pub mod ips;
+/// DONKI Magnetopause Crossing (MPC) Endpoint
+pub mod mpc;
 /// DONKI Radiation Belt Enhancement (RBE) Endpoint
 pub mod rbe;
 /// DONKI Solar Energetic Particle (SEP) Endpoint

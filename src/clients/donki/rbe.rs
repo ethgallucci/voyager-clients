@@ -7,14 +7,16 @@ pub type RBEParams<'p> = DefaultParams<'p>;
 #[derive(Debug, Clone)]
 pub struct RBE {}
 
-impl Default for RBE
-{
-    fn default() -> Self { Self {} }
+impl Default for RBE {
+    fn default() -> Self {
+        Self {}
+    }
 }
 
-impl RBE
-{
-    pub fn new() -> Self { Self::default() }
+impl RBE {
+    pub fn new() -> Self {
+        Self::default()
+    }
 }
 
 impl<'p, DEP> Client<DEP> for RBE
@@ -24,8 +26,7 @@ where
     const BASE_URL: &'static str = "https://api.nasa.gov/DONKI/RBE";
     type Response = serde_json::Value;
 
-    fn get(&self, params: DEP) -> Result<Self::Response, Box<dyn Error>>
-    {
+    fn get(&self, params: DEP) -> Result<Self::Response, Box<dyn Error>> {
         let base_url = <RBE as Client<DEP>>::BASE_URL;
         let url_with_params = format!("{}?{}", base_url, params.into());
         let url_with_key = crate::prelude::keys::include(&url_with_params)?;
@@ -36,13 +37,11 @@ where
 }
 
 #[cfg(test)]
-mod rbe_tests
-{
+mod rbe_tests {
     use super::*;
 
     #[test]
-    fn test_rbe()
-    {
+    fn test_rbe() {
         pretty_env_logger::try_init().ok();
         let rbe = RBE::new();
         let params = RBEParams::default();

@@ -9,8 +9,7 @@ where
 {
 }
 
-pub trait Filter
-{
+pub trait Filter {
     fn filter(&self, json: serde_json::Value) -> Result<Vec<serde_json::Value>, anyhow::Error>;
 }
 
@@ -29,22 +28,29 @@ where
     fn get(&self, params: P) -> Result<Self::Response, Box<dyn Error>>;
 }
 
+pub mod util {
+    pub fn concat_query(
+        base_url: &str,
+        params_str: &str,
+    ) -> Result<String, Box<dyn std::error::Error>> {
+        let with_params = format!("{}?{}", base_url, params_str);
+        let with_key = crate::prelude::keys::include(&with_params)?;
+        return Ok(with_key);
+    }
+}
+
 #[cfg(test)]
-mod tests
-{
+mod tests {
     use super::*;
     use crate::clients::apod::{Apod, ApodParams};
 
     #[test]
-    fn test_apod()
-    {
+    fn test_apod() {
         let apod = Apod::default();
         let res = apod.get(ApodParams::default());
-        match res
-        {
+        match res {
             Ok(json) => println!("{:#?}", json),
-            Err(e) =>
-            {
+            Err(e) => {
                 println!("{:#?}", e);
                 panic!();
             }

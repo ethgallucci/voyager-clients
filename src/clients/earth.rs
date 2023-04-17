@@ -3,8 +3,7 @@ use std::error::Error;
 
 #[doc = "Parameters for the Earth API"]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct EarthParams<'p>
-{
+pub struct EarthParams<'p> {
     #[doc = "Latitude of the location"]
     pub lat: f64,
     #[doc = "Longitude of the location"]
@@ -17,10 +16,8 @@ pub struct EarthParams<'p>
     pub cloud_score: Option<bool>,
 }
 
-impl<'p> Default for EarthParams<'p>
-{
-    fn default() -> Self
-    {
+impl<'p> Default for EarthParams<'p> {
+    fn default() -> Self {
         Self {
             lat: 0.0,
             lon: 0.0,
@@ -32,59 +29,50 @@ impl<'p> Default for EarthParams<'p>
 }
 
 #[allow(missing_docs)]
-impl<'p> EarthParams<'p>
-{
-    pub fn new() -> Self { Self::default() }
+impl<'p> EarthParams<'p> {
+    pub fn new() -> Self {
+        Self::default()
+    }
 
-    pub fn lat(mut self, lat: f64) -> Self
-    {
+    pub fn lat(mut self, lat: f64) -> Self {
         self.lat = lat;
         return self;
     }
 
-    pub fn lon(mut self, lon: f64) -> Self
-    {
+    pub fn lon(mut self, lon: f64) -> Self {
         self.lon = lon;
         return self;
     }
 
-    pub fn dim(mut self, dim: f64) -> Self
-    {
+    pub fn dim(mut self, dim: f64) -> Self {
         self.dim = Some(dim);
         return self;
     }
 
-    pub fn date(mut self, date: &'p str) -> Self
-    {
+    pub fn date(mut self, date: &'p str) -> Self {
         self.date = Some(date);
         return self;
     }
 
-    pub fn cloud_score(mut self, cloud_score: bool) -> Self
-    {
+    pub fn cloud_score(mut self, cloud_score: bool) -> Self {
         self.cloud_score = Some(cloud_score);
         return self;
     }
 }
 
-impl<'p> Into<String> for EarthParams<'p>
-{
-    fn into(self) -> String
-    {
+impl<'p> Into<String> for EarthParams<'p> {
+    fn into(self) -> String {
         let mut params = String::new();
         params.push_str(&format!("lat={}", self.lat));
         params.push_str(&format!("&lon={}", self.lon));
 
-        if let Some(dim) = self.dim
-        {
+        if let Some(dim) = self.dim {
             params.push_str(&format!("&dim={}", dim));
         }
-        if let Some(date) = self.date
-        {
+        if let Some(date) = self.date {
             params.push_str(&format!("&date={}", date));
         }
-        if let Some(cloud_score) = self.cloud_score
-        {
+        if let Some(cloud_score) = self.cloud_score {
             params.push_str(&format!("&cloud_score={}", cloud_score));
         }
 
@@ -98,15 +86,17 @@ impl<'p> Params for EarthParams<'p> {}
 #[derive(Clone, Debug)]
 pub struct Earth {}
 
-impl Default for Earth
-{
-    fn default() -> Self { Self {} }
+impl Default for Earth {
+    fn default() -> Self {
+        Self {}
+    }
 }
 
 #[allow(missing_docs)]
-impl Earth
-{
-    pub fn new() -> Self { return Self::default() }
+impl Earth {
+    pub fn new() -> Self {
+        return Self::default();
+    }
 }
 
 impl<'p, PARA> Client<PARA> for Earth
@@ -116,8 +106,7 @@ where
     const BASE_URL: &'static str = "https://api.nasa.gov/planetary/earth/imagery";
     type Response = serde_json::Value;
 
-    fn get(&self, params: PARA) -> Result<Self::Response, Box<dyn Error>>
-    {
+    fn get(&self, params: PARA) -> Result<Self::Response, Box<dyn Error>> {
         let base_url = <Earth as Client<PARA>>::BASE_URL;
         let url_with_params = format!("{}?{}", base_url, params.into());
         let url_with_key = crate::prelude::keys::include(&url_with_params)?;
@@ -128,21 +117,17 @@ where
 }
 
 #[cfg(test)]
-mod earth_tests
-{
+mod earth_tests {
     use super::*;
 
     #[test]
-    fn test_earth()
-    {
+    fn test_earth() {
         let earth = Earth::default();
         let params = EarthParams::default();
         let response = earth.get(params);
-        match response
-        {
+        match response {
             Ok(json) => println!("{:#?}", json),
-            Err(e) =>
-            {
+            Err(e) => {
                 println!("{:#?}", e);
                 panic!()
             }

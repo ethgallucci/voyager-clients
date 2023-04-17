@@ -3,8 +3,7 @@ use std::error::Error;
 
 /// Params for the APOD API
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ApodParams<'p>
-{
+pub enum ApodParams<'p> {
     #[doc = "Date of the APOD image"]
     Date(&'p str),
     #[doc = "Start date of the interval"]
@@ -17,12 +16,9 @@ pub enum ApodParams<'p>
     Thumbs(bool),
 }
 
-impl<'p> Into<String> for ApodParams<'p>
-{
-    fn into(self) -> String
-    {
-        match self
-        {
+impl<'p> Into<String> for ApodParams<'p> {
+    fn into(self) -> String {
+        match self {
             ApodParams::Date(date) => format!("date={}", date),
             ApodParams::StartDate(date) => format!("start_date={}", date),
             ApodParams::EndDate(date) => format!("end_date={}", date),
@@ -32,10 +28,8 @@ impl<'p> Into<String> for ApodParams<'p>
     }
 }
 
-impl<'p> Default for ApodParams<'p>
-{
-    fn default() -> Self
-    {
+impl<'p> Default for ApodParams<'p> {
+    fn default() -> Self {
         let date = "2020-01-01";
         return ApodParams::Date(date);
     }
@@ -47,9 +41,10 @@ impl<'p> Params for ApodParams<'p> {}
 #[derive(Clone, Debug)]
 pub struct Apod {}
 
-impl Default for Apod
-{
-    fn default() -> Self { Self {} }
+impl Default for Apod {
+    fn default() -> Self {
+        Self {}
+    }
 }
 
 impl<'p, PARAMS> Client<PARAMS> for Apod
@@ -59,8 +54,7 @@ where
     const BASE_URL: &'static str = "https://api.nasa.gov/planetary/apod";
     type Response = serde_json::Value;
 
-    fn get(&self, params: PARAMS) -> Result<Self::Response, Box<dyn Error>>
-    {
+    fn get(&self, params: PARAMS) -> Result<Self::Response, Box<dyn Error>> {
         let burl: &'static str = <Apod as Client<PARAMS>>::BASE_URL;
         let url = format!("{}/?{}", burl, params.into());
         let url_with_key = crate::prelude::keys::include(&url)?;
