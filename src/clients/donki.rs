@@ -4,6 +4,8 @@ pub mod cme;
 pub mod flr;
 /// DONKI Geomagnetic Storm (GST) Endpoint
 pub mod gst;
+/// DONKI High Speed Stream (HSS) Endpoint
+pub mod hss;
 /// DONKI Interplanetary Shock (IPS) Endpoint
 pub mod ips;
 /// DONKI Magnetopause Crossing (MPC) Endpoint
