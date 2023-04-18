@@ -30,10 +30,7 @@ where
 
     fn get(&self, params: PARAMS) -> Result<Self::Response, Box<dyn Error>> {
         let base_url = <HSS as Client<PARAMS>>::BASE_URL;
-        let query = crate::prelude::keys::include(&crate::core::util::concat_query(
-            base_url,
-            params.into().as_str(),
-        )?)?;
+        let query = &crate::core::util::concat_query(base_url, params.into().as_str())?;
         let res = ureq::get(&query).call()?.into_string()?;
         let json = serde_json::from_str(&res)?;
         return Ok(json);

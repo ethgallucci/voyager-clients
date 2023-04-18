@@ -9,10 +9,6 @@ where
 {
 }
 
-pub trait Filter {
-    fn filter(&self, json: serde_json::Value) -> Result<Vec<serde_json::Value>, anyhow::Error>;
-}
-
 /// Interface behavior for all clients
 pub trait Client<P>
 where
@@ -28,7 +24,10 @@ where
     fn get(&self, params: P) -> Result<Self::Response, Box<dyn Error>>;
 }
 
+/// Global Util
 pub mod util {
+    /// Concatenate the base URL with the parameters to form a query string
+    /// !!! This includes the API key !!!
     pub fn concat_query(
         base_url: &str,
         params_str: &str,
