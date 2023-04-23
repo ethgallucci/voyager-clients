@@ -208,15 +208,6 @@ mod tests {
 
     #[test]
     fn test_nerva() {
-        // Construct SubClients we want to use
-        let apod = Apod::default();
-        let neofeed = NeoFeed::default();
-
-        // Construct a CoreClient that handles one specific SubClient at a time
-        let nerva = NervaClient::new(neofeed, NeoFeedPara::default());
-        let nerva = nerva.switch::<Apod, ApodPara>(apod, ApodPara::default());
-        let res = nerva.get().unwrap();
-        dbg!(res);
         // or
         // let nerva = NervaClient::<Apod, ApodPara>::new(apod, ApodPara::default());
         // We can switch to a different SubClient

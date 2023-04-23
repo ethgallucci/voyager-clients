@@ -31,6 +31,23 @@ fn main() -> Result<(), Box<dyn Error>> where {
 }
 ```
 
+### Example: Switching a Client's Aim
+A client with a specific aim can be switched to aim on another aim. So if we've instantiated an Apod client, we can switch
+it to be another API, 
+```Rust
+// Aim to Apod
+let aim = Aim::<Apod, ApodPara>::from(Apod::default());
+let apod = Nerva::from(aim);
+
+// Use 'apod' to do something
+...
+
+// Switch the Aim
+let aim = Aim::<NeoF, NeoFPara>::from(NeoF::default());
+let neof = apod.switch(aim);
+```
+
+
 [version-shield]: https://img.shields.io/crates/v/voyager_client?style=plastic
 [contributors-shield]: https://img.shields.io/github/contributors/ethgallucci/voyager?style=plastic
 [contributors-url]: https://github.com/ethgallucci/voyager/graphs/contributors
