@@ -40,6 +40,16 @@ where
     pub fn params(&self) -> &P {
         &self.1
     }
+
+    /// Set the `SubClient`
+    pub fn set_subclient(&mut self, subclient: S) {
+        self.0 = subclient;
+    }
+
+    /// Set the `Params`
+    pub fn set_params(&mut self, params: P) {
+        self.1 = params;
+    }
 }
 
 pub(crate) trait IntoAim<S, P>

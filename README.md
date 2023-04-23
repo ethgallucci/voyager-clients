@@ -7,37 +7,27 @@
 _voyager-clients (nerva)_ is a crate that contains client implementations for [NASA's Open APIs](https://api.nasa.gov). The crate and codebase go by the codename
 _voyager-clients_, while the library itself goes by the name **nerva**. Documentation for _nerva_ can be found [here](https://docs.rs/voyager_client/0.3.4/voyager_client/). For examples, or information on contributing, please read below.
 
-## Usage
+## Example: Fetch the Picture of the Day
 
 ```Rust
-use nerva::prelude::*;
-use nerva::core::Filter;
-use nerva::filters::{filter, Match};
+use nerva::prelude::{__x::*, params::ApodPara,}; use nerva::clients::apod::Apod;
+use nerva::core::Aim;
+use std::error::Error;
 
-fn main() where
-{
-    // ---- Get the explanation of an APOD entry ------
-    use nerva::clients::apod::*;
-    // Get a client
-    let apod = Apod::default();
-    // use a default parameter
-    let response = apod.get(ApodParams::default()).unwrap();
-    // Filter for the "explanation" key
-    let values = filter::<Match<String>>(response, &Match::new("explanation"));
-    assert!(values.is_ok());
-    println!("{:#?}", values.unwrap());
+fn main() -> Result<(), Box<dyn Error>> where {
+    // Set the aim on APOD
+    let aim = Aim::<Apod, ApodPara>::from(Apod::default());
+    // Get today's date in YYYY-MM-DD format
+    let today = chrono::Local::today().to_string();
+    // Set the aim
+    aim.set_params(ApodPara::Date(&today));
 
-    // ---- Get the active region numbers from DONKI Flr ----
-    use nerva::clients::donki::flr::*;
     // Get a client
-    let flr = FLR::default();
-    // Use a custom start date
-    let params = FLRParams::StartDate("2023-01-01");
-    let response = flr.get(params).unwrap();
-    // Filter for the active region numbers
-    let values = filter::<Match<u32>>(response, &Match::new("activeRegionNum"));
-    assert!(values.is_ok());
-    println!("{:#?}", values.unwrap());
+    let nerva = Nerva::from(aim);
+    // Fetch the Picture of the Day
+    let pod = nerva.get()?;
+    println!("{:#?}", pod);
+    return Ok(());
 }
 ```
 

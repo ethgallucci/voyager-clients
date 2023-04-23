@@ -126,14 +126,15 @@ pub mod prelude;
 mod readme {
     #[test]
     fn readme() {
-        use crate::clients::prelude::*;
-        use crate::core::{Aim, IntoAim};
-        use crate::prelude::__x::*;
-        use crate::prelude::params::*;
+        use crate::clients::apod::Apod;
+        use crate::core::Aim;
+        use crate::prelude::{__x::*, params::ApodPara};
 
+        let today = chrono::Local::today().to_string();
         let aim = Aim::<Apod, ApodPara>::from(Apod::default());
+        aim.set_params(ApodPara::Date(&today));
         let nerva = Nerva::from(aim);
-        let resp = nerva.get().unwrap();
-        println!("{:#?}", resp);
+        let pod = nerva.get().unwrap();
+        println!("{:#?}", pod);
     }
 }
