@@ -1,5 +1,4 @@
-use crate::core::{Client, Params};
-use std::error::Error;
+use crate::core::{Params, SubClient};
 
 /// Params for the APOD API
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -47,19 +46,9 @@ impl Default for Apod {
     }
 }
 
-impl<'p, PARAMS> Client<PARAMS> for Apod
+impl<'p, PARAMS> SubClient<PARAMS> for Apod
 where
     PARAMS: Params,
 {
     const BASE_URL: &'static str = "https://api.nasa.gov/planetary/apod";
-    type Response = serde_json::Value;
-
-    fn get(&self, params: PARAMS) -> Result<Self::Response, Box<dyn Error>> {
-        let burl: &'static str = <Apod as Client<PARAMS>>::BASE_URL;
-        let url = format!("{}/?{}", burl, params.into());
-        let url_with_key = crate::prelude::keys::include(&url)?;
-        let response: String = ureq::get(&url_with_key).call()?.into_string()?;
-        let json = serde_json::from_str(&response)?;
-        Ok(json)
-    }
 }

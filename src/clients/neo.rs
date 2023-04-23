@@ -1,9 +1,9 @@
-use crate::core::{Client, Params};
+use crate::core::{Params, SubClient};
 use std::error::Error;
 
 /// Retrieve a list of Asteroids based on their closest approach date to Earth
 pub mod feed {
-    use super::{Client, Error, Params};
+    use super::{Params, SubClient};
 
     /// Params for the Neo <feed> API
     #[derive(Clone, Copy, Debug, PartialEq)]
@@ -48,51 +48,31 @@ pub mod feed {
         }
     }
 
-    impl<'p, PARAMS> Client<PARAMS> for NeoFeed
+    impl<'p, PARAMS> SubClient<PARAMS> for NeoFeed
     where
         PARAMS: Params,
     {
         const BASE_URL: &'static str = "https://api.nasa.gov/neo/rest/v1/feed";
-        type Response = serde_json::Value;
-
-        fn get(&self, params: PARAMS) -> Result<Self::Response, Box<dyn Error>>
-        where
-            PARAMS: Params,
-        {
-            let base_url = <NeoFeed as Client<PARAMS>>::BASE_URL;
-            let url_with_params = format!("{}?{}", base_url, params.into());
-            let url_with_key = crate::prelude::keys::include(&url_with_params)?;
-            let response = ureq::get(&url_with_key).call()?;
-            let json = serde_json::json!(response.into_string()?);
-            Ok(json)
-        }
     }
 
     #[cfg(test)]
     mod tests {
-        use super::{NeoFeed, NeoFeedParams};
-        use crate::core::Client;
+        use super::{NeoFeed as Neof, NeoFeedParams as NeofPara};
+        use crate::core::*;
 
         #[test]
         fn test_neo() {
-            let neo = NeoFeed::default();
-            let params: String = NeoFeedParams::default().into();
-            println!("params: {}", params);
-            let response = neo.get(NeoFeedParams::default());
-            match response {
-                Ok(json) => println!("{:#?}", json),
-                Err(e) => {
-                    println!("{}", e);
-                    panic!();
-                }
-            }
+            let (neof, neofpara) = (Neof::default(), NeofPara::default());
+            let nerva: NervaClient<Neof, NeofPara> = NervaClient::new(neof, neofpara);
+            let resp = nerva.get().unwrap();
+            println!("{:?}", resp);
         }
     }
 }
 
 /// Lookup a specific Asteroid based on its NASA JPL small body (SPK-ID) ID
 pub mod lookup {
-    use super::{Client, Error, Params};
+    use super::{Params, SubClient};
 
     /// Params for the Neo <lookup> API
     #[derive(Clone, Copy, Debug, PartialEq)]
@@ -134,23 +114,10 @@ pub mod lookup {
         }
     }
 
-    impl<'p, PARAMS> Client<PARAMS> for NeoLookup
+    impl<'p, PARAMS> SubClient<PARAMS> for NeoLookup
     where
         PARAMS: Params,
     {
         const BASE_URL: &'static str = "https://api.nasa.gov/neo/rest/v1/neo";
-        type Response = serde_json::Value;
-
-        fn get(&self, params: PARAMS) -> Result<Self::Response, Box<dyn Error>>
-        where
-            PARAMS: Params,
-        {
-            let base_url = <NeoLookup as Client<PARAMS>>::BASE_URL;
-            let url_with_params = format!("{}?{}", base_url, params.into());
-            let url_with_key = crate::prelude::keys::include(&url_with_params)?;
-            let res: String = ureq::get(&url_with_key).call()?.into_string()?;
-            let json = serde_json::from_str(&res)?;
-            Ok(json)
-        }
     }
 }

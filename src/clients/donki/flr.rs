@@ -1,9 +1,10 @@
 use crate::prelude::params::DefaultParams;
-use crate::prelude::{Client, Params};
-use std::error::Error;
+use crate::prelude::{Params, SubClient};
 
+/// Params for the FLR API
 pub type FLRParams<'p> = DefaultParams<'p>;
 
+/// FLR API client
 #[derive(Debug, Clone)]
 pub struct FLR {}
 
@@ -13,39 +14,31 @@ impl Default for FLR {
     }
 }
 
+#[allow(missing_docs)]
 impl FLR {
     pub fn new() -> Self {
         Self::default()
     }
 }
 
-impl<'p, PARAMS> Client<PARAMS> for FLR
+impl<'p, PARAMS> SubClient<PARAMS> for FLR
 where
     PARAMS: Params,
 {
     const BASE_URL: &'static str = "https://api.nasa.gov/DONKI/FLR";
-    type Response = serde_json::Value;
-
-    fn get(&self, params: PARAMS) -> Result<Self::Response, Box<dyn Error>> {
-        let base_url = <FLR as Client<PARAMS>>::BASE_URL;
-        let url_with_params = format!("{}?{}", base_url, params.into());
-        let url_with_key = crate::prelude::keys::include(&url_with_params)?;
-        let response = ureq::get(&url_with_key).call()?.into_string()?;
-        let json: serde_json::Value = serde_json::from_str(&response)?;
-        return Ok(json);
-    }
 }
 
 #[cfg(test)]
 mod flr_tests {
-    use super::*;
+    use super::{FLRParams as FlrPara, FLR as Flr};
+    use crate::prelude::__x::*;
 
     #[test]
     fn flr_test() -> Result<(), Box<dyn Error>> {
-        let flr = FLR::new();
-        let params = FLRParams::default();
-        let response = flr.get(params)?;
-        println!("{:#?}", response);
-        Ok(())
+        let (flr, flrpara) = (Flr::default(), FlrPara::default());
+        let nerva: Nerva<Flr, FlrPara> = Nerva::new(flr, flrpara);
+        let resp = nerva.get()?;
+        println!("{:?}", resp);
+        return Ok(());
     }
 }

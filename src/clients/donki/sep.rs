@@ -1,9 +1,10 @@
 use crate::prelude::params::DefaultParams;
-use crate::prelude::{Client, Params};
-use std::error::Error;
+use crate::prelude::{Params, SubClient};
 
+/// Params for the SEP API
 pub type SEPParams<'p> = DefaultParams<'p>;
 
+/// SEP API client
 #[derive(Debug, Clone)]
 pub struct SEP {}
 
@@ -13,38 +14,30 @@ impl Default for SEP {
     }
 }
 
+#[allow(missing_docs)]
 impl SEP {
     pub fn new() -> Self {
         SEP::default()
     }
 }
 
-impl<'p, PARAMS> Client<PARAMS> for SEP
+impl<'p, PARAMS> SubClient<PARAMS> for SEP
 where
     PARAMS: Params,
 {
     const BASE_URL: &'static str = "https://api.nasa.gov/DONKI/SEP";
-    type Response = serde_json::Value;
-
-    fn get(&self, params: PARAMS) -> Result<Self::Response, Box<dyn Error>> {
-        let base_url = <SEP as Client<PARAMS>>::BASE_URL;
-        let url_with_params = format!("{}?{}", base_url, params.into());
-        let url_with_key = crate::prelude::keys::include(&url_with_params)?;
-        let response = ureq::get(&url_with_key).call()?.into_string()?;
-        let json: serde_json::Value = serde_json::from_str(&response)?;
-        return Ok(json);
-    }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::{SEPParams as SepParams, SEP as Sep};
+    use crate::prelude::__x::*;
 
     #[test]
     fn test_sep() {
-        let sep = SEP::new();
-        let params = SEPParams::default();
-        let response = sep.get(params);
-        assert!(response.is_ok());
+        let (sep, seppara) = (Sep::default(), SepParams::default());
+        let nerva: Nerva<Sep, SepParams> = Nerva::new(sep, seppara);
+        let resp = nerva.get();
+        println!("{:?}", resp);
     }
 }

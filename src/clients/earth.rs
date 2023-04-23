@@ -1,7 +1,6 @@
-use crate::prelude::{Client, Params};
-use std::error::Error;
+use crate::prelude::{Params, SubClient};
 
-#[doc = "Parameters for the Earth API"]
+/// Params for the Earth API
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct EarthParams<'p> {
     #[doc = "Latitude of the location"]
@@ -82,7 +81,7 @@ impl<'p> Into<String> for EarthParams<'p> {
 
 impl<'p> Params for EarthParams<'p> {}
 
-#[allow(missing_docs)]
+/// Earth API client
 #[derive(Clone, Debug)]
 pub struct Earth {}
 
@@ -99,38 +98,21 @@ impl Earth {
     }
 }
 
-impl<'p, PARA> Client<PARA> for Earth
+impl<'p, PARA> SubClient<PARA> for Earth
 where
     PARA: Params,
 {
     const BASE_URL: &'static str = "https://api.nasa.gov/planetary/earth/imagery";
-    type Response = serde_json::Value;
-
-    fn get(&self, params: PARA) -> Result<Self::Response, Box<dyn Error>> {
-        let base_url = <Earth as Client<PARA>>::BASE_URL;
-        let url_with_params = format!("{}?{}", base_url, params.into());
-        let url_with_key = crate::prelude::keys::include(&url_with_params)?;
-        let response = ureq::get(&url_with_key).call()?.into_string()?;
-        let json: serde_json::Value = serde_json::from_str(&response)?;
-        return Ok(json);
-    }
 }
 
 #[cfg(test)]
 mod earth_tests {
-    use super::*;
+    use super::{Earth, EarthParams as EarthPara};
+    use crate::prelude::__x::*;
 
     #[test]
     fn test_earth() {
-        let earth = Earth::default();
-        let params = EarthParams::default();
-        let response = earth.get(params);
-        match response {
-            Ok(json) => println!("{:#?}", json),
-            Err(e) => {
-                println!("{:#?}", e);
-                panic!()
-            }
-        }
+        let (e, epara) = (Earth::default(), EarthPara::default());
+        let nerva: Nerva<Earth, EarthPara> = Nerva::new(e, epara);
     }
 }
