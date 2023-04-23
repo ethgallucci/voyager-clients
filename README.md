@@ -10,9 +10,9 @@ _voyager-clients_, while the library itself goes by the name **nerva**. Document
 ## Example: Fetch the Picture of the Day
 
 ```Rust
-use nerva::prelude::{__x::*, params::ApodPara,}; use nerva::clients::apod::Apod;
+use nerva::prelude::{__x::*, params::ApodPara,}; 
+use nerva::clients::apod::Apod;
 use nerva::core::Aim;
-use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> where {
     // Set the aim on APOD
