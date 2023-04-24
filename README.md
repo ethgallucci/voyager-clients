@@ -1,52 +1,24 @@
-# voyager-clients (nerva)
+# nerva
 
 > [![version-shield]][crate-link] [![downloads-shield]][crate-link] [![docs-build-shield]][docs-url] [![contributors-shield]][contributors-url] [![license-shield]][license-url] [![issues-shield]][issues-url]
 
 ## Overview
+_voyager-clients (nerva)_ is a crate that contains client implementations for [NASA's Open APIs](https://api.nasa.gov). __nerva__ can be used to query any NASA Open API. The following is a simple example that employs _nerva_ to fetch the picture of the day from NASA's APOD API.
 
-_voyager-clients (nerva)_ is a crate that contains client implementations for [NASA's Open APIs](https://api.nasa.gov). The crate and codebase go by the codename
-_voyager-clients_, while the library itself goes by the name **nerva**. Documentation for _nerva_ can be found [here](https://docs.rs/voyager_client/0.3.4/voyager_client/). For examples, or information on contributing, please read below.
-
-## Example: Fetch the Picture of the Day
-
+## Example: Fetch the Picture of the Day (APOD)
 ```Rust
-use nerva::prelude::{__x::*, params::ApodPara,}; 
+use nerva::prelude::{__x::*, params::ApodPara,};
 use nerva::clients::apod::Apod;
 use nerva::core::Aim;
 
-fn main() -> Result<(), Box<dyn Error>> where {
-    // Set the aim on APOD
+fn main() where {
     let aim = Aim::<Apod, ApodPara>::from(Apod::default());
-    // Get today's date in YYYY-MM-DD format
-    let today = chrono::Local::today().to_string();
-    // Set the aim
-    aim.set_params(ApodPara::Date(&today));
-
-    // Get a client
-    let nerva = Nerva::from(aim);
-    // Fetch the Picture of the Day
-    let pod = nerva.get()?;
-    println!("{:#?}", pod);
-    return Ok(());
+    let apod = Nerva::from(aim);
+    let response = apod.get().unwrap();
+    println!("{:#?}", response);
 }
+
 ```
-
-### Example: Switching a Client's Aim
-A client with a specific aim can be switched to aim on another aim. So if we've instantiated an Apod client, we can switch
-it to be another API, 
-```Rust
-// Aim to Apod
-let aim = Aim::<Apod, ApodPara>::from(Apod::default());
-let apod = Nerva::from(aim);
-
-// Use 'apod' to do something
-...
-
-// Switch the Aim
-let aim = Aim::<NeoF, NeoFPara>::from(NeoF::default());
-let neof = apod.switch(aim);
-```
-
 
 [version-shield]: https://img.shields.io/crates/v/voyager_client?style=plastic
 [contributors-shield]: https://img.shields.io/github/contributors/ethgallucci/voyager?style=plastic
