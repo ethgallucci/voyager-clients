@@ -13,7 +13,9 @@
     <img src="/docs/img/sat.png" width="244" />
 </div>
 
-
+# Advisory
+> ⚠️
+> This library is now archived. Development will continue at [phasewalk1/nasa-rs](https://github.com/phasewalk1/nasa-rs).
 
 ## Overview
 Voyager is a swiss army knife library for the NASA Open APIs. It is designed to bundle all the NASA APIs into a single package. Voyager can be used to gather data from a variety of NASA's endpoints, including: Picture of The Day, Solar Flares, Magnetic Storms, Near Earth Objects etc.
